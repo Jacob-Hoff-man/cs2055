@@ -31,11 +31,13 @@ CREATE TABLE CUSTOMER (
 DROP TABLE IF EXISTS SALE CASCADE;
 CREATE TABLE SALE (
   Purchase_Id int NOT NULL,
+  Customer_Id int NOT NULL,
   Purchased_Time time,
   Purchased_Portion float,
   Redeemed_Portion float,
 
-  CONSTRAINT PK_SALE PRIMARY KEY (Purchase_Id)
+  CONSTRAINT PK_SALE PRIMARY KEY (Purchase_Id),
+  CONSTRAINT FK_CUSTOMER FOREIGN KEY (Customer_Id) REFERENCES CUSTOMER(Customer_Id)
 );
 
 DROP DOMAIN IF EXISTS store_type CASCADE;
