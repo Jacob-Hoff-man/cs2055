@@ -41,11 +41,11 @@ INSERT INTO COFFEE VALUES (8, 'Breve', 'The breve provides a decadent twist on t
 INSERT INTO COFFEE VALUES (9, 'Cappuccino', 'This creamy coffee drink is usually consumed at breakfast time in Italy and is loved in the United States as well. It is usually associated with indulgence and comfort because of its thick foam layer and additional flavorings that can be added to it.', 'Canada', 4, 5.00, 150.0, 50.0);
 INSERT INTO COFFEE VALUES (10, 'Cafe Latte', 'Cafe lattes are considered an introductory coffee drink since the acidity and bitterness of coffee are cut by the amount of milk in the beverage. Flavoring syrups are often added to the latte for those who enjoy sweeter drinks.', 'Canada', 2, 5.50, 165.0, 55.0);
 INSERT INTO COFFEE VALUES (11, 'Mocha', 'The mocha is considered a coffee and hot chocolate hybrid. The chocolate powder or syrup gives it a rich and creamy flavor and cuts the acidity of the espresso.', 'Canada', 3, 5.50, 165.0, 55.0);
-INSERT INTO COFFEE VALUES (12, 'Iced Coffee', 'Iced coffees become very popular in the summertime in the United States. The recipes do have some variance, with some locations choosing to interchange milk with water in the recipe. Often, different flavoring syrups will be added per the preference of the customer.', 'Canada', 3, 4.75, 142.5, 47.50);
+INSERT INTO COFFEE VALUES (12, 'Iced Coffee', 'Iced coffees become very popular in the summertime in the United States. The recipes do have some variance, with some locations choosing to interchange milk with water in the recipe. Different flavoring syrups will be added per customer preference.', 'Canada', 3, 4.75, 142.5, 47.50);
 
 -- Promos
 INSERT INTO PROMOTION VALUES (1, 'Promo 1', '2022-10-01', '2022-11-01');
-INSERT INTO PROMOTION VALUES (1, 'Promo 2', '2021-10-01', '2023-12-30');
-INSERT INTO PROMOTION VALUES (1, 'Promo 3', '2023-01-01', '2023-07-01');
+INSERT INTO PROMOTION VALUES (2, 'Promo 2', '2021-10-01', '2023-12-30');
+INSERT INTO PROMOTION VALUES (3, 'Promo 3', '2023-01-01', '2023-07-01');
 
 -- Purchases
