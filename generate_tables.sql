@@ -2,20 +2,17 @@
 -- CoffeeBoutique CS 1555/2055 Fall 2022
 -- Jacob Hoffman and Kairuo Yan
 ---------------------------------------------
-DROP TABLE IF EXISTS CUSTOMER CASCADE;
-DROP TABLE IF EXISTS SALE CASCADE;
-
 DROP DOMAIN IF EXISTS Phone_Enum CASCADE;
-DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
-
 CREATE DOMAIN Phone_Enum AS varchar(6)
-CHECK (VALUE in ('home', 'mobile', 'work', 'other'));
+CONSTRAINT phone_enum_value CHECK (VALUE in ('home', 'mobile', 'work', 'other'));
 
+DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
 CREATE DOMAIN Loyalty_Level_Enum AS varchar(10)
-CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
+CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
 
+DROP TABLE IF EXISTS CUSTOMER CASCADE;
 CREATE TABLE CUSTOMER (
-    Customer_Id integer,
+    Customer_Id int NOT NULL,
     First_Name varchar(50),
     Last_Name varchar(50),
     Mid_Name varchar(50),
@@ -31,8 +28,9 @@ CREATE TABLE CUSTOMER (
     CONSTRAINT UQ_PHONE UNIQUE (Phone_Number)
 );
 
+DROP TABLE IF EXISTS SALE CASCADE;
 CREATE TABLE SALE (
-  Purchase_Id integer,
+  Purchase_Id int NOT NULL,
   Purchased_Time time,
   Purchased_Portion float,
   Redeemed_Portion float,
@@ -43,7 +41,6 @@ CREATE TABLE SALE (
 DROP DOMAIN IF EXISTS store_type CASCADE;
 CREATE DOMAIN store_type varchar(7)
 CONSTRAINT store_type_value CHECK(VALUE IN('kiosk', 'sitting store'));
-
 
 DROP TABLE IF EXISTS STORE cascade;
 CREATE TABLE STORE(
@@ -81,4 +78,16 @@ CREATE TABLE COFFEE(
     CONSTRAINT C_PK PRIMARY KEY (Coffee_Id),
     CONSTRAINT UQ_Cname UNIQUE (Coffee_Name)
 
-)
+);
+
+DROP TABLE IF EXISTS RECORDS CASCADE;
+CREATE TABLE RECORDS(
+    Purchase_Id int NOT NULL,
+    Store_Number int NOT NULL,
+    Coffee_Id int NOT NULL,
+
+    CONSTRAINT RECORDS_PK PRIMARY KEY (Purchase_Id, Store_Number, Coffee_Id),
+    CONSTRAINT SALE_FK FOREIGN KEY (Purchase_Id) REFERENCES SALE(Purchase_Id),
+    CONSTRAINT STORE_FK FOREIGN KEY (Store_Number) REFERENCES STORE(Store_Number),
+    CONSTRAINT COFFEE_FK FOREIGN KEY (Coffee_Id) REFERENCES COFFEE(Coffee_Id)
+);
