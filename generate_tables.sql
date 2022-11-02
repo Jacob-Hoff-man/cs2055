@@ -2,8 +2,7 @@
 -- CoffeeBoutique CS 1555/2055 Fall 2022
 -- Jacob Hoffman and Kairuo Yan
 ---------------------------------------------
-<<<<<<< Updated upstream
-=======
+
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
 DROP TABLE IF EXISTS SALE CASCADE;
 
@@ -38,14 +37,16 @@ CREATE TABLE SALE (
   Purchased_Time time,
   Purchased_Portion float,
   Redeemed_Portion float,
+
   Customer_Id int NOT NULL,
   Store_Id int NOT NULL,
   Coffee_Id int NOT NULL,
 
+
   CONSTRAINT PK_SALE PRIMARY KEY (Purchase_Id)
 );
 
->>>>>>> Stashed changes
+
 DROP DOMAIN IF EXISTS store_type CASCADE;
 CREATE DOMAIN store_type varchar(7)
 CONSTRAINT store_type_value CHECK(VALUE IN('kiosk', 'sitting store'));
