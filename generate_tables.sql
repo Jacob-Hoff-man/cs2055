@@ -19,7 +19,7 @@ CREATE TABLE COFFEE(
 
 DROP DOMAIN IF EXISTS store_type CASCADE;
 CREATE DOMAIN store_type varchar(7)
-CONSTRAINT store_type_value CHECK(VALUE IN('kiosk', 'sitting store'));
+CONSTRAINT store_type_value CHECK(VALUE IN('kiosk', 'sitting'));
 
 DROP TABLE IF EXISTS STORE cascade;
 CREATE TABLE STORE(
@@ -41,13 +41,17 @@ DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
 CREATE DOMAIN Loyalty_Level_Enum AS varchar(10)
 CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
 
+DROP DOMAIN IF EXISTS Month_Enum CASCADE;
+CREATE DOMAIN Month_Enum AS char(3)
+CONSTRAINT month_enum_value CHECK (VALUE in ('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'));
+
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
 CREATE TABLE CUSTOMER (
     Customer_Id int NOT NULL,
     First_Name varchar(50),
     Last_Name varchar(50),
     Mid_Name varchar(50),
-    Birth_Month char(3),
+    Birth_Month Month_Enum,
     Birth_Day char(2),
     Phone_Number varchar(16),
     Phone_Type Phone_Enum,
@@ -69,6 +73,7 @@ CREATE TABLE SALE (
 
   CONSTRAINT PK_SALE PRIMARY KEY (Purchase_Id),
   CONSTRAINT FK_CUSTOMER FOREIGN KEY (Customer_Id) REFERENCES CUSTOMER(Customer_Id)
+      ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS PROMOTION cascade;
@@ -79,7 +84,6 @@ CREATE TABLE PROMOTION(
     End_date date NOT NULL,
     CONSTRAINT P_PK PRIMARY KEY (Promo_Number),
     CONSTRAINT UQ_Pname UNIQUE (Promo_Name)
-
 );
 
 DROP TABLE IF EXISTS OFFERS cascade;
@@ -89,9 +93,9 @@ CREATE TABLE OFFERS(
     Store_Number int NOT NULL,
     CONSTRAINT PK_OFFERS PRIMARY KEY (Promo_Number, Store_Number),
     CONSTRAINT FK1_OFFERS FOREIGN KEY (Store_Number) REFERENCES STORE (Store_Number)
-                  ON DELETE CASCADE,
+                  ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK2_OFFERS FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
-                  ON DELETE CASCADE
+                  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS FEATURES cascade;
@@ -100,9 +104,9 @@ CREATE TABLE FEATURES(
     Store_Number int NOT NULL,
     CONSTRAINT PK_FEATURES PRIMARY KEY (Coffee_Id, Store_Number),
     CONSTRAINT FK1_FEATURES FOREIGN KEY (Store_Number) REFERENCES STORE (Store_Number)
-                  ON DELETE CASCADE,
+                  ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK2_FEATURES FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
-                  ON DELETE CASCADE
+                  ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS RECORDS CASCADE;
@@ -112,7 +116,10 @@ CREATE TABLE RECORDS(
     Coffee_Id int NOT NULL,
 
     CONSTRAINT RECORDS_PK PRIMARY KEY (Purchase_Id, Store_Number, Coffee_Id),
-    CONSTRAINT SALE_FK FOREIGN KEY (Purchase_Id) REFERENCES SALE(Purchase_Id),
-    CONSTRAINT STORE_FK FOREIGN KEY (Store_Number) REFERENCES STORE(Store_Number),
+    CONSTRAINT SALE_FK FOREIGN KEY (Purchase_Id) REFERENCES SALE(Purchase_Id)
+                  ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT STORE_FK FOREIGN KEY (Store_Number) REFERENCES STORE(Store_Number)
+                  ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT COFFEE_FK FOREIGN KEY (Coffee_Id) REFERENCES COFFEE(Coffee_Id)
+                  ON UPDATE CASCADE ON DELETE CASCADE
 );
