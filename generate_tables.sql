@@ -41,13 +41,17 @@ DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
 CREATE DOMAIN Loyalty_Level_Enum AS varchar(10)
 CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
 
+DROP DOMAIN IF EXISTS Month_Enum CASCADE;
+CREATE DOMAIN Month_Enum AS char(3)
+CONSTRAINT month_enum_value CHECK (VALUE in ('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'));
+
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
 CREATE TABLE CUSTOMER (
     Customer_Id int NOT NULL,
     First_Name varchar(50),
     Last_Name varchar(50),
     Mid_Name varchar(50),
-    Birth_Month char(3),
+    Birth_Month Month_Enum,
     Birth_Day char(2),
     Phone_Number varchar(16),
     Phone_Type Phone_Enum,
