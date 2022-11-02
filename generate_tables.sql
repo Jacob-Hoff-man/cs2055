@@ -2,6 +2,7 @@
 -- CoffeeBoutique CS 1555/2055 Fall 2022
 -- Jacob Hoffman and Kairuo Yan
 ---------------------------------------------
+
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
 DROP TABLE IF EXISTS SALE CASCADE;
 
@@ -37,8 +38,14 @@ CREATE TABLE SALE (
   Purchased_Portion float,
   Redeemed_Portion float,
 
+  Customer_Id int NOT NULL,
+  Store_Id int NOT NULL,
+  Coffee_Id int NOT NULL,
+
+
   CONSTRAINT PK_SALE PRIMARY KEY (Purchase_Id)
 );
+
 
 DROP DOMAIN IF EXISTS store_type CASCADE;
 CREATE DOMAIN store_type varchar(7)
@@ -67,6 +74,29 @@ CREATE TABLE PROMOTION(
     CONSTRAINT UQ_Pname UNIQUE (Promo_Name)
 
 );
+
+DROP TABLE IF EXISTS OFFERS cascade;
+CREATE TABLE OFFERS(
+    Promo_Number int NOT NULL,
+    Coffee_Id int NOT NULL,
+    Store_Number int NOT NULL,
+    CONSTRAINT PK_OFFERS PRIMARY KEY (Promo_Number, Store_Number),
+    CONSTRAINT FK1_OFFERS FOREIGN KEY (Store_Number) REFERENCES STORE (Store_Number)
+                  ON DELETE CASCADE,
+    CONSTRAINT FK2_OFFERS FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
+                  ON DELETE CASCADE
+)
+
+DROP TABLE IF EXISTS FEATURES cascade;
+CREATE TABLE FEATURES(
+    Coffee_Id int NOT NULL,
+    Store_Number int NOT NULL,
+    CONSTRAINT PK_FEATURES PRIMARY KEY (Coffee_Id, Store_Number),
+    CONSTRAINT FK1_FEATURES FOREIGN KEY (Store_Number) REFERENCES STORE (Store_Number)
+                  ON DELETE CASCADE,
+    CONSTRAINT FK2_FEATURES FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
+                  ON DELETE CASCADE
+)
 
 DROP TABLE IF EXISTS COFFEE cascade;
 CREATE TABLE COFFEE(
