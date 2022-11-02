@@ -2,7 +2,6 @@
 -- CoffeeBoutique CS 1555/2055 Fall 2022
 -- Jacob Hoffman and Kairuo Yan
 ---------------------------------------------
-
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
 DROP TABLE IF EXISTS SALE CASCADE;
 
@@ -46,11 +45,9 @@ CREATE TABLE SALE (
   CONSTRAINT PK_SALE PRIMARY KEY (Purchase_Id)
 );
 
-
 DROP DOMAIN IF EXISTS store_type CASCADE;
 CREATE DOMAIN store_type varchar(7)
 CONSTRAINT store_type_value CHECK(VALUE IN('kiosk', 'sitting store'));
-
 
 DROP TABLE IF EXISTS STORE cascade;
 CREATE TABLE STORE(
@@ -85,7 +82,7 @@ CREATE TABLE OFFERS(
                   ON DELETE CASCADE,
     CONSTRAINT FK2_OFFERS FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
                   ON DELETE CASCADE
-)
+);
 
 DROP TABLE IF EXISTS FEATURES cascade;
 CREATE TABLE FEATURES(
@@ -96,7 +93,7 @@ CREATE TABLE FEATURES(
                   ON DELETE CASCADE,
     CONSTRAINT FK2_FEATURES FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
                   ON DELETE CASCADE
-)
+);
 
 DROP TABLE IF EXISTS COFFEE cascade;
 CREATE TABLE COFFEE(
@@ -110,5 +107,4 @@ CREATE TABLE COFFEE(
     Reward_Points float NOT NULL,
     CONSTRAINT C_PK PRIMARY KEY (Coffee_Id),
     CONSTRAINT UQ_Cname UNIQUE (Coffee_Name)
-
-)
+);
