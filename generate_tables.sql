@@ -19,7 +19,7 @@ CREATE TABLE COFFEE(
 
 DROP DOMAIN IF EXISTS store_type CASCADE;
 CREATE DOMAIN store_type varchar(7)
-CONSTRAINT store_type_value CHECK(VALUE IN('kiosk', 'sitting store'));
+CONSTRAINT store_type_value CHECK(VALUE IN('kiosk', 'sitting'));
 
 DROP TABLE IF EXISTS STORE cascade;
 CREATE TABLE STORE(
