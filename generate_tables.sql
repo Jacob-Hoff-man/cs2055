@@ -109,14 +109,16 @@ CREATE TABLE SALE (
 -- Assumptions:
 ---- promotions require specified promo_name, start_date, end_date values
 ---- promo_name must be unique
+---- start_date must occur before end_date
 DROP TABLE IF EXISTS PROMOTION cascade;
 CREATE TABLE PROMOTION(
     Promo_Number int NOT NULL,
     Promo_Name varchar(50) NOT NULL,
     Start_Date date NOT NULL,
-    End_date date NOT NULL,
+    End_Date date NOT NULL,
     CONSTRAINT P_PK PRIMARY KEY (Promo_Number),
-    CONSTRAINT UQ_Pname UNIQUE (Promo_Name)
+    CONSTRAINT UQ_Pname UNIQUE (Promo_Name),
+    CONSTRAINT Check_Valid_Dates CHECK (Start_Date < End_Date)
 );
 
 DROP TABLE IF EXISTS OFFERS cascade;
