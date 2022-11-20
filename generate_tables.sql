@@ -16,9 +16,9 @@ CREATE TABLE COFFEE(
     Description VARCHAR(250),
     Country varchar(60),
     Intensity int NOT NULL CHECK (Intensity >= 1 AND Intensity <= 12),
-    Price float NOT NULL CHECK (Price > 0),
-    Redeem_Points float NOT NULL CHECK (Price > 0),
-    Reward_Points float NOT NULL CHECK (Price > 0),
+    Price float NOT NULL CHECK (Price >= 0),
+    Redeem_Points float NOT NULL CHECK (Redeem_Points >= 0),
+    Reward_Points float NOT NULL CHECK (Reward_Points >= 0),
     CONSTRAINT C_PK PRIMARY KEY (Coffee_Id),
     CONSTRAINT UQ_Cname UNIQUE (Coffee_Name)
 );
@@ -46,10 +46,6 @@ DROP DOMAIN IF EXISTS Phone_Enum CASCADE;
 CREATE DOMAIN Phone_Enum AS varchar(6)
 CONSTRAINT phone_enum_value CHECK (VALUE in ('home', 'mobile', 'work', 'other'));
 
-DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
-CREATE DOMAIN Loyalty_Level_Enum AS varchar(10)
-CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
-
 DROP DOMAIN IF EXISTS Month_Enum CASCADE;
 CREATE DOMAIN Month_Enum AS char(3)
 CONSTRAINT month_enum_value CHECK (VALUE in ('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'));
@@ -57,7 +53,6 @@ CONSTRAINT month_enum_value CHECK (VALUE in ('jan', 'feb', 'mar', 'apr', 'may', 
 -- Assumptions:
 ---- customers require specified first_name, last_name, birth_month, birth_day, phone_number, phone_type values
 ---- it is optional for a customer to specify their middle initial
----- it is optional for a customer to be a member of the loyalty program (current_points/career_points/loyalty_level may be null)
 ---- phone_number must be unique
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
 CREATE TABLE CUSTOMER (
@@ -69,12 +64,28 @@ CREATE TABLE CUSTOMER (
     Birth_Day char(2) NOT NULL,
     Phone_Number varchar(16) NOT NULL,
     Phone_Type Phone_Enum NOT NULL,
-    Current_Points float,
-    Career_Points float,
-    Loyalty_Level Loyalty_Level_Enum,
 
     CONSTRAINT PK_CUSTOMER PRIMARY KEY (Customer_Id),
     CONSTRAINT UQ_PHONE UNIQUE (Phone_Number)
+);
+
+DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
+CREATE DOMAIN Loyalty_Level_Enum AS varchar(10)
+CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
+
+-- Assumptions:
+---- it is optional for a customer to be a member of the loyalty program
+---- Current_Points and Total_Points must be positive values
+DROP TABLE IF EXISTS LOYALTY_PROGRAM CASCADE;
+CREATE TABLE LOYALTY_PROGRAM (
+    Customer_Id int NOT NULL,
+    Current_Points float CHECK (Current_Points >= 0),
+    Total_Points float CHECK (Total_Points >= 0),
+    Loyalty_Level Loyalty_Level_Enum,
+
+    CONSTRAINT LOYALTY_PROGRAM_PK PRIMARY KEY (Customer_Id),
+    CONSTRAINT LOYALTY_PROGRAM_FK FOREIGN KEY (Customer_Id) REFERENCES Customer(Customer_Id)
+        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Assumptions:
