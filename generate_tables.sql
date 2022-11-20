@@ -90,6 +90,7 @@ CREATE TABLE LOYALTY_PROGRAM (
 
 -- Assumptions:
 ---- sales are associated with a specific customer (require a customer_id)
+---- purchased_portion and redeemed_portion must be positive values.
 ---- sales require specified purchased_portion and redeemed_portion values
 ---- if not specified, the default purchased_time is the current time
 DROP TABLE IF EXISTS SALE CASCADE;
@@ -97,8 +98,8 @@ CREATE TABLE SALE (
   Purchase_Id int NOT NULL,
   Customer_Id int NOT NULL,
   Purchased_Time time DEFAULT CURRENT_TIME,
-  Purchased_Portion float NOT NULL,
-  Redeemed_Portion float NOT NULL,
+  Purchased_Portion float NOT NULL CHECK (Purchased_Portion >= 0),
+  Redeemed_Portion float NOT NULL CHECK (Redeemed_Portion >= 0),
 
   CONSTRAINT PK_SALE PRIMARY KEY (Purchase_Id),
   CONSTRAINT FK_CUSTOMER FOREIGN KEY (Customer_Id) REFERENCES CUSTOMER(Customer_Id)
