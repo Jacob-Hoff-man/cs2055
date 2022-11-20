@@ -56,7 +56,7 @@ CONSTRAINT month_enum_value CHECK (VALUE in ('jan', 'feb', 'mar', 'apr', 'may', 
 
 -- Assumptions:
 ---- customers require specified first_name, last_name, birth_month, birth_day, phone_number, phone_type values
----- it is optional for a customer to specify their middle name
+---- it is optional for a customer to specify their middle initial
 ---- it is optional for a customer to be a member of the loyalty program (current_points/career_points/loyalty_level may be null)
 ---- phone_number must be unique
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
@@ -64,7 +64,7 @@ CREATE TABLE CUSTOMER (
     Customer_Id int NOT NULL,
     First_Name varchar(50) NOT NULL,
     Last_Name varchar(50) NOT NULL,
-    Mid_Name varchar(50),
+    Mid_Initial char(1),
     Birth_Month Month_Enum NOT NULL,
     Birth_Day char(2) NOT NULL,
     Phone_Number varchar(16) NOT NULL,
