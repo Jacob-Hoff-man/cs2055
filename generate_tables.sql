@@ -5,6 +5,7 @@
 
 -- Assumptions:
 ---- coffees require specified coffee_name, price, redeem_points, and reward_points values
+---- price, redeem_points, and reward_points must be positive values
 ---- coffee may have no description, country
 ---- coffee_name must be unique
 ---- intensity value must be not be greater than 12
