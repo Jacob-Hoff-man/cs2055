@@ -14,10 +14,10 @@ CREATE TABLE COFFEE(
     Coffee_Name varchar(50) NOT NULL,
     Description VARCHAR(250),
     Country varchar(60),
-    Intensity int NOT NULL CHECK (Intensity >= 1) AND (Intensity <= 12),
-    Price float NOT NULL,
-    Redeem_Points float NOT NULL,
-    Reward_Points float NOT NULL,
+    Intensity int NOT NULL CHECK (Intensity >= 1 AND Intensity <= 12),
+    Price float NOT NULL CHECK (Price > 0),
+    Redeem_Points float NOT NULL CHECK (Price > 0),
+    Reward_Points float NOT NULL CHECK (Price > 0),
     CONSTRAINT C_PK PRIMARY KEY (Coffee_Id),
     CONSTRAINT UQ_Cname UNIQUE (Coffee_Name)
 );
