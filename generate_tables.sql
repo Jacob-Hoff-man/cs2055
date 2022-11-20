@@ -158,3 +158,17 @@ CREATE TABLE RECORDS(
     CONSTRAINT COFFEE_FK FOREIGN KEY (Coffee_Id) REFERENCES COFFEE(Coffee_Id)
                   ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+-- Trigger Assumptions:
+---- Trigger 1:
+----- For each Customer_Id in Customer Entity, if the Birth_Month and Birth_Day
+----- matches the purchase time, each customer will get 10% more points of their
+----- Current_Points and get added to in their Loyalty_Program.
+---- Trigger 2:
+----- For different Loyalty_Level of Loyalty_Program, there’s a
+----- different level of booster factors that can multiply to the Reward_Points.
+---- Trigger 3:
+----- Customer’s Loyalty_Level will get updated if their Career_Points
+----- increase or decrease to certain level.
+---- Trigger 4:
+----- A Promotion (by Promotion_Id) will be removed whenever it's end_date reached.
