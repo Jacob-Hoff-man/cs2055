@@ -163,7 +163,7 @@ CREATE TABLE RECORDS(
 
 -- Trigger Assumptions:
 ---- Trigger 1:
------ When a customer makes a purchase, if the Birth_Month and Birth_Day of the specified Customer_Id
+----- When a customer makes a Sale, if the Birth_Month and Birth_Day of the specified Customer_Id
 ----- matches the Sale's date, the final reward points earned for purchasing a coffee will be multiplied by 1.10 (10%).
 ---- Trigger 2:
 ----- For different Loyalty_Level of Loyalty_Program, there’s a
