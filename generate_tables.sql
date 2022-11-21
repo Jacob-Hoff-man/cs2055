@@ -42,6 +42,21 @@ CREATE TABLE STORE(
 
 );
 
+DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
+CREATE DOMAIN Loyalty_Level_Enum AS varchar(10)
+CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
+-- Assumptions:
+---- Total_Points_Value_Unlocked_At must be positive value and cannot be NULL
+---- Booster_Value must be a float in the range 1.0 - 4.0, and cannot be NULL
+DROP TABLE IF EXISTS LOYALTY_PROGRAM CASCADE;
+CREATE TABLE LOYALTY_PROGRAM (
+    Loyalty_Level Loyalty_Level_Enum NOT NULL,
+    Total_Points_Value_Unlocked_At float CHECK (Total_Points_Value_Unlocked_At >= 0) NOT NULL,
+    Booster_Value float CHECK (Booster_Value >= 1 AND Booster_Value <= 4) NOT NULL,
+
+    CONSTRAINT LOYALTY_PROGRAM_PK PRIMARY KEY (Loyalty_Level)
+);
+
 DROP DOMAIN IF EXISTS Phone_Enum CASCADE;
 CREATE DOMAIN Phone_Enum AS varchar(6)
 CONSTRAINT phone_enum_value CHECK (VALUE in ('home', 'mobile', 'work', 'other'));
@@ -54,6 +69,8 @@ CONSTRAINT month_enum_value CHECK (VALUE in ('jan', 'feb', 'mar', 'apr', 'may', 
 ---- customers require specified first_name, last_name, birth_month, birth_day, phone_number, phone_type values
 ---- it is optional for a customer to specify their middle initial
 ---- phone_number must be unique
+---- it is optional for a customer to be a member of the loyalty program, and by default is NULL.
+---- Current_Points and Total_Points must be positive values, and by default are 0.
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
 CREATE TABLE CUSTOMER (
     Customer_Id int NOT NULL,
@@ -64,28 +81,13 @@ CREATE TABLE CUSTOMER (
     Birth_Day char(2) NOT NULL,
     Phone_Number varchar(16) NOT NULL,
     Phone_Type Phone_Enum NOT NULL,
+    Loyalty_Level Loyalty_Level_Enum DEFAULT NULL,
+    Current_Points float CHECK (Current_Points >= 0) DEFAULT NULL,
+    Total_Points float CHECK (Total_Points >= 0) DEFAULT NULL,
 
     CONSTRAINT PK_CUSTOMER PRIMARY KEY (Customer_Id),
-    CONSTRAINT UQ_PHONE UNIQUE (Phone_Number)
-);
-
-DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
-CREATE DOMAIN Loyalty_Level_Enum AS varchar(10)
-CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
-
--- Assumptions:
----- it is optional for a customer to be a member of the loyalty program
----- Current_Points and Total_Points must be positive values
-DROP TABLE IF EXISTS LOYALTY_PROGRAM CASCADE;
-CREATE TABLE LOYALTY_PROGRAM (
-    Customer_Id int NOT NULL,
-    Current_Points float CHECK (Current_Points >= 0),
-    Total_Points float CHECK (Total_Points >= 0),
-    Loyalty_Level Loyalty_Level_Enum,
-
-    CONSTRAINT LOYALTY_PROGRAM_PK PRIMARY KEY (Customer_Id),
-    CONSTRAINT LOYALTY_PROGRAM_FK FOREIGN KEY (Customer_Id) REFERENCES Customer(Customer_Id)
-        ON UPDATE CASCADE ON DELETE CASCADE
+    CONSTRAINT UQ_PHONE UNIQUE (Phone_Number),
+    CONSTRAINT FK_LOYALTY_PROGRAM FOREIGN KEY (Loyalty_Level) REFERENCES LOYALTY_PROGRAM(Loyalty_Level)
 );
 
 -- Assumptions:
@@ -166,9 +168,11 @@ CREATE TABLE RECORDS(
 ----- Current_Points and get added to in their Loyalty_Program.
 ---- Trigger 2:
 ----- For different Loyalty_Level of Loyalty_Program, there’s a
------ different level of booster factors that can multiply to the Reward_Points.
+----- different Booster_value that can multiply to the Reward_Points
+----- for the final reward points of a Coffee.
 ---- Trigger 3:
 ----- Customer’s Loyalty_Level will get updated if their Career_Points
------ increase or decrease to certain level.
+----- increase or decrease to certain level (Total_Points_Value_Unlocked_At).
 ---- Trigger 4:
------ A Promotion (by Promotion_Id) will be removed whenever it's end_date reached.
+----- A Promotion (by Promotion_Id) will be removed whenever it's end_date
+----- is equal to the current date.
