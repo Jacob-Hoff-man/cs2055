@@ -163,16 +163,22 @@ CREATE TABLE RECORDS(
 
 -- Trigger Assumptions:
 ---- Trigger 1:
------ For each Customer_Id in Customer Entity, if the Birth_Month and Birth_Day
------ matches the purchase time, each customer will get 10% more points of their
------ Current_Points and get added to in their Loyalty_Program.
+----- When a customer makes a purchase, if the Birth_Month and Birth_Day of the specified Customer_Id
+----- matches the Sale's date, the final reward points earned for purchasing a coffee will be multiplied by 1.10 (10%).
 ---- Trigger 2:
 ----- For different Loyalty_Level of Loyalty_Program, there’s a
------ different Booster_value that can multiply to the Reward_Points
------ for the final reward points of a Coffee.
+----- different Booster_value that is multiplied by the Reward_Points
+----- for the final reward points earned for purchasing a Coffee.
 ---- Trigger 3:
------ Customer’s Loyalty_Level will get updated if their Career_Points
------ increase or decrease to certain level (Total_Points_Value_Unlocked_At).
+----- The final reward points value calculated for a sale will be
+----- added to the Customer's Current_Points and Total_Points.
 ---- Trigger 4:
+----- Customer’s Loyalty_Level will get updated if their Total_Points
+----- increases to a certain level (Total_Points_Value_Unlocked_At).
+---- Trigger 5:
 ----- A Promotion (by Promotion_Id) will be removed whenever it's end_date
 ----- is equal to the current date.
+---- Trigger 6:
+----- If the Customer's Current_Points is >= the Coffee's Redeem_Points, they may choose
+----- to acquire the Coffee for free in their Sale. When a Coffee is acquired this way, the Coffee's Redeem_Points
+----- value amount is subtracted from the Customer's Current_Points.

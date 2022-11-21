@@ -7,16 +7,24 @@ INSERT INTO STORE VALUES (1, 'CB1', 20.1, 50.2, 'kiosk');
 INSERT INTO STORE VALUES (2, 'CB2', 50.1, 100.2, 'kiosk');
 INSERT INTO STORE VALUES (3, 'CB3', 10.1, 25.2, 'sitting');
 
+-- Loyalty_Programs
+INSERT INTO LOYALTY_PROGRAM VALUES ('basic', 0, 1.0);
+INSERT INTO LOYALTY_PROGRAM VALUES ('bronze', 500, 1.25);
+INSERT INTO LOYALTY_PROGRAM VALUES ('silver', 2500, 1.5);
+INSERT INTO LOYALTY_PROGRAM VALUES ('gold', 5000, 1.75);
+INSERT INTO LOYALTY_PROGRAM VALUES ('platinum', 50000, 2.0);
+INSERT INTO LOYALTY_PROGRAM VALUES ('diamond', 500000, 4.0);
+
 -- Customers
-INSERT INTO CUSTOMER VALUES (1, 'Jacob', 'Hof', 'A', 'jul', '08', '111-222-3333', 'mobile');
-INSERT INTO CUSTOMER VALUES (2, 'Kairuo', 'Yan', 'K', 'jan', '01', '222-222-3333', 'home');
-INSERT INTO CUSTOMER VALUES (3, 'Bob', 'Ross', 'K', 'feb', '02', '333-222-3333', 'work');
-INSERT INTO CUSTOMER VALUES (4, 'Luke', 'Skywalker', 'A', 'mar', '03', '444-222-3333', 'other');
-INSERT INTO CUSTOMER VALUES (5, 'Mike', 'Trout', 'B', 'apr', '04', '555-222-3333', 'mobile');
-INSERT INTO CUSTOMER VALUES (6, 'Rock', 'Paper', 'S', 'may', '05', '666-222-3333', 'home');
-INSERT INTO CUSTOMER VALUES (7, 'Jason', 'Freddy', 'M', 'jun', '06', '777-222-3333', 'work');
-INSERT INTO CUSTOMER VALUES (8, 'Count', 'Drake', 'V', 'jul', '07', '888-222-3333', 'other');
-INSERT INTO CUSTOMER VALUES (9, 'Bruce', 'Wayne', 'B', 'aug', '08', '999-222-3333', 'mobile');
+INSERT INTO CUSTOMER VALUES (1, 'Jacob', 'Hof', 'A', 'jul', '08', '111-222-3333', 'mobile', 'diamond', 10000, 500000);
+INSERT INTO CUSTOMER VALUES (2, 'Kairuo', 'Yan', 'K', 'jan', '01', '222-222-3333', 'home', 'basic', 0, 0);
+INSERT INTO CUSTOMER VALUES (3, 'Bob', 'Ross', 'K', 'feb', '02', '333-222-3333', 'work', 'silver', 2500, 2500);
+INSERT INTO CUSTOMER VALUES (4, 'Luke', 'Skywalker', 'A', 'mar', '03', '444-222-3333', 'other', 'gold', 5000, 5000);
+INSERT INTO CUSTOMER VALUES (5, 'Mike', 'Trout', 'B', 'apr', '04', '555-222-3333', 'mobile', 'platinum', 50000, 50000);
+INSERT INTO CUSTOMER VALUES (6, 'Rock', 'Paper', 'S', 'may', '05', '666-222-3333', 'home', 'bronze', 500, 500);
+INSERT INTO CUSTOMER VALUES (7, 'Jason', 'Freddy', 'M', 'jun', '06', '777-222-3333', 'work', 'basic', 250, 250);
+INSERT INTO CUSTOMER VALUES (8, 'Count', 'Drake', 'V', 'jul', '07', '888-222-3333', 'other', 'bronze', 1000, 1000);
+INSERT INTO CUSTOMER VALUES (9, 'Bruce', 'Wayne', 'B', 'aug', '08', '999-222-3333', 'mobile', 'silver', 0, 2500);
 INSERT INTO CUSTOMER VALUES (10, 'Alex', 'Hero', 'E', 'sep', '09', '123-222-3333', 'home');
 INSERT INTO CUSTOMER VALUES (11, 'Ziggy', 'Swifty', 'T', 'oct', '10', '456-222-3333', 'work');
 INSERT INTO CUSTOMER VALUES (12, 'CJ', 'Smith', 'A', 'nov', '11', '789-222-3333', 'other');
@@ -28,28 +36,6 @@ INSERT INTO CUSTOMER VALUES (17, 'Joe', 'Average', 'A', 'apr', '16', '555-333-44
 INSERT INTO CUSTOMER VALUES (18, 'Panos', 'Crythanthis', 'A', 'may', '17', '666-333-4444', 'home');
 INSERT INTO CUSTOMER VALUES (19, 'Brian', 'Nixon', 'J', 'jun', '18', '777-333-4444', 'work');
 INSERT INTO CUSTOMER VALUES (20, 'Ralph', 'Lauren', 'P', 'jul', '19', '888-333-4444', 'other');
-
--- Loyalty_Programs
-INSERT INTO LOYALTY_PROGRAM VALUES (1, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (2, 350.0, 1500.00, 'platinum');
-INSERT INTO LOYALTY_PROGRAM VALUES (3, 500.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (4, 10.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (5, 50.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (6, 0.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (7, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (8, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (9, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (10, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (11, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (12, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (13, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (14, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (15, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (16, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (17, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (18, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (19, 250.0, 1000.00, 'gold');
-INSERT INTO LOYALTY_PROGRAM VALUES (20, 250.0, 1000.00, 'gold');
 
 -- Coffees
 INSERT INTO COFFEE VALUES (1, 'Espresso', 'The espresso, also known as a short black, is approximately 1 oz. of highly concentrated coffee. Although simple in appearance, it can be difficult to master.', 'Canada', 6, 3.0, 90.0, 30.0);
