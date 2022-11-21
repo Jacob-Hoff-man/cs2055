@@ -8,26 +8,26 @@ INSERT INTO STORE VALUES (2, 'CB2', 50.1, 100.2, 'kiosk');
 INSERT INTO STORE VALUES (3, 'CB3', 10.1, 25.2, 'sitting');
 
 -- Customers
-INSERT INTO CUSTOMER VALUES (1, 'Jacob', 'Hof', 'Andrew', 'jul', '08', '111-222-3333', 'mobile');
-INSERT INTO CUSTOMER VALUES (2, 'Kairuo', 'Yan', 'Kairuo', 'jan', '01', '222-222-3333', 'home');
-INSERT INTO CUSTOMER VALUES (3, 'Bob', 'Ross', 'Kyle', 'feb', '02', '333-222-3333', 'work');
-INSERT INTO CUSTOMER VALUES (4, 'Luke', 'Skywalker', 'Anakin', 'mar', '03', '444-222-3333', 'other');
-INSERT INTO CUSTOMER VALUES (5, 'Mike', 'Trout', 'Ball', 'apr', '04', '555-222-3333', 'mobile');
-INSERT INTO CUSTOMER VALUES (6, 'Rock', 'Paper', 'Scissor', 'may', '05', '666-222-3333', 'home');
-INSERT INTO CUSTOMER VALUES (7, 'Jason', 'Freddy', 'Michael', 'jun', '06', '777-222-3333', 'work');
-INSERT INTO CUSTOMER VALUES (8, 'Count', 'Drake', 'Vlad', 'jul', '07', '888-222-3333', 'other');
-INSERT INTO CUSTOMER VALUES (9, 'Bruce', 'Wayne', 'Batman', 'aug', '08', '999-222-3333', 'mobile');
-INSERT INTO CUSTOMER VALUES (10, 'Alex', 'Hero', 'Ed', 'sep', '09', '123-222-3333', 'home');
-INSERT INTO CUSTOMER VALUES (11, 'Ziggy', 'Swifty', 'Twisty', 'oct', '10', '456-222-3333', 'work');
-INSERT INTO CUSTOMER VALUES (12, 'CJ', 'Smith', 'Andrew', 'nov', '11', '789-222-3333', 'other');
-INSERT INTO CUSTOMER VALUES (13, 'Jake', 'Hof', 'Andrew', 'dec', '12', '111-333-4444', 'mobile');
-INSERT INTO CUSTOMER VALUES (14, 'Zach', 'Blaze', 'Jack', 'jan', '13', '222-333-4444', 'home');
-INSERT INTO CUSTOMER VALUES (15, 'Devin', 'Eleven', 'Melvin', 'feb', '14', '333-333-4444', 'work');
-INSERT INTO CUSTOMER VALUES (16, 'Rick', 'Morty', 'Slick', 'mar', '15', '444-333-4444', 'other');
-INSERT INTO CUSTOMER VALUES (17, 'Joe', 'Average', 'Andrew', 'apr', '16', '555-333-4444', 'mobile');
-INSERT INTO CUSTOMER VALUES (18, 'Panos', 'Crythanthis', 'Andrew', 'may', '17', '666-333-4444', 'home');
-INSERT INTO CUSTOMER VALUES (19, 'Brian', 'Nixon', 'James', 'jun', '18', '777-333-4444', 'work');
-INSERT INTO CUSTOMER VALUES (20, 'Ralph', 'Lauren', 'Polo', 'jul', '19', '888-333-4444', 'other');
+INSERT INTO CUSTOMER VALUES (1, 'Jacob', 'Hof', 'A', 'jul', '08', '111-222-3333', 'mobile');
+INSERT INTO CUSTOMER VALUES (2, 'Kairuo', 'Yan', 'K', 'jan', '01', '222-222-3333', 'home');
+INSERT INTO CUSTOMER VALUES (3, 'Bob', 'Ross', 'K', 'feb', '02', '333-222-3333', 'work');
+INSERT INTO CUSTOMER VALUES (4, 'Luke', 'Skywalker', 'A', 'mar', '03', '444-222-3333', 'other');
+INSERT INTO CUSTOMER VALUES (5, 'Mike', 'Trout', 'B', 'apr', '04', '555-222-3333', 'mobile');
+INSERT INTO CUSTOMER VALUES (6, 'Rock', 'Paper', 'S', 'may', '05', '666-222-3333', 'home');
+INSERT INTO CUSTOMER VALUES (7, 'Jason', 'Freddy', 'M', 'jun', '06', '777-222-3333', 'work');
+INSERT INTO CUSTOMER VALUES (8, 'Count', 'Drake', 'V', 'jul', '07', '888-222-3333', 'other');
+INSERT INTO CUSTOMER VALUES (9, 'Bruce', 'Wayne', 'B', 'aug', '08', '999-222-3333', 'mobile');
+INSERT INTO CUSTOMER VALUES (10, 'Alex', 'Hero', 'E', 'sep', '09', '123-222-3333', 'home');
+INSERT INTO CUSTOMER VALUES (11, 'Ziggy', 'Swifty', 'T', 'oct', '10', '456-222-3333', 'work');
+INSERT INTO CUSTOMER VALUES (12, 'CJ', 'Smith', 'A', 'nov', '11', '789-222-3333', 'other');
+INSERT INTO CUSTOMER VALUES (13, 'Jake', 'Hof', 'A', 'dec', '12', '111-333-4444', 'mobile');
+INSERT INTO CUSTOMER VALUES (14, 'Zach', 'Blaze', 'J', 'jan', '13', '222-333-4444', 'home');
+INSERT INTO CUSTOMER VALUES (15, 'Devin', 'Eleven', 'M', 'feb', '14', '333-333-4444', 'work');
+INSERT INTO CUSTOMER VALUES (16, 'Rick', 'Morty', 'S', 'mar', '15', '444-333-4444', 'other');
+INSERT INTO CUSTOMER VALUES (17, 'Joe', 'Average', 'A', 'apr', '16', '555-333-4444', 'mobile');
+INSERT INTO CUSTOMER VALUES (18, 'Panos', 'Crythanthis', 'A', 'may', '17', '666-333-4444', 'home');
+INSERT INTO CUSTOMER VALUES (19, 'Brian', 'Nixon', 'J', 'jun', '18', '777-333-4444', 'work');
+INSERT INTO CUSTOMER VALUES (20, 'Ralph', 'Lauren', 'P', 'jul', '19', '888-333-4444', 'other');
 
 -- Loyalty_Programs
 INSERT INTO LOYALTY_PROGRAM VALUES (1, 250.0, 1000.00, 'gold');
@@ -130,7 +130,6 @@ INSERT INTO OFFERS VALUES(2,11,3);
 INSERT INTO OFFERS VALUES(3,1,3);
 INSERT INTO OFFERS VALUES(2,7,1);
 INSERT INTO OFFERS VALUES(2,7,2);
-INSERT INTO OFFERS VALUES(3,12,3);
 INSERT INTO OFFERS VALUES(3,6,2);
 INSERT INTO OFFERS VALUES(3,4,1);
 
