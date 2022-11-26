@@ -3,6 +3,17 @@
 -- Jacob Hoffman and Kairuo Yan
 ---------------------------------------------
 
+-- System Clock
+-- Assumptions:
+---- contains only one tuple, which is inserted as part of initialization
+---- contains a "pseudo" date (p_date) that is modifiable for debugging/testing
+---- p_date can not be null
+DROP TABLE IF EXISTS CLOCK cascade;
+CREATE TABLE CLOCK(
+    p_date date NOT NULL
+);
+
+
 -- Assumptions:
 ---- coffees require specified coffee_name, price, redeem_points, and reward_points values
 ---- price, redeem_points, and reward_points must be positive values
