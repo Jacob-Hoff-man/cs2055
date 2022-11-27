@@ -22,7 +22,7 @@ CREATE TABLE CLOCK(
 ---- intensity value must be not be greater than 12
 DROP TABLE IF EXISTS COFFEE cascade;
 CREATE TABLE COFFEE(
-    Coffee_Id int NOT NULL,
+    Coffee_Id serial NOT NULL,
     Coffee_Name varchar(50) NOT NULL,
     Description VARCHAR(250),
     Country varchar(60),
