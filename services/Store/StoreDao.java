@@ -1,4 +1,4 @@
-package services;
+package services.Store;
 
 import java.sql.*;
 import java.util.ArrayList;

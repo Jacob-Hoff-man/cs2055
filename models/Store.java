@@ -9,13 +9,6 @@ public class Store {
 
     public Store() { }
 
-    public Store(int storeNumber, String storeName, float longitude, float latitude, String storeType) {
-        this.storeNumber = storeNumber;
-        this.storeName = storeName;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
-
     public int getStoreNumber() {
         return storeNumber;
     }
