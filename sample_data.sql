@@ -3,9 +3,9 @@
 -- Jacob Hoffman and Kairuo Yan
 -------------------------------------------
 -- Stores
-INSERT INTO STORE VALUES (1, 'CB1', 20.1, 50.2, 'kiosk');
-INSERT INTO STORE VALUES (2, 'CB2', 50.1, 100.2, 'kiosk');
-INSERT INTO STORE VALUES (3, 'CB3', 10.1, 25.2, 'sitting');
+INSERT INTO STORE (store_name, longitude, latitude, store_type) VALUES ('CB1', 20.1, 50.2, 'kiosk');
+INSERT INTO STORE (store_name, longitude, latitude, store_type) VALUES ('CB2', 50.1, 100.2, 'kiosk');
+INSERT INTO STORE (store_name, longitude, latitude, store_type) VALUES ('CB3', 10.1, 25.2, 'sitting');
 
 -- Loyalty_Programs
 INSERT INTO LOYALTY_PROGRAM VALUES ('basic', 0, 1.0);

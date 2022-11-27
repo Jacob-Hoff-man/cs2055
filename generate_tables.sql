@@ -41,9 +41,10 @@ CONSTRAINT store_type_value CHECK(VALUE IN('kiosk', 'sitting'));
 -- Assumptions:
 ---- stores require specified store_name, coordinates (lat/lon), store_type values
 ---- store_name must be unique
+---- store_number is an auto-incremented integer value
 DROP TABLE IF EXISTS STORE cascade;
 CREATE TABLE STORE(
-    Store_Number int NOT NULL,
+    Store_Number serial NOT NULL,
     Store_Name varchar(50) NOT NULL,
     Longitude float NOT NULL,
     Latitude float NOT NULL,
