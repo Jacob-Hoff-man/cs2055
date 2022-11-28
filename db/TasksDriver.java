@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import exceptions.CoffeeByIdDoesNotExistException;
@@ -238,6 +239,44 @@ public class TasksDriver {
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
             System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
+
+    public static int task5() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Promotions:");
+        String coffeeId = myScanner.nextLine();
+
+        while(!stringIsValidIntValue(coffeeId)) {
+            // allow blank space
+            if (coffeeId.isBlank()) break;
+
+            System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Promotions (Int Value Only):");
+            coffeeId = myScanner.nextLine();
+        }
+
+        PromotionDao promotionDao = new PromotionDao();
+        StoreDao storeDao = new StoreDao();
+        try {
+            String output;
+            if (coffeeId.isBlank()) {
+                List<Store> promoStores = storeDao.getStoresWithPromotions();
+                output = promoStores.isEmpty() ? 
+                    "No stores are currently offering any promotions." : 
+                    promoStores.toString();
+            } else {
+                promotionDao.deleteOffers(3, 2);
+                List<Store> promoStores = storeDao.getStoresWithPromotionsByCoffeeId(Integer.parseInt(coffeeId));
+                output = promoStores.isEmpty() ?
+                    "No stores are currently promoting this coffee." :
+                    promoStores.toString();
+            }
+
+            System.out.println(output);
+            return 1;
+            
+        } catch (SQLException e) {
             return -1;
         }
     }

@@ -101,6 +101,45 @@ public class StoreDao implements IStoreDao {
         return stores;
     }
 
+    public List<Store> getStoresWithPromotions() throws SQLException {
+        String query = "SELECT * FROM STORE WHERE store_number IN (SELECT DISTINCT store_number FROM OFFERS)";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ResultSet rs = ps.executeQuery();
+        List<Store> stores = new ArrayList<>();
+
+        while (rs.next()) {
+            Store store = new Store();
+            store.setStoreNumber(rs.getInt("store_number"));
+            store.setStoreName(rs.getString("store_name"));
+            store.setLongitude(rs.getFloat("longitude"));
+            store.setLatitude(rs.getFloat("latitude"));
+            store.setStoreType(rs.getString("store_type"));
+            stores.add(store);
+        }
+
+        return stores;
+    }
+
+    public List<Store> getStoresWithPromotionsByCoffeeId(int coffeeId) throws SQLException {
+        String query = "SELECT * FROM STORE WHERE store_number IN (SELECT DISTINCT store_number FROM OFFERS WHERE promo_number IN (SELECT DISTINCT promo_number FROM INCLUDES WHERE coffee_id = ?))";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, coffeeId);
+        ResultSet rs = ps.executeQuery();
+        List<Store> stores = new ArrayList<>();
+
+        while (rs.next()) {
+            Store store = new Store();
+            store.setStoreNumber(rs.getInt("store_number"));
+            store.setStoreName(rs.getString("store_name"));
+            store.setLongitude(rs.getFloat("longitude"));
+            store.setLatitude(rs.getFloat("latitude"));
+            store.setStoreType(rs.getString("store_type"));
+            stores.add(store);
+        }
+
+        return stores;
+    }
+
     @Override
     public void updateStore(Store store) throws SQLException {
         String query = "UPDATE STORE SET store_name=?, longitude=?, latitude=?, store_type=? WHERE store_number=?";
