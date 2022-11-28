@@ -1,12 +1,17 @@
 package db;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import exceptions.CoffeeByIdDoesNotExistException;
 import models.Coffee;
+import models.Promotion;
 import models.Store;
 import services.Coffee.CoffeeDao;
+import services.Promotion.PromotionDao;
 import services.Store.StoreDao;
 
 public class TasksDriver {
@@ -27,8 +32,16 @@ public class TasksDriver {
         return inputStr.matches(floatRegex);
     }
 
+    public static boolean stringIsValidDateValue(String inputStr) {
+        try {
+            return Date.valueOf(inputStr) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
     //tasks
-    public static int Task1() {
+    public static int task1() {
         Scanner myScanner = new Scanner(System.in);
         System.out.println("Enter Store Name:");
         String storeName = myScanner.nextLine();
@@ -75,7 +88,7 @@ public class TasksDriver {
         }
     }
 
-    public static int Task2() {
+    public static int task2() {
         Scanner myScanner = new Scanner(System.in);
         System.out.println("Enter Coffee Name:");
         String coffeeName = myScanner.nextLine();
@@ -135,5 +148,60 @@ public class TasksDriver {
             System.out.println(e.getStackTrace());
             return -1;
         }
+    }
+
+    public static int task3() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Promotion Name:");
+        String promoName = myScanner.nextLine();
+        
+        System.out.println("Enter Start Date:");
+        String startDate = myScanner.nextLine();
+        while(!stringIsValidDateValue(startDate)) {
+            System.out.println("Enter Start Date (yyyy-MM-dd Format Only):");
+            startDate = myScanner.nextLine();
+        }
+
+        System.out.println("Enter End Date:");
+        String endDate = myScanner.nextLine();
+        while(!stringIsValidDateValue(endDate)) {
+            System.out.println("Enter End Date (yyyy-MM-dd Format Only):");
+            endDate = myScanner.nextLine();
+        }
+
+        System.out.println("Enter Coffee Id:");
+        String coffeeId = myScanner.nextLine();
+        while(!stringIsValidIntValue(coffeeId)) {
+            System.out.println("Enter Coffee Id (Int Value Only):");
+            coffeeId = myScanner.nextLine();
+        }
+
+        Promotion promotion = new Promotion();
+        promotion.setPromoName(promoName);
+        promotion.setStartDate(Date.valueOf(startDate));
+        promotion.setEndDate(Date.valueOf(endDate));
+
+        CoffeeDao coffeeDao = new CoffeeDao();
+        PromotionDao promotionDao = new PromotionDao();
+        try {
+            // run only if the coffee exists in db (get by id)
+            Coffee coffee = coffeeDao.getCoffee(Integer.parseInt(coffeeId));
+            if (coffee != null) {
+                promotionDao.addPromotionWithIncludedCoffee(promotion, coffee.getCoffeeId());
+                return (promotionDao.getPromotion(promoName)).getPromoNumber();
+            } else {
+                // no coffee with given id exists
+                throw new CoffeeByIdDoesNotExistException();
+            }
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#3:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+
+
     }
 }

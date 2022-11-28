@@ -1,17 +1,6 @@
 package models;
 
 public class Coffee {
-    // Coffee_Id int NOT NULL,
-    // Coffee_Name varchar(50) NOT NULL,
-    // Description VARCHAR(250),
-    // Country varchar(60),
-    // Intensity int NOT NULL CHECK (Intensity >= 1 AND Intensity <= 12),
-    // Price float NOT NULL CHECK (Price >= 0),
-    // Redeem_Points float NOT NULL CHECK (Redeem_Points >= 0),
-    // Reward_Points float NOT NULL CHECK (Reward_Points >= 0),
-    // CONSTRAINT C_PK PRIMARY KEY (Coffee_Id),
-    // CONSTRAINT UQ_Cname UNIQUE (Coffee_Name)
-
     int coffeeId;
     String coffeeName;
     String description;
