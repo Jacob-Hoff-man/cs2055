@@ -52,9 +52,9 @@ INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_
 INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Iced Coffee', 'Iced coffees become very popular in the summertime in the United States. The recipes do have some variance, with some locations choosing to interchange milk with water in the recipe. Different flavoring syrups will be added per customer preference.', 'Canada', 3, 4.75, 142.5, 47.50);
 
 -- Promos
-INSERT INTO PROMOTION VALUES (1, 'Promo 1', '2022-10-01', '2022-11-01');
-INSERT INTO PROMOTION VALUES (2, 'Promo 2', '2021-10-01', '2023-12-30');
-INSERT INTO PROMOTION VALUES (3, 'Promo 3', '2023-01-01', '2023-07-01');
+INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 1', '2022-10-01', '2022-11-01');
+INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 2', '2021-10-01', '2023-12-30');
+INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 3', '2023-01-01', '2023-07-01');
 
 -- Purchase (Sale)
 INSERT INTO SALE VALUES(1, 1, '13:20', 3.0, 3.0);

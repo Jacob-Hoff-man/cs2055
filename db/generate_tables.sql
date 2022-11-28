@@ -126,7 +126,7 @@ CREATE TABLE SALE (
 ---- start_date must occur before end_date
 DROP TABLE IF EXISTS PROMOTION cascade;
 CREATE TABLE PROMOTION(
-    Promo_Number int NOT NULL,
+    Promo_Number serial NOT NULL,
     Promo_Name varchar(50) NOT NULL,
     Start_Date date NOT NULL,
     End_Date date NOT NULL,
