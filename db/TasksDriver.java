@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import exceptions.CoffeeByIdDoesNotExistException;
+import exceptions.PromotionByIdDoesNotExistException;
+import exceptions.StoreByIdDoesNotExistException;
 import models.Coffee;
 import models.Promotion;
 import models.Store;
@@ -201,7 +203,42 @@ public class TasksDriver {
             System.out.println(e.getStackTrace());
             return -1;
         }
+    }
 
+    public static int task4() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Promo Number:");
+        String promoNumber = myScanner.nextLine();
+        while(!stringIsValidIntValue(promoNumber)) {
+            System.out.println("Enter Promo Number (Int Value Only):");
+            promoNumber = myScanner.nextLine();
+        }
+        System.out.println("Enter Store Number:");
+        String storeNumber = myScanner.nextLine();
+        while(!stringIsValidIntValue(storeNumber)) {
+            System.out.println("Enter Store Number (Int Value Only):");
+            storeNumber = myScanner.nextLine();
+        }
 
+        StoreDao storeDao = new StoreDao();
+        PromotionDao promotionDao = new PromotionDao();
+        try {
+            // verify the promotion exists
+            Promotion promotion = promotionDao.getPromotion(Integer.parseInt(promoNumber));
+            if (promotion == null) throw new PromotionByIdDoesNotExistException();
+            // verify the store exists
+            Store store = storeDao.getStore(Integer.parseInt(storeNumber));
+            if (store == null) throw new StoreByIdDoesNotExistException();
+            
+            return promotionDao.updatePromotionWithOfferedStore(promotion, store.getStoreNumber());
+
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#4:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
     }
 }

@@ -34,6 +34,33 @@ public class PromotionDao implements IPromotionDao {
         
         return ps.executeUpdate();
     }
+    
+    public int deleteIncludes(int promoNumber, int coffeeId) throws SQLException {
+        String query = "DELETE FROM INCLUDES WHERE promo_number = ? AND coffee_id = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, promoNumber);
+        ps.setInt(2, coffeeId);
+        
+        return ps.executeUpdate();
+    }
+
+    public int addOffers(int promoNumber, int storeNumber) throws SQLException {
+        String query = "INSERT INTO OFFERS (promo_number, store_number) VALUES (?, ?)";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, promoNumber);
+        ps.setInt(2, storeNumber);
+
+        return ps.executeUpdate();
+    }
+
+    public int deleteOffers(int promoNumber, int storeNumber) throws SQLException {
+        String query = "DELETE FROM OFFERS WHERE promo_number = ? AND store_number = ?";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, promoNumber);
+        ps.setInt(2, storeNumber);
+
+        return ps.executeUpdate();
+    }
 
     public int addPromotionWithIncludedCoffee(Promotion promotion, int coffeeId) throws SQLException {
         try {
@@ -45,7 +72,36 @@ public class PromotionDao implements IPromotionDao {
             // commit transaction
             conn.commit();
             conn.setAutoCommit(true);
-            // return the new promo's generated id from db - not efficient
+            // return the new promo's generated id from db
+            return getPromotion(promotion.getPromoName()).getPromoNumber();
+
+        } catch (SQLException e1) {
+            // rollback any changes that occured before transaction failure
+            try {
+                conn.rollback();
+                throw new SQLException(e1);
+            } catch (SQLException e2) {
+                System.out.println("An error occured while performing rollback:");
+                System.out.println(e2.getMessage());
+                System.out.println(e2.getErrorCode());
+                System.out.println(e2.getSQLState());
+                System.out.println(e2.getStackTrace());
+                throw new SQLException(e1);
+            }
+        } 
+    }
+
+    public int addPromotionWithOfferedStore(Promotion promotion, int storeNumber) throws SQLException {
+        try {
+            conn.setAutoCommit(false);
+            // insert promo entity into table
+            int promoNumber = addPromotion(promotion);
+            // insert offers relationship entity into table
+            addOffers(promoNumber, storeNumber);
+            // commit transaction
+            conn.commit();
+            conn.setAutoCommit(true);
+            // return the new promo's generated id from db
             return getPromotion(promotion.getPromoName()).getPromoNumber();
 
         } catch (SQLException e1) {
@@ -147,6 +203,63 @@ public class PromotionDao implements IPromotionDao {
         ps.setString(1, promotion.getPromoName());
         ps.setDate(2, promotion.getStartDate());
         ps.setDate(3, promotion.getEndDate());
+        ps.setInt(4, promotion.getPromoNumber());
         ps.executeUpdate();
+    }
+
+    public int updatePromotionWithIncludedCoffee(Promotion promotion, int coffeeId) throws SQLException {
+        try {
+            conn.setAutoCommit(false);
+            // update promo entity
+            updatePromotion(promotion);
+            // insert includes relationship entity into table
+            addIncludes(promotion.getPromoNumber(), coffeeId);
+            // commit transaction
+            conn.commit();
+            conn.setAutoCommit(true);
+
+            return coffeeId;
+        } catch (SQLException e1) {
+            // rollback any changes that occured before transaction failure
+            try {
+                conn.rollback();
+                throw new SQLException(e1);
+            } catch (SQLException e2) {
+                System.out.println("An error occured while performing rollback:");
+                System.out.println(e2.getMessage());
+                System.out.println(e2.getErrorCode());
+                System.out.println(e2.getSQLState());
+                System.out.println(e2.getStackTrace());
+                throw new SQLException(e1);
+            }
+        }
+    }
+
+    public int updatePromotionWithOfferedStore(Promotion promotion, int storeNumber) throws SQLException {
+        try {
+            conn.setAutoCommit(false);
+            // update promo entity
+            updatePromotion(promotion);
+            // insert includes relationship entity into table
+            addOffers(promotion.getPromoNumber(), storeNumber);
+            // commit transaction
+            conn.commit();
+            conn.setAutoCommit(true);
+
+            return storeNumber;
+        } catch (SQLException e1) {
+            // rollback any changes that occured before transaction failure
+            try {
+                conn.rollback();
+                throw new SQLException(e1);
+            } catch (SQLException e2) {
+                System.out.println("An error occured while performing rollback:");
+                System.out.println(e2.getMessage());
+                System.out.println(e2.getErrorCode());
+                System.out.println(e2.getSQLState());
+                System.out.println(e2.getStackTrace());
+                throw new SQLException(e1);
+            }
+        }
     }
 }
