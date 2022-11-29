@@ -75,6 +75,7 @@ public class TasksDriver {
         myStore.setLongitude(Float.parseFloat(longitude));
         myStore.setLatitude(Float.parseFloat(latitude));
         myStore.setStoreType(storeType);
+        
 
         StoreDao storeDao = new StoreDao();
         try {
