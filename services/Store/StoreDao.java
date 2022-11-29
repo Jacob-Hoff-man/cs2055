@@ -12,14 +12,29 @@ public class StoreDao implements IStoreDao {
 
     @Override
     public int addStore(Store store) throws SQLException {
-        String query = "INSERT INTO STORE (store_name, longitude, latitude, store_type) VALUES (?, ?, ?, ?)";
-        PreparedStatement ps = conn.prepareStatement(query);
-        ps.setString(1, store.getStoreName());
-        ps.setFloat(2, store.getLongitude());
-        ps.setFloat(3, store.getLatitude());
-        ps.setString(4, store.getStoreType());
+        // String query = "INSERT INTO STORE (store_name, longitude, latitude, store_type) VALUES (?, ?, ?, ?)";
+        // PreparedStatement ps = conn.prepareStatement(query);
+        // ps.setString(1, store.getStoreName());
+        // ps.setFloat(2, store.getLongitude());
+        // ps.setFloat(3, store.getLatitude());
+        // ps.setString(4, store.getStoreType());
 
-        return ps.executeUpdate();
+        // return ps.executeUpdate();
+
+        CallableStatement properCase = conn.prepareCall("call add_store( ?, ?, ?, ? )");
+        // calling SQL procedure to insert new store
+        properCase.setString(1, store.getStoreName());
+        properCase.setFloat(2, store.getLongitude());
+        properCase.setFloat(3, store.getLatitude());
+        properCase.setString(4, store.getStoreType());
+        properCase.execute();
+        
+        properCase = conn.prepareCall("{ ? = call get_store_number( ? ) }");
+        // calling SQL function to get the newly inserted store's store_number for ret
+        properCase.registerOutParameter(1, Types.INTEGER);
+        properCase.setString(2, store.getStoreName());
+        properCase.execute();
+        return properCase.getInt(1);
     }
 
     @Override

@@ -78,8 +78,7 @@ public class TasksDriver {
 
         StoreDao storeDao = new StoreDao();
         try {
-            storeDao.addStore(myStore);
-            return storeDao.getStore(myStore.getStoreName()).getStoreNumber();
+            return storeDao.addStore(myStore);
 
         } catch (SQLException e) {
             System.out.println("An error occured while performing Task#1:");
@@ -247,7 +246,6 @@ public class TasksDriver {
         Scanner myScanner = new Scanner(System.in);
         System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Promotions:");
         String coffeeId = myScanner.nextLine();
-
         while(!stringIsValidIntValue(coffeeId)) {
             // allow blank space
             if (coffeeId.isBlank()) break;
@@ -279,5 +277,28 @@ public class TasksDriver {
         } catch (SQLException e) {
             return -1;
         }
+    }
+
+    public static int task6() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Store Number:");
+        String storeNumber = myScanner.nextLine();
+        while(!stringIsValidIntValue(storeNumber)) {
+            System.out.println("Enter Store Number (Int Value Only):");
+            storeNumber = myScanner.nextLine();
+        }
+
+        System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Store's Promotions:");
+        String coffeeId = myScanner.nextLine();
+        while(!stringIsValidIntValue(coffeeId)) {
+            // allow blank space
+            if (coffeeId.isBlank()) break;
+
+            System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Store's Promotions (Int Value Only):");
+            coffeeId = myScanner.nextLine();
+        }
+
+        return 0;
+        
     }
 }
