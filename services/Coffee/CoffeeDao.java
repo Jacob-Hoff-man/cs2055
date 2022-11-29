@@ -15,17 +15,18 @@ public class CoffeeDao implements ICoffeeDao {
 
     @Override
     public int addCoffee(Coffee coffee) throws SQLException {
-        String query = "INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement ps = conn.prepareStatement(query);
-        ps.setString(1, coffee.getCoffeeName());
-        ps.setString(2, coffee.getDescription());
-        ps.setString(3, coffee.getCountry());
-        ps.setInt(4, coffee.getIntensity());
-        ps.setFloat(5, coffee.getPrice());
-        ps.setFloat(6, coffee.getRedeemPoints());
-        ps.setFloat(7, coffee.getRewardPoints());
+        // String query = "INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        // PreparedStatement ps = conn.prepareStatement(query);
+        // ps.setString(1, coffee.getCoffeeName());
+        // ps.setString(2, coffee.getDescription());
+        // ps.setString(3, coffee.getCountry());
+        // ps.setInt(4, coffee.getIntensity());
+        // ps.setFloat(5, coffee.getPrice());
+        // ps.setFloat(6, coffee.getRedeemPoints());
+        // ps.setFloat(7, coffee.getRewardPoints());
 
-        return ps.executeUpdate();
+        // return ps.executeUpdate();
+        return 1;
     }
 
     @Override

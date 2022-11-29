@@ -26,6 +26,29 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- task 2
+CREATE OR REPLACE PROCEDURE add_coffee(inp_coffee_name varchar(50), inp_description varchar(250), inp_country varchar(60), inp_intensity int, inp_price float, inp_redeem_points float, inp_reward_points float)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points)
+    VALUES (inp_coffee_name, inp_description, inp_country, inp_intensity, inp_price, inp_redeem_points, inp_reward_points);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_coffee_id(inp_coffee_name varchar(50))
+RETURNS int
+AS $$
+DECLARE
+    coffee_id int;
+BEGIN
+    SELECT * INTO coffee_id
+    FROM STORE
+    WHERE coffee_id = inp_coffee_id;
+
+    RETURN coffee_id;
+END;
+$$ LANGUAGE plpgsql;
 
 
 ----------------------------------------------------------------------

@@ -142,6 +142,7 @@ public class TasksDriver {
         try {
             coffeeDao.addCoffee(coffee);
             return (coffeeDao.getCoffee(coffeeName)).getCoffeeId();
+            
         } catch (SQLException e) {
             System.out.println("An error occured while performing Task#2:");
             System.out.println(e.getMessage());
