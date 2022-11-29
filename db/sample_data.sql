@@ -3,9 +3,9 @@
 -- Jacob Hoffman and Kairuo Yan
 -------------------------------------------
 -- Stores
-INSERT INTO STORE VALUES (1, 'CB1', 20.1, 50.2, 'kiosk');
-INSERT INTO STORE VALUES (2, 'CB2', 50.1, 100.2, 'kiosk');
-INSERT INTO STORE VALUES (3, 'CB3', 10.1, 25.2, 'sitting');
+INSERT INTO STORE (store_name, longitude, latitude, store_type) VALUES ('CB1', 20.1, 50.2, 'kiosk');
+INSERT INTO STORE (store_name, longitude, latitude, store_type) VALUES ('CB2', 50.1, 100.2, 'kiosk');
+INSERT INTO STORE (store_name, longitude, latitude, store_type) VALUES ('CB3', 10.1, 25.2, 'sitting');
 
 -- Loyalty_Programs
 INSERT INTO LOYALTY_PROGRAM VALUES ('basic', 0, 1.0);
@@ -38,23 +38,23 @@ INSERT INTO CUSTOMER VALUES (19, 'Brian', 'Nixon', 'J', 'jun', '18', '777-333-44
 INSERT INTO CUSTOMER VALUES (20, 'Ralph', 'Lauren', 'P', 'jul', '19', '888-333-4444', 'other');
 
 -- Coffees
-INSERT INTO COFFEE VALUES (1, 'Espresso', 'The espresso, also known as a short black, is approximately 1 oz. of highly concentrated coffee. Although simple in appearance, it can be difficult to master.', 'Canada', 6, 3.0, 90.0, 30.0);
-INSERT INTO COFFEE VALUES (2, 'Double Espresso', 'A double espresso may also be listed as doppio, which is the Italian word for double. This drink is highly concentrated and strong.', 'Canada', 12, 5.0, 180.0, 60.0);
-INSERT INTO COFFEE VALUES (3, 'Red Eye', 'The red eyes purpose is to add a boost of caffeine to your standard cup of coffee.', 'Canada', 8, 4.50, 135.00, 45.0);
-INSERT INTO COFFEE VALUES (4, 'Black Eye', 'The black eye is just the doubled version of the red eye and is very high in caffeine.', 'Canada', 12, 5.50, 165.0, 55.0);
-INSERT INTO COFFEE VALUES (5, 'Americano', 'Americanos are popular breakfast drinks and thought to have originated during World War II. Soldiers would add water to their coffee to extend their rations farther. The water dilutes the espresso while still maintaining a high level of caffeine.', 'Canada', 12, 3.0, 90.0, 30.0);
-INSERT INTO COFFEE VALUES (6, 'Long Black', 'The long black is a similar coffee drink to the americano, but it originated in New Zealand and Australia. It generally has more crema than an americano.', 'Canada', 5, 3.50, 105.0, 35.0);
-INSERT INTO COFFEE VALUES (7, 'Macchiato', 'The word macchiato means mark or stain. This is in reference to the mark that steamed milk leaves on the surface of the espresso as it is dashed into the drink. Flavoring syrups are often added to the drink according to customer preference.', 'Canada', 4, 5.00, 150.0, 50.0);
-INSERT INTO COFFEE VALUES (8, 'Breve', 'The breve provides a decadent twist on the average espresso, adding steamed half-and-half to create a rich and creamy texture.', 'Canada', 4, 5.00, 150.0, 50.0);
-INSERT INTO COFFEE VALUES (9, 'Cappuccino', 'This creamy coffee drink is usually consumed at breakfast time in Italy and is loved in the United States as well. It is usually associated with indulgence and comfort because of its thick foam layer and additional flavorings that can be added to it.', 'Canada', 4, 5.00, 150.0, 50.0);
-INSERT INTO COFFEE VALUES (10, 'Cafe Latte', 'Cafe lattes are considered an introductory coffee drink since the acidity and bitterness of coffee are cut by the amount of milk in the beverage. Flavoring syrups are often added to the latte for those who enjoy sweeter drinks.', 'Canada', 2, 5.50, 165.0, 55.0);
-INSERT INTO COFFEE VALUES (11, 'Mocha', 'The mocha is considered a coffee and hot chocolate hybrid. The chocolate powder or syrup gives it a rich and creamy flavor and cuts the acidity of the espresso.', 'Canada', 3, 5.50, 165.0, 55.0);
-INSERT INTO COFFEE VALUES (12, 'Iced Coffee', 'Iced coffees become very popular in the summertime in the United States. The recipes do have some variance, with some locations choosing to interchange milk with water in the recipe. Different flavoring syrups will be added per customer preference.', 'Canada', 3, 4.75, 142.5, 47.50);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Espresso', 'The espresso, also known as a short black, is approximately 1 oz. of highly concentrated coffee. Although simple in appearance, it can be difficult to master.', 'Canada', 6, 3.0, 90.0, 30.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Double Espresso', 'A double espresso may also be listed as doppio, which is the Italian word for double. This drink is highly concentrated and strong.', 'Canada', 12, 5.0, 180.0, 60.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Red Eye', 'The red eyes purpose is to add a boost of caffeine to your standard cup of coffee.', 'Canada', 8, 4.50, 135.00, 45.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Black Eye', 'The black eye is just the doubled version of the red eye and is very high in caffeine.', 'Canada', 12, 5.50, 165.0, 55.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Americano', 'Americanos are popular breakfast drinks and thought to have originated during World War II. Soldiers would add water to their coffee to extend their rations farther. The water dilutes the espresso while still maintaining a high level of caffeine.', 'Canada', 12, 3.0, 90.0, 30.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Long Black', 'The long black is a similar coffee drink to the americano, but it originated in New Zealand and Australia. It generally has more crema than an americano.', 'Canada', 5, 3.50, 105.0, 35.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Macchiato', 'The word macchiato means mark or stain. This is in reference to the mark that steamed milk leaves on the surface of the espresso as it is dashed into the drink. Flavoring syrups are often added to the drink according to customer preference.', 'Canada', 4, 5.00, 150.0, 50.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Breve', 'The breve provides a decadent twist on the average espresso, adding steamed half-and-half to create a rich and creamy texture.', 'Canada', 4, 5.00, 150.0, 50.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Cappuccino', 'This creamy coffee drink is usually consumed at breakfast time in Italy and is loved in the United States as well. It is usually associated with indulgence and comfort because of its thick foam layer and additional flavorings that can be added to it.', 'Canada', 4, 5.00, 150.0, 50.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Cafe Latte', 'Cafe lattes are considered an introductory coffee drink since the acidity and bitterness of coffee are cut by the amount of milk in the beverage. Flavoring syrups are often added to the latte for those who enjoy sweeter drinks.', 'Canada', 2, 5.50, 165.0, 55.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Mocha', 'The mocha is considered a coffee and hot chocolate hybrid. The chocolate powder or syrup gives it a rich and creamy flavor and cuts the acidity of the espresso.', 'Canada', 3, 5.50, 165.0, 55.0);
+INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Iced Coffee', 'Iced coffees become very popular in the summertime in the United States. The recipes do have some variance, with some locations choosing to interchange milk with water in the recipe. Different flavoring syrups will be added per customer preference.', 'Canada', 3, 4.75, 142.5, 47.50);
 
 -- Promos
-INSERT INTO PROMOTION VALUES (1, 'Promo 1', '2022-10-01', '2022-11-01');
-INSERT INTO PROMOTION VALUES (2, 'Promo 2', '2021-10-01', '2023-12-30');
-INSERT INTO PROMOTION VALUES (3, 'Promo 3', '2023-01-01', '2023-07-01');
+INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 1', '2022-10-01', '2022-11-01');
+INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 2', '2021-10-01', '2023-12-30');
+INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 3', '2023-01-01', '2023-07-01');
 
 -- Purchase (Sale)
 INSERT INTO SALE VALUES(1, 1, '13:20', 3.0, 3.0);
@@ -108,16 +108,27 @@ INSERT INTO SALE VALUES(48, 19, '19:24', 12.5, 15.0);
 INSERT INTO SALE VALUES(49, 19, '19:38', 4.75, 0);
 INSERT INTO SALE VALUES(50, 19, '19:46', 4.5, 3.0);
 
+-- Includes
+INSERT INTO INCLUDES VALUES (1,3);
+INSERT INTO INCLUDES VALUES (1,8);
+INSERT INTO INCLUDES VALUES (1,5);
+INSERT INTO INCLUDES VALUES (2,11);
+INSERT INTO INCLUDES VALUES (3,1);
+INSERT INTO INCLUDES VALUES (2,7);
+INSERT INTO INCLUDES VALUES (2,6);
+INSERT INTO INCLUDES VALUES (3,6);
+INSERT INTO INCLUDES VALUES (3,4);
+
 -- Offers
-INSERT INTO OFFERS VALUES(1,3,1);
-INSERT INTO OFFERS VALUES(1,8,3);
-INSERT INTO OFFERS VALUES(1,5,2);
-INSERT INTO OFFERS VALUES(2,11,3);
-INSERT INTO OFFERS VALUES(3,1,3);
-INSERT INTO OFFERS VALUES(2,7,1);
-INSERT INTO OFFERS VALUES(2,7,2);
-INSERT INTO OFFERS VALUES(3,6,2);
-INSERT INTO OFFERS VALUES(3,4,1);
+INSERT INTO OFFERS VALUES(1,1);
+INSERT INTO OFFERS VALUES(1,3);
+INSERT INTO OFFERS VALUES(1,2);
+INSERT INTO OFFERS VALUES(2,3);
+INSERT INTO OFFERS VALUES(3,3);
+INSERT INTO OFFERS VALUES(2,1);
+INSERT INTO OFFERS VALUES(2,2);
+INSERT INTO OFFERS VALUES(3,2);
+INSERT INTO OFFERS VALUES(3,1);
 
 -- Features
 INSERT INTO FEATURES VALUES(1,1);
@@ -210,3 +221,4 @@ INSERT INTO RECORDS VALUES(48,2,6);
 INSERT INTO RECORDS VALUES(49,3,12);
 INSERT INTO RECORDS VALUES(50,2,3);
 
+INSERT INTO CLOCK VALUES('2022-11-26');

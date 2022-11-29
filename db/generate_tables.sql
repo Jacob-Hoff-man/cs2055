@@ -3,6 +3,17 @@
 -- Jacob Hoffman and Kairuo Yan
 ---------------------------------------------
 
+-- System Clock
+-- Assumptions:
+---- contains only one tuple, which is inserted as part of initialization
+---- contains a "pseudo" date (p_date) that is modifiable for debugging/testing
+---- p_date can not be null
+DROP TABLE IF EXISTS CLOCK cascade;
+CREATE TABLE CLOCK(
+    p_date date NOT NULL
+);
+
+
 -- Assumptions:
 ---- coffees require specified coffee_name, price, redeem_points, and reward_points values
 ---- price, redeem_points, and reward_points must be positive values
@@ -11,7 +22,7 @@
 ---- intensity value must be not be greater than 12
 DROP TABLE IF EXISTS COFFEE cascade;
 CREATE TABLE COFFEE(
-    Coffee_Id int NOT NULL,
+    Coffee_Id serial NOT NULL,
     Coffee_Name varchar(50) NOT NULL,
     Description VARCHAR(250),
     Country varchar(60),
@@ -30,9 +41,10 @@ CONSTRAINT store_type_value CHECK(VALUE IN('kiosk', 'sitting'));
 -- Assumptions:
 ---- stores require specified store_name, coordinates (lat/lon), store_type values
 ---- store_name must be unique
+---- store_number is an auto-incremented integer value
 DROP TABLE IF EXISTS STORE cascade;
 CREATE TABLE STORE(
-    Store_Number int NOT NULL,
+    Store_Number serial NOT NULL,
     Store_Name varchar(50) NOT NULL,
     Longitude float NOT NULL,
     Latitude float NOT NULL,
@@ -114,7 +126,7 @@ CREATE TABLE SALE (
 ---- start_date must occur before end_date
 DROP TABLE IF EXISTS PROMOTION cascade;
 CREATE TABLE PROMOTION(
-    Promo_Number int NOT NULL,
+    Promo_Number serial NOT NULL,
     Promo_Name varchar(50) NOT NULL,
     Start_Date date NOT NULL,
     End_Date date NOT NULL,
@@ -123,15 +135,21 @@ CREATE TABLE PROMOTION(
     CONSTRAINT Check_Valid_Dates CHECK (Start_Date < End_Date)
 );
 
+DROP TABLE IF EXISTS INCLUDES cascade;
+CREATE TABLE INCLUDES(
+    Promo_Number int NOT NULL,
+    Coffee_Id int NOT NULL,
+    CONSTRAINT PK_INCLUDES PRIMARY KEY (Promo_Number, Coffee_Id),
+    CONSTRAINT FK1_INCLUDES FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
+                     ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 DROP TABLE IF EXISTS OFFERS cascade;
 CREATE TABLE OFFERS(
     Promo_Number int NOT NULL,
-    Coffee_Id int NOT NULL,
     Store_Number int NOT NULL,
     CONSTRAINT PK_OFFERS PRIMARY KEY (Promo_Number, Store_Number),
     CONSTRAINT FK1_OFFERS FOREIGN KEY (Store_Number) REFERENCES STORE (Store_Number)
-                  ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT FK2_OFFERS FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
                   ON UPDATE CASCADE ON DELETE CASCADE
 );
 
