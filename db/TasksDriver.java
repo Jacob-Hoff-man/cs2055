@@ -226,14 +226,16 @@ public class TasksDriver {
         StoreDao storeDao = new StoreDao();
         PromotionDao promotionDao = new PromotionDao();
         try {
-            // verify the promotion exists
-            Promotion promotion = promotionDao.getPromotion(Integer.parseInt(promoNumber));
-            if (promotion == null) throw new PromotionByIdDoesNotExistException();
-            // verify the store exists
-            Store store = storeDao.getStore(Integer.parseInt(storeNumber));
-            if (store == null) throw new StoreByIdDoesNotExistException();
+            return promotionDao.addPromotionWithOfferedStore(Integer.parseInt(promoNumber), Integer.parseInt(storeNumber));
+            // // jdbc implementation
+            // // verify the promotion exists
+            // Promotion promotion = promotionDao.getPromotion(Integer.parseInt(promoNumber));
+            // if (promotion == null) throw new PromotionByIdDoesNotExistException();
+            // // verify the store exists
+            // Store store = storeDao.getStore(Integer.parseInt(storeNumber));
+            // if (store == null) throw new StoreByIdDoesNotExistException();
             
-            return promotionDao.updatePromotionWithOfferedStore(promotion, store.getStoreNumber());
+            // return promotionDao.updatePromotionWithOfferedStore(promotion, store.getStoreNumber());
 
         } catch (SQLException e) {
             System.out.println("An error occured while performing Task#4:");
