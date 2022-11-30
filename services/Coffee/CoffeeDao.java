@@ -1,9 +1,11 @@
 package services.Coffee;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class CoffeeDao implements ICoffeeDao {
 
     @Override
     public int addCoffee(Coffee coffee) throws SQLException {
+        // // jdbc implementation
         // String query = "INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES (?, ?, ?, ?, ?, ?, ?)";
         // PreparedStatement ps = conn.prepareStatement(query);
         // ps.setString(1, coffee.getCoffeeName());
@@ -26,7 +29,25 @@ public class CoffeeDao implements ICoffeeDao {
         // ps.setFloat(7, coffee.getRewardPoints());
 
         // return ps.executeUpdate();
-        return 1;
+
+        // task 2 implementation
+        CallableStatement properCase = conn.prepareCall("call add_coffee( ?, ?, ?, ?, ?, ?, ? )");
+        // calling SQL procedure to insert new coffee
+        properCase.setString(1, coffee.getCoffeeName());
+        properCase.setString(2, coffee.getDescription());
+        properCase.setString(3, coffee.getCountry());
+        properCase.setInt(4, coffee.getIntensity());
+        properCase.setFloat(5, coffee.getPrice());
+        properCase.setFloat(6, coffee.getRedeemPoints());
+        properCase.setFloat(7, coffee.getRewardPoints());
+        properCase.execute();
+        
+        properCase = conn.prepareCall("{ ? = call get_coffee_id( ? ) }");
+        // calling SQL function to get the newly inserted coffee's coffee_id for ret
+        properCase.registerOutParameter(1, Types.INTEGER);
+        properCase.setString(2, coffee.getCoffeeName());
+        properCase.execute();
+        return properCase.getInt(1);
     }
 
     @Override

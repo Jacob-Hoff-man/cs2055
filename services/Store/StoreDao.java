@@ -12,15 +12,16 @@ public class StoreDao implements IStoreDao {
 
     @Override
     public int addStore(Store store) throws SQLException {
+        // // jdbc implementation
         // String query = "INSERT INTO STORE (store_name, longitude, latitude, store_type) VALUES (?, ?, ?, ?)";
         // PreparedStatement ps = conn.prepareStatement(query);
         // ps.setString(1, store.getStoreName());
         // ps.setFloat(2, store.getLongitude());
         // ps.setFloat(3, store.getLatitude());
         // ps.setString(4, store.getStoreType());
-
         // return ps.executeUpdate();
 
+        // task 1 implementation
         CallableStatement properCase = conn.prepareCall("call add_store( ?, ?, ?, ? )");
         // calling SQL procedure to insert new store
         properCase.setString(1, store.getStoreName());

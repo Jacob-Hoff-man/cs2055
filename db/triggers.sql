@@ -43,12 +43,14 @@ DECLARE
     coffee_id int;
 BEGIN
     SELECT * INTO coffee_id
-    FROM STORE
-    WHERE coffee_id = inp_coffee_id;
+    FROM COFFEE
+    WHERE coffee_name = inp_coffee_name;
 
     RETURN coffee_id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- task 3
 
 
 ----------------------------------------------------------------------

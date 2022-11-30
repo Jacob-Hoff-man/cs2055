@@ -75,7 +75,7 @@ public class TasksDriver {
         myStore.setLongitude(Float.parseFloat(longitude));
         myStore.setLatitude(Float.parseFloat(latitude));
         myStore.setStoreType(storeType);
-        
+
 
         StoreDao storeDao = new StoreDao();
         try {
@@ -141,8 +141,7 @@ public class TasksDriver {
 
         CoffeeDao coffeeDao = new CoffeeDao();
         try {
-            coffeeDao.addCoffee(coffee);
-            return (coffeeDao.getCoffee(coffeeName)).getCoffeeId();
+            return coffeeDao.addCoffee(coffee);
             
         } catch (SQLException e) {
             System.out.println("An error occured while performing Task#2:");
