@@ -111,33 +111,44 @@ public class PromotionDao implements IPromotionDao {
     }
 
     public int addPromotionWithOfferedStore(Promotion promotion, int storeNumber) throws SQLException {
-        // jdbc implementation
-        try {
-            conn.setAutoCommit(false);
-            // insert promo entity into table
-            int promoNumber = addPromotion(promotion);
-            // insert offers relationship entity into table
-            addOffers(promoNumber, storeNumber);
-            // commit transaction
-            conn.commit();
-            conn.setAutoCommit(true);
-            // return the new promo's generated id from db
-            return getPromotion(promotion.getPromoName()).getPromoNumber();
+        // // jdbc implementation
+        // try {
+        //     conn.setAutoCommit(false);
+        //     // insert promo entity into table
+        //     int promoNumber = addPromotion(promotion);
+        //     // insert offers relationship entity into table
+        //     addOffers(promoNumber, storeNumber);
+        //     // commit transaction
+        //     conn.commit();
+        //     conn.setAutoCommit(true);
+        //     // return the new promo's generated id from db
+        //     return getPromotion(promotion.getPromoName()).getPromoNumber();
 
-        } catch (SQLException e1) {
-            // rollback any changes that occured before transaction failure
-            try {
-                conn.rollback();
-                throw new SQLException(e1);
-            } catch (SQLException e2) {
-                System.out.println("An error occured while performing rollback:");
-                System.out.println(e2.getMessage());
-                System.out.println(e2.getErrorCode());
-                System.out.println(e2.getSQLState());
-                System.out.println(e2.getStackTrace());
-                throw new SQLException(e1);
-            }
-        } 
+        // } catch (SQLException e1) {
+        //     // rollback any changes that occured before transaction failure
+        //     try {
+        //         conn.rollback();
+        //         throw new SQLException(e1);
+        //     } catch (SQLException e2) {
+        //         System.out.println("An error occured while performing rollback:");
+        //         System.out.println(e2.getMessage());
+        //         System.out.println(e2.getErrorCode());
+        //         System.out.println(e2.getSQLState());
+        //         System.out.println(e2.getStackTrace());
+        //         throw new SQLException(e1);
+        //     }
+        // }
+        
+        // task 4 implementation
+        CallableStatement properCase = conn.prepareCall("call add_promotion_offering_at_store( ?, ? )");
+        // calling SQL procedure to insert new store and includes tuples in db
+        properCase.setInt(1, promotion.getPromoNumber());
+        properCase.setInt(2, storeNumber);
+
+        properCase.execute();
+
+        // If no SQL Error was thrown, return storeNumber as success message
+        return storeNumber;
     }
 
     @Override

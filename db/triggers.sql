@@ -54,7 +54,6 @@ $$ LANGUAGE plpgsql;
 -- Assumptions:
 ---- A Coffee must exist in the database that corresponds to the inp_coffee_id in Includes relation entity
 ---- When a Promotion is entered into the db, a corresponding Includes relational entity will be subsequently inserted
-
 CREATE OR REPLACE FUNCTION check_if_coffee_exists(inp_coffee_id int)
 RETURNS BOOLEAN
 AS $$
@@ -97,6 +96,42 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- task 4
+-- Assumptions:
+---- A Promotion must exist in the database that corresponds to the inp_promo_number in Offers relation entity
+---- A Store must exist in the database that corresponds to the inp_store_number in Offers relation entity
+CREATE OR REPLACE FUNCTION check_if_promotion_exists(inp_promo_number int)
+RETURNS BOOLEAN
+AS $$
+SELECT EXISTS ( SELECT *
+                    FROM PROMOTION
+                    WHERE promo_number = inp_promo_number );
+$$
+LANGUAGE SQL;
+
+ALTER TABLE OFFERS
+   ADD CONSTRAINT promotion_exists CHECK (check_if_promotion_exists(promo_number));
+
+CREATE OR REPLACE FUNCTION check_if_store_exists(inp_store_number int)
+RETURNS BOOLEAN
+AS $$
+SELECT EXISTS ( SELECT *
+                    FROM STORE
+                    WHERE store_number = inp_store_number );
+$$
+LANGUAGE SQL;
+
+ALTER TABLE OFFERS
+   ADD CONSTRAINT store_exists CHECK (check_if_store_exists(store_number));
+
+CREATE OR REPLACE PROCEDURE add_promotion_offering_at_store(inp_promo_number int, inp_store_number int)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO OFFERS (promo_number, store_number)
+    VALUES (inp_promo_number, inp_store_number);
+END
+$$;
 ----------------------------------------------------------------------
 -- PROCEDURES AND FUNCTIONS
 ----------------------------------------------------------------------
