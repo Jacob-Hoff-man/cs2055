@@ -1,9 +1,11 @@
 package services.Promotion;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,35 +65,53 @@ public class PromotionDao implements IPromotionDao {
     }
 
     public int addPromotionWithIncludedCoffee(Promotion promotion, int coffeeId) throws SQLException {
-        try {
-            conn.setAutoCommit(false);
-            // insert promo entity into table
-            int promoNumber = addPromotion(promotion);
-            // insert includes relationship entity into table
-            addIncludes(promoNumber, coffeeId);
-            // commit transaction
-            conn.commit();
-            conn.setAutoCommit(true);
-            // return the new promo's generated id from db
-            return getPromotion(promotion.getPromoName()).getPromoNumber();
+        // // jdbc implementation
+        // try {
+        //     conn.setAutoCommit(false);
+        //     // insert promo entity into table
+        //     int promoNumber = addPromotion(promotion);
+        //     // insert includes relationship entity into table
+        //     addIncludes(promoNumber, coffeeId);
+        //     // commit transaction
+        //     conn.commit();
+        //     conn.setAutoCommit(true);
+        //     // return the new promo's generated id from db
+        //     return getPromotion(promotion.getPromoName()).getPromoNumber();
 
-        } catch (SQLException e1) {
-            // rollback any changes that occured before transaction failure
-            try {
-                conn.rollback();
-                throw new SQLException(e1);
-            } catch (SQLException e2) {
-                System.out.println("An error occured while performing rollback:");
-                System.out.println(e2.getMessage());
-                System.out.println(e2.getErrorCode());
-                System.out.println(e2.getSQLState());
-                System.out.println(e2.getStackTrace());
-                throw new SQLException(e1);
-            }
-        } 
+        // } catch (SQLException e1) {
+        //     // rollback any changes that occured before transaction failure
+        //     try {
+        //         conn.rollback();
+        //         throw new SQLException(e1);
+        //     } catch (SQLException e2) {
+        //         System.out.println("An error occured while performing rollback:");
+        //         System.out.println(e2.getMessage());
+        //         System.out.println(e2.getErrorCode());
+        //         System.out.println(e2.getSQLState());
+        //         System.out.println(e2.getStackTrace());
+        //         throw new SQLException(e1);
+        //     }
+        // }
+        
+        // task 3 implementation
+        CallableStatement properCase = conn.prepareCall("call add_promotion_with_included_coffee( ?, ?, ?, ? )");
+        // calling SQL procedure to insert new store and includes tuples in db
+        properCase.setString(1, promotion.getPromoName());
+        properCase.setDate(2, promotion.getStartDate());
+        properCase.setDate(3, promotion.getEndDate());
+        properCase.setInt(4, coffeeId);
+        properCase.execute();
+
+        properCase = conn.prepareCall("{ ? = call get_promotion_number( ? ) }");
+        // calling SQL function to get the newly inserted promotion's promo_number for ret
+        properCase.registerOutParameter(1, Types.INTEGER);
+        properCase.setString(2, promotion.getPromoName());
+        properCase.execute();
+        return properCase.getInt(1);
     }
 
     public int addPromotionWithOfferedStore(Promotion promotion, int storeNumber) throws SQLException {
+        // jdbc implementation
         try {
             conn.setAutoCommit(false);
             // insert promo entity into table

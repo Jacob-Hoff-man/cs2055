@@ -184,18 +184,20 @@ public class TasksDriver {
         promotion.setStartDate(Date.valueOf(startDate));
         promotion.setEndDate(Date.valueOf(endDate));
 
-        CoffeeDao coffeeDao = new CoffeeDao();
+        // CoffeeDao coffeeDao = new CoffeeDao();
         PromotionDao promotionDao = new PromotionDao();
         try {
-            // run only if the coffee exists in db (get by id)
-            Coffee coffee = coffeeDao.getCoffee(Integer.parseInt(coffeeId));
-            if (coffee != null) {
-                promotionDao.addPromotionWithIncludedCoffee(promotion, coffee.getCoffeeId());
-                return (promotionDao.getPromotion(promoName)).getPromoNumber();
-            } else {
-                // no coffee with given id exists
-                throw new CoffeeByIdDoesNotExistException();
-            }
+            return promotionDao.addPromotionWithIncludedCoffee(promotion, Integer.parseInt(coffeeId));
+            // // jdbc implementation
+            // // run only if the coffee exists in db (get by id)
+            // Coffee coffee = coffeeDao.getCoffee(Integer.parseInt(coffeeId));
+            // if (coffee != null) {
+            //     promotionDao.addPromotionWithIncludedCoffee(promotion, coffee.getCoffeeId());
+            //     return (promotionDao.getPromotion(promoName)).getPromoNumber();
+            // } else {
+            //     // no coffee with given id exists
+            //     throw new CoffeeByIdDoesNotExistException();
+            // }
         } catch (SQLException e) {
             System.out.println("An error occured while performing Task#3:");
             System.out.println(e.getMessage());
