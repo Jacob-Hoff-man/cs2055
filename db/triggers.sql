@@ -132,6 +132,38 @@ BEGIN
     VALUES (inp_promo_number, inp_store_number);
 END
 $$;
+
+-- Task 5
+CREATE OR REPLACE FUNCTION get_stores_with_promotions()
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT * FROM STORE WHERE store_number IN (SELECT DISTINCT store_number FROM OFFERS);
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_stores_with_promotions_by_coffee_id(inp_coffee_id int)
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT *
+                 FROM STORE WHERE store_number IN
+                    (SELECT DISTINCT store_number
+                           FROM OFFERS
+                           WHERE promo_number IN
+                                 (SELECT DISTINCT promo_number
+                                          FROM INCLUDES
+                                          WHERE coffee_id = inp_coffee_id
+                                 )
+                    );
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
 ----------------------------------------------------------------------
 -- PROCEDURES AND FUNCTIONS
 ----------------------------------------------------------------------
