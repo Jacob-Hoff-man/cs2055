@@ -296,4 +296,67 @@ public class PromotionDao implements IPromotionDao {
             }
         }
     }
+
+    public List<Promotion> getPromotionsOfferedByStore(int storeNumber) throws SQLException {
+        // task 6 implementation
+        // calling SQL function to get query table of promotions offered by store for ret
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_promotions_offered_by_store( ? ) }");
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        properCase.setInt(2, storeNumber);
+        List<Promotion> promotions = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);  
+            properCase.execute();
+            ResultSet rs = (ResultSet)properCase.getObject(1);
+            while (rs.next()) {
+                Promotion promotion = new Promotion();
+                promotion.setPromoNumber(rs.getInt("promo_number"));
+                promotion.setPromoName(rs.getString("promo_name"));
+                promotion.setStartDate(rs.getDate("start_date"));
+                promotion.setEndDate(rs.getDate("end_date"));
+
+                promotions.add(promotion);
+            }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return promotions;
+    }
+
+    public List<Promotion> getPromotionsOfferedByStoreByCoffeeId(int storeNumber, int coffeeId) throws SQLException {
+        // task 6 implementation
+        // calling SQL function to get query table of promotions offered by store and coffee for ret
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_promotions_offered_by_store_by_coffee_id( ?, ? ) }");
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        properCase.setInt(2, storeNumber);
+        properCase.setInt(3, coffeeId);
+        List<Promotion> promotions = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);  
+            properCase.execute();
+            ResultSet rs = (ResultSet)properCase.getObject(1);
+            while (rs.next()) {
+                Promotion promotion = new Promotion();
+                promotion.setPromoNumber(rs.getInt("promo_number"));
+                promotion.setPromoName(rs.getString("promo_name"));
+                promotion.setStartDate(rs.getDate("start_date"));
+                promotion.setEndDate(rs.getDate("end_date"));
+
+                promotions.add(promotion);
+            }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return promotions;
+    }
 }

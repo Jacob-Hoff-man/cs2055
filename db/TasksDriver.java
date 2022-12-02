@@ -259,7 +259,6 @@ public class TasksDriver {
             coffeeId = myScanner.nextLine();
         }
 
-        PromotionDao promotionDao = new PromotionDao();
         StoreDao storeDao = new StoreDao();
         try {
             String output;
@@ -269,7 +268,6 @@ public class TasksDriver {
                     "No stores are currently offering any promotions." : 
                     promoStores.toString();
             } else {
-                promotionDao.deleteOffers(3, 2);
                 List<Store> promoStores = storeDao.getStoresWithPromotionsByCoffeeId(Integer.parseInt(coffeeId));
                 output = promoStores.isEmpty() ?
                     "No stores are currently promoting this coffee." :
@@ -308,7 +306,31 @@ public class TasksDriver {
             coffeeId = myScanner.nextLine();
         }
 
-        return 0;
-        
+        PromotionDao promotionDao = new PromotionDao();
+        try {
+            String output;
+            if (coffeeId.isBlank()) {
+                List<Promotion> promotions = promotionDao.getPromotionsOfferedByStore(Integer.parseInt(storeNumber));
+                output = promotions.isEmpty() ?
+                    "No promotions are currently offered at this store." :
+                    promotions.toString();
+            } else {
+                List<Promotion> promotions = promotionDao.getPromotionsOfferedByStoreByCoffeeId(Integer.parseInt(storeNumber), Integer.parseInt(coffeeId));
+                output = promotions.isEmpty() ?
+                    "No promotions for this coffee are currently offered at this store." :
+                    promotions.toString();
+            }
+
+            System.out.println(output);
+            return 1;
+
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#6:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
     }
 }

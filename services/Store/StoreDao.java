@@ -137,6 +137,7 @@ public class StoreDao implements IStoreDao {
         // return stores;
 
         // task 5 implementation
+        // calling SQL function to get query table of stores with promotions for ret
         CallableStatement properCase = conn.prepareCall("{ ? = call get_stores_with_promotions() }");
         properCase.registerOutParameter(1, Types.REF_CURSOR);
         List<Store> stores = new ArrayList<>();
