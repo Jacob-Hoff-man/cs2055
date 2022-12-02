@@ -178,6 +178,56 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Task 7
+CREATE OR REPLACE FUNCTION euclidean_distance(inp_lat_1 float, inp_lon_1 float, inp_lat_2 float, inp_lon_2 float)
+RETURNS float
+AS $$
+DECLARE
+    euclidean_distance float;
+BEGIN
+    RETURN SQRT(POWER(inp_lat_2 - inp_lat_1, 2) + POWER(inp_lon_2 - inp_lon_1, 2));
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_closest_stores(inp_latitude float, inp_longitude float)
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT *
+                FROM STORE WHERE (latitude, longitude) IN
+                    (SELECT latitude, longitude
+                    FROM STORE
+                    ORDER BY euclidean_distance(10, 10, latitude, longitude) ASC
+                    LIMIT 1
+                    );
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_closest_stores_by_promo_number(inp_latitude float, inp_longitude float, inp_promo_number int)
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT *
+                 FROM
+                    (SELECT *
+                        FROM STORE NATURAL JOIN OFFERS
+                        WHERE promo_number = inp_promo_number
+                     ) AS STORE_OFFERS_PROMO
+                 WHERE (STORE_OFFERS_PROMO.latitude, STORE_OFFERS_PROMO.longitude) IN
+                    (SELECT latitude, longitude
+                        FROM STORE
+                        ORDER BY euclidean_distance(10, 10, latitude, longitude) ASC
+                        LIMIT 1
+                    );
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
+
 
 ----------------------------------------------------------------------
 -- PROCEDURES AND FUNCTIONS

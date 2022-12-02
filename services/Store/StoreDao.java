@@ -214,6 +214,71 @@ public class StoreDao implements IStoreDao {
         return stores;
     }
 
+    public List<Store> getClosestStores(float latitude, float longitude) throws SQLException {
+        // task 7 implementation
+        // calling SQL function to get query table of stores closest to a given location for ret
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_closest_stores( ?, ? ) }");
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        properCase.setFloat(2, latitude);
+        properCase.setFloat(3, longitude);
+        List<Store> stores = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);  
+            properCase.execute();
+            ResultSet rs = (ResultSet)properCase.getObject(1);
+            while (rs.next()) {
+                Store store = new Store();
+                store.setStoreNumber(rs.getInt("store_number"));
+                store.setStoreName(rs.getString("store_name"));
+                store.setLongitude(rs.getFloat("longitude"));
+                store.setLatitude(rs.getFloat("latitude"));
+                store.setStoreType(rs.getString("store_type"));
+                stores.add(store);
+            }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return stores;
+    }
+
+    public List<Store> getClosestStoresByPromoNumber(float latitude, float longitude, int promoNumber) throws SQLException {
+        //task 7 implementation
+        // calling SQL function to get query table of stores by coffee id closest to a given location for ret
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_closest_stores_by_promo_number( ?, ?, ? ) }");
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        properCase.setFloat(2, latitude);
+        properCase.setFloat(3, longitude);
+        properCase.setInt(4, promoNumber);
+        List<Store> stores = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);  
+            properCase.execute();
+            ResultSet rs = (ResultSet)properCase.getObject(1);
+            while (rs.next()) {
+                Store store = new Store();
+                store.setStoreNumber(rs.getInt("store_number"));
+                store.setStoreName(rs.getString("store_name"));
+                store.setLongitude(rs.getFloat("longitude"));
+                store.setLatitude(rs.getFloat("latitude"));
+                store.setStoreType(rs.getString("store_type"));
+                stores.add(store);
+            }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return stores;
+    }
+
     @Override
     public void updateStore(Store store) throws SQLException {
         String query = "UPDATE STORE SET store_name=?, longitude=?, latitude=?, store_type=? WHERE store_number=?";

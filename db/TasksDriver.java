@@ -333,4 +333,53 @@ public class TasksDriver {
             return -1;
         }
     }
+
+    public static int task7() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Current Latitude:");
+        String latitude = myScanner.nextLine();
+        while(!stringIsValidFloatValue(latitude)) {
+            System.out.println("Enter Current Latitude (Float Value Only):");
+            latitude = myScanner.nextLine();
+        }
+
+        System.out.println("Enter Current Longitude:");
+        String longitude = myScanner.nextLine();
+        while(!stringIsValidFloatValue(longitude)) {
+            System.out.println("Enter Current Longitude (Float Value Only):");
+            longitude = myScanner.nextLine();
+        }
+
+        System.out.println("Enter Promotion Number, or leave blank for all Promotions Offered in Stores:");
+        String promoNumber = myScanner.nextLine();
+        while(!stringIsValidIntValue(promoNumber)) {
+            // allow blank space
+            if (promoNumber.isBlank()) break;
+
+            System.out.println("Enter Promotion Number, or leave blank for all Promotions Offered in Stores(Int Value Only):");
+            promoNumber = myScanner.nextLine();
+        }
+
+        StoreDao storeDao = new StoreDao();
+        try {
+            String output;
+            if (promoNumber.isBlank()) {
+                List<Store> stores = storeDao.getClosestStores(Float.parseFloat(latitude), Float.parseFloat(longitude));
+                output = stores.toString();
+            } else {
+                List<Store> stores = storeDao.getClosestStoresByPromoNumber(Float.parseFloat(latitude), Float.parseFloat(longitude), Integer.parseInt(promoNumber));
+                output = stores.toString();
+            }
+
+            System.out.println(output);
+            return 1;
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#6:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
 }
