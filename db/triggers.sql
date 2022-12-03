@@ -275,6 +275,36 @@ BEGIN
     RETURN customer_id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Task 10
+CREATE OR REPLACE FUNCTION get_customer_current_points(inp_customer_id int)
+RETURNS float
+AS $$
+DECLARE
+    ret_current_points float;
+BEGIN
+    SELECT current_points INTO ret_current_points
+    FROM CUSTOMER
+    WHERE customer_id = inp_customer_id;
+
+    RETURN ret_current_points;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_customer_total_points(inp_customer_id int)
+RETURNS float
+AS $$
+DECLARE
+    ret_total_points float;
+BEGIN
+    SELECT total_points INTO ret_total_points
+    FROM CUSTOMER
+    WHERE customer_id = inp_customer_id;
+
+    RETURN ret_total_points;
+END;
+$$ LANGUAGE plpgsql;
+
 ----------------------------------------------------------------------
 -- PROCEDURES AND FUNCTIONS
 ----------------------------------------------------------------------

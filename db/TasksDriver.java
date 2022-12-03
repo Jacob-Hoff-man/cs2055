@@ -378,7 +378,7 @@ public class TasksDriver {
             System.out.println(output);
             return 1;
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#6:");
+            System.out.println("An error occured while performing Task#7:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
@@ -417,7 +417,7 @@ public class TasksDriver {
             System.out.println(loyaltyProgramDao.addOrUpdateLoyaltyProgram(loyaltyProgram));
             return 1;
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#6:");
+            System.out.println("An error occured while performing Task#8:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
@@ -464,7 +464,32 @@ public class TasksDriver {
             return customerDao.addCustomer(customer);
 
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#6:");
+            System.out.println("An error occured while performing Task#9:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
+
+    public static int task10() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Customer Id:");
+        String customerId = myScanner.nextLine();
+        while(!stringIsValidIntValue(customerId)) {
+            System.out.println("Enter Customer Id (Int Value Only):");
+            customerId = myScanner.nextLine();
+        }
+
+        CustomerDao customerDao = new CustomerDao();
+        try {
+            System.out.println("Current Points: " + customerDao.getCustomerCurrentPoints(Integer.parseInt(customerId)));
+            System.out.println("Total Points: " + customerDao.getCustomerTotalPoints(Integer.parseInt(customerId)));
+            return Integer.parseInt(customerId);
+
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#10:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());

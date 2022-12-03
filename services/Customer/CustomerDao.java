@@ -10,10 +10,10 @@ import db.DBConnection;
 import models.Customer;
 
 public class CustomerDao implements ICustomerDao {
+    Connection conn = DBConnection.getConnection();
 
     @Override
     public int addCustomer(Customer customer) throws SQLException {
-        Connection conn = DBConnection.getConnection();
         // task 9 implementation
         CallableStatement properCase = conn.prepareCall("call add_customer( ?, ?, ?, ?, ?, ?, ? )");
         // calling SQL procedure to insert new store
@@ -44,6 +44,24 @@ public class CustomerDao implements ICustomerDao {
     public Customer getCustomer(int customerId) throws SQLException {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public double getCustomerCurrentPoints(int customerId) throws SQLException {
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_customer_current_points( ? ) }");
+        // calling SQL function to get the specified customer's current points for ret
+        properCase.registerOutParameter(1, Types.DOUBLE);
+        properCase.setInt(2, customerId);
+        properCase.execute();
+        return properCase.getDouble(1);
+    }
+
+    public double getCustomerTotalPoints(int customerId) throws SQLException {
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_customer_current_points( ? ) }");
+        // calling SQL function to get the specified customer's total points for ret
+        properCase.registerOutParameter(1, Types.DOUBLE);
+        properCase.setInt(2, customerId);
+        properCase.execute();
+        return properCase.getDouble(1);
     }
 
     @Override
