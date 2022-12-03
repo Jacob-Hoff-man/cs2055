@@ -252,6 +252,29 @@ BEGIN
 END;
 $$
 
+-- Task 9
+CREATE OR REPLACE PROCEDURE add_customer(inp_first_name varchar(50), inp_last_name varchar(50), inp_mid_initial char(1), inp_birth_day char(2), inp_birth_month char(3), inp_phone_number varchar(16), inp_phone_type varchar(6))
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_day, birth_month, phone_number, phone_type)
+    VALUES (inp_first_name, inp_last_name, inp_mid_initial, inp_birth_day, inp_birth_month, inp_phone_number, inp_phone_type);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_customer_id(inp_phone_number varchar(16))
+RETURNS int
+AS $$
+DECLARE
+    customer_id int;
+BEGIN
+    SELECT * INTO customer_id
+    FROM CUSTOMER
+    WHERE phone_number = inp_phone_number;
+
+    RETURN customer_id;
+END;
+$$ LANGUAGE plpgsql;
 ----------------------------------------------------------------------
 -- PROCEDURES AND FUNCTIONS
 ----------------------------------------------------------------------

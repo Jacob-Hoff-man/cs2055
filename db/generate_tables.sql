@@ -85,7 +85,7 @@ CONSTRAINT month_enum_value CHECK (VALUE in ('jan', 'feb', 'mar', 'apr', 'may', 
 ---- Current_Points and Total_Points must be positive values, and by default are 0.
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
 CREATE TABLE CUSTOMER (
-    Customer_Id int NOT NULL,
+    Customer_Id serial NOT NULL,
     First_Name varchar(50) NOT NULL,
     Last_Name varchar(50) NOT NULL,
     Mid_Initial char(1),
@@ -93,9 +93,9 @@ CREATE TABLE CUSTOMER (
     Birth_Day char(2) NOT NULL,
     Phone_Number varchar(16) NOT NULL,
     Phone_Type Phone_Enum NOT NULL,
-    Loyalty_Level Loyalty_Level_Enum DEFAULT NULL,
-    Current_Points float CHECK (Current_Points >= 0) DEFAULT NULL,
-    Total_Points float CHECK (Total_Points >= 0) DEFAULT NULL,
+    Loyalty_Level Loyalty_Level_Enum DEFAULT 'basic',
+    Current_Points float CHECK (Current_Points >= 0) DEFAULT 0,
+    Total_Points float CHECK (Total_Points >= 0) DEFAULT 0,
 
     CONSTRAINT PK_CUSTOMER PRIMARY KEY (Customer_Id),
     CONSTRAINT UQ_PHONE UNIQUE (Phone_Number),

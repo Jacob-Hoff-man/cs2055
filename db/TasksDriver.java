@@ -11,10 +11,12 @@ import exceptions.CoffeeByIdDoesNotExistException;
 import exceptions.PromotionByIdDoesNotExistException;
 import exceptions.StoreByIdDoesNotExistException;
 import models.Coffee;
+import models.Customer;
 import models.LoyaltyProgram;
 import models.Promotion;
 import models.Store;
 import services.Coffee.CoffeeDao;
+import services.Customer.CustomerDao;
 import services.LoyaltyProgram.LoyaltyProgramDao;
 import services.Promotion.PromotionDao;
 import services.Store.StoreDao;
@@ -423,5 +425,51 @@ public class TasksDriver {
             return -1;
         }
         
+    }
+
+    public static int task9() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Customer First Name:");
+        String firstName = myScanner.nextLine();
+
+        System.out.println("Enter Customer Last Name:");
+        String lastName = myScanner.nextLine();
+        
+        System.out.println("Enter Customer Middle Initial:");
+        String midInitial = myScanner.nextLine();
+        
+        System.out.println("Enter Customer Birth Day:");
+        String birthDay = myScanner.nextLine();
+
+        System.out.println("Enter Customer Birth Month:");
+        String birthMonth = myScanner.nextLine();
+
+        System.out.println("Enter Customer Phone Number:");
+        String phoneNumber = myScanner.nextLine();
+
+        System.out.println("Enter Customer Phone Type:");
+        String phoneType= myScanner.nextLine();
+
+        Customer customer = new Customer();
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
+        customer.setMidInitial(midInitial);
+        customer.setBirthDay(birthDay);
+        customer.setBirthMonth(birthMonth);
+        customer.setPhoneNumber(phoneNumber);
+        customer.setPhoneType(phoneType);
+
+        CustomerDao customerDao = new CustomerDao();
+        try {
+            return customerDao.addCustomer(customer);
+
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#6:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
     }
 }

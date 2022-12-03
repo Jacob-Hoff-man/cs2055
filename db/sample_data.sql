@@ -16,26 +16,26 @@ INSERT INTO LOYALTY_PROGRAM VALUES ('platinum', 50000, 2.0);
 INSERT INTO LOYALTY_PROGRAM VALUES ('diamond', 500000, 4.0);
 
 -- Customers
-INSERT INTO CUSTOMER VALUES (1, 'Jacob', 'Hof', 'A', 'jul', '08', '111-222-3333', 'mobile', 'diamond', 10000, 500000);
-INSERT INTO CUSTOMER VALUES (2, 'Kairuo', 'Yan', 'K', 'jan', '01', '222-222-3333', 'home', 'basic', 0, 0);
-INSERT INTO CUSTOMER VALUES (3, 'Bob', 'Ross', 'K', 'feb', '02', '333-222-3333', 'work', 'silver', 2500, 2500);
-INSERT INTO CUSTOMER VALUES (4, 'Luke', 'Skywalker', 'A', 'mar', '03', '444-222-3333', 'other', 'gold', 5000, 5000);
-INSERT INTO CUSTOMER VALUES (5, 'Mike', 'Trout', 'B', 'apr', '04', '555-222-3333', 'mobile', 'platinum', 50000, 50000);
-INSERT INTO CUSTOMER VALUES (6, 'Rock', 'Paper', 'S', 'may', '05', '666-222-3333', 'home', 'bronze', 500, 500);
-INSERT INTO CUSTOMER VALUES (7, 'Jason', 'Freddy', 'M', 'jun', '06', '777-222-3333', 'work', 'basic', 250, 250);
-INSERT INTO CUSTOMER VALUES (8, 'Count', 'Drake', 'V', 'jul', '07', '888-222-3333', 'other', 'bronze', 1000, 1000);
-INSERT INTO CUSTOMER VALUES (9, 'Bruce', 'Wayne', 'B', 'aug', '08', '999-222-3333', 'mobile', 'silver', 0, 2500);
-INSERT INTO CUSTOMER VALUES (10, 'Alex', 'Hero', 'E', 'sep', '09', '123-222-3333', 'home');
-INSERT INTO CUSTOMER VALUES (11, 'Ziggy', 'Swifty', 'T', 'oct', '10', '456-222-3333', 'work');
-INSERT INTO CUSTOMER VALUES (12, 'CJ', 'Smith', 'A', 'nov', '11', '789-222-3333', 'other');
-INSERT INTO CUSTOMER VALUES (13, 'Jake', 'Hof', 'A', 'dec', '12', '111-333-4444', 'mobile');
-INSERT INTO CUSTOMER VALUES (14, 'Zach', 'Blaze', 'J', 'jan', '13', '222-333-4444', 'home');
-INSERT INTO CUSTOMER VALUES (15, 'Devin', 'Eleven', 'M', 'feb', '14', '333-333-4444', 'work');
-INSERT INTO CUSTOMER VALUES (16, 'Rick', 'Morty', 'S', 'mar', '15', '444-333-4444', 'other');
-INSERT INTO CUSTOMER VALUES (17, 'Joe', 'Average', 'A', 'apr', '16', '555-333-4444', 'mobile');
-INSERT INTO CUSTOMER VALUES (18, 'Panos', 'Crythanthis', 'A', 'may', '17', '666-333-4444', 'home');
-INSERT INTO CUSTOMER VALUES (19, 'Brian', 'Nixon', 'J', 'jun', '18', '777-333-4444', 'work');
-INSERT INTO CUSTOMER VALUES (20, 'Ralph', 'Lauren', 'P', 'jul', '19', '888-333-4444', 'other');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Jacob', 'Hof', 'A', 'jul', '08', '111-222-3333', 'mobile', 'diamond', 10000, 500000);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Kairuo', 'Yan', 'K', 'jan', '01', '222-222-3333', 'home', 'basic', 0, 0);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Bob', 'Ross', 'K', 'feb', '02', '333-222-3333', 'work', 'silver', 2500, 2500);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Luke', 'Skywalker', 'A', 'mar', '03', '444-222-3333', 'other', 'gold', 5000, 5000);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Mike', 'Trout', 'B', 'apr', '04', '555-222-3333', 'mobile', 'platinum', 50000, 50000);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Rock', 'Paper', 'S', 'may', '05', '666-222-3333', 'home', 'bronze', 500, 500);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Jason', 'Freddy', 'M', 'jun', '06', '777-222-3333', 'work', 'basic', 250, 250);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Count', 'Drake', 'V', 'jul', '07', '888-222-3333', 'other', 'bronze', 1000, 1000);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Bruce', 'Wayne', 'B', 'aug', '08', '999-222-3333', 'mobile', 'silver', 0, 2500);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Alex', 'Hero', 'E', 'sep', '09', '123-222-3333', 'home');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Ziggy', 'Swifty', 'T', 'oct', '10', '456-222-3333', 'work');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('CJ', 'Smith', 'A', 'nov', '11', '789-222-3333', 'other');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Jake', 'Hof', 'A', 'dec', '12', '111-333-4444', 'mobile');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Zach', 'Blaze', 'J', 'jan', '13', '222-333-4444', 'home');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Devin', 'Eleven', 'M', 'feb', '14', '333-333-4444', 'work');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Rick', 'Morty', 'S', 'mar', '15', '444-333-4444', 'other');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Joe', 'Average', 'A', 'apr', '16', '555-333-4444', 'mobile');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Panos', 'Crythanthis', 'A', 'may', '17', '666-333-4444', 'home');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Brian', 'Nixon', 'J', 'jun', '18', '777-333-4444', 'work');
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Ralph', 'Lauren', 'P', 'jul', '19', '888-333-4444', 'other');
 
 -- Coffees
 INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Espresso', 'The espresso, also known as a short black, is approximately 1 oz. of highly concentrated coffee. Although simple in appearance, it can be difficult to master.', 'Canada', 6, 3.0, 90.0, 30.0);

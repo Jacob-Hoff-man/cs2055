@@ -1,16 +1,37 @@
 package services.Customer;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
+import db.DBConnection;
 import models.Customer;
 
 public class CustomerDao implements ICustomerDao {
 
     @Override
     public int addCustomer(Customer customer) throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
+        Connection conn = DBConnection.getConnection();
+        // task 9 implementation
+        CallableStatement properCase = conn.prepareCall("call add_customer( ?, ?, ?, ?, ?, ?, ? )");
+        // calling SQL procedure to insert new store
+        properCase.setString(1, customer.getFirstName());
+        properCase.setString(2, customer.getLastName());
+        properCase.setString(3, customer.getMidInitial());
+        properCase.setString(4, customer.getBirthDay());
+        properCase.setString(5, customer.getBirthMonth());
+        properCase.setString(6, customer.getPhoneNumber());
+        properCase.setString(7, customer.getPhoneType());
+        properCase.execute();
+        
+        properCase = conn.prepareCall("{ ? = call get_customer_id( ? ) }");
+        // calling SQL function to get the newly inserted store's store_number for ret
+        properCase.registerOutParameter(1, Types.INTEGER);
+        properCase.setString(2, customer.getPhoneNumber());
+        properCase.execute();
+        return properCase.getInt(1);
     }
 
     @Override
