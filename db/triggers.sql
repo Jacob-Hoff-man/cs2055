@@ -228,6 +228,29 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Task 8
+CREATE OR REPLACE FUNCTION check_if_loyalty_program_exists(inp_loyalty_level varchar(10))
+RETURNS BOOLEAN
+AS $$
+SELECT EXISTS ( SELECT *
+                    FROM LOYALTY_PROGRAM
+                    WHERE loyalty_level = inp_loyalty_level );
+$$
+LANGUAGE SQL;
+
+CREATE OR REPLACE PROCEDURE add_or_update_loyalty_program(inp_loyalty_level varchar(10), inp_total_points_value_unlocked_at float, inp_booster_value float)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF check_if_loyalty_program_exists(inp_loyalty_level) THEN
+        UPDATE LOYALTY_PROGRAM SET (loyalty_level, total_points_value_unlocked_at, booster_value) = (inp_loyalty_level, inp_total_points_value_unlocked_at, inp_booster_value)
+        WHERE loyalty_level = inp_loyalty_level;
+    ELSE
+        INSERT INTO LOYALTY_PROGRAM (loyalty_level, total_points_value_unlocked_at, booster_value)
+        VALUES (inp_loyalty_level, inp_total_points_value_unlocked_at, inp_booster_value);
+    END IF;
+END;
+$$
 
 ----------------------------------------------------------------------
 -- PROCEDURES AND FUNCTIONS

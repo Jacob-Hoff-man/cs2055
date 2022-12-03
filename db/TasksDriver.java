@@ -11,9 +11,11 @@ import exceptions.CoffeeByIdDoesNotExistException;
 import exceptions.PromotionByIdDoesNotExistException;
 import exceptions.StoreByIdDoesNotExistException;
 import models.Coffee;
+import models.LoyaltyProgram;
 import models.Promotion;
 import models.Store;
 import services.Coffee.CoffeeDao;
+import services.LoyaltyProgram.LoyaltyProgramDao;
 import services.Promotion.PromotionDao;
 import services.Store.StoreDao;
 
@@ -381,5 +383,45 @@ public class TasksDriver {
             System.out.println(e.getStackTrace());
             return -1;
         }
+    }
+
+    public static int task8() {
+        Scanner myScanner = new Scanner(System.in);
+
+        System.out.println("Enter Loyalty Level Name:");
+        String loyaltyLevel = myScanner.nextLine();
+
+        System.out.println("Enter Loyalty Level's Achieving Point Value:");
+        String totalPointsValueUnlockedAt = myScanner.nextLine();
+        while(!stringIsValidFloatValue(totalPointsValueUnlockedAt)) {
+            System.out.println("Enter Loyalty Level's Achieving Point Value (Float Value Only):");
+            totalPointsValueUnlockedAt = myScanner.nextLine();
+        }
+
+        System.out.println("Enter Loyalty Level's Booster Value:");
+        String boosterValue = myScanner.nextLine();
+        while(!stringIsValidFloatValue(boosterValue)) {
+            System.out.println("Enter Loyalty Level's Booster Value (Float Value Only):");
+            boosterValue = myScanner.nextLine();
+        }
+
+        LoyaltyProgram loyaltyProgram = new LoyaltyProgram();
+        loyaltyProgram.setLoyaltyLevel(loyaltyLevel);
+        loyaltyProgram.setTotalPointsValueUnlockedAt(Float.parseFloat(totalPointsValueUnlockedAt));
+        loyaltyProgram.setBoosterValue(Float.parseFloat(boosterValue));
+
+        LoyaltyProgramDao loyaltyProgramDao = new LoyaltyProgramDao();
+        try {
+            System.out.println(loyaltyProgramDao.addOrUpdateLoyaltyProgram(loyaltyProgram));
+            return 1;
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#6:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+        
     }
 }

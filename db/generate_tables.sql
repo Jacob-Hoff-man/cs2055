@@ -56,7 +56,7 @@ CREATE TABLE STORE(
 
 DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
 CREATE DOMAIN Loyalty_Level_Enum AS varchar(10)
-CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
+CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'test'));
 -- Assumptions:
 ---- Total_Points_Value_Unlocked_At must be positive value and cannot be NULL
 ---- Booster_Value must be a float in the range 1.0 - 4.0, and cannot be NULL
