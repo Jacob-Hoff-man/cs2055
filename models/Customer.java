@@ -117,6 +117,6 @@ public class Customer {
             ", loyaltyLevel='" + getLoyaltyLevel() + "'" +
             ", currentPoints='" + getCurrentPoints() + "'" +
             ", totalPoints='" + getTotalPoints() + "'" +
-            "}";
+            "}\n";
     }
 }

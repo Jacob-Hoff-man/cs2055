@@ -305,6 +305,46 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Task 11
+CREATE OR REPLACE FUNCTION get_customers_ranked_by_total_points()
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT *
+        FROM CUSTOMER
+        ORDER BY total_points DESC;
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_customers_ranked_by_current_points()
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT *
+        FROM CUSTOMER
+        ORDER BY current_points DESC;
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_customers_ranked_by_current_points_grouped_by_loyalty_level()
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT *, RANK() OVER(
+        PARTITION BY loyalty_level ORDER BY current_points DESC) AS rank
+    FROM CUSTOMER;
+
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
 ----------------------------------------------------------------------
 -- PROCEDURES AND FUNCTIONS
 ----------------------------------------------------------------------

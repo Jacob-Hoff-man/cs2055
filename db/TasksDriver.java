@@ -497,4 +497,22 @@ public class TasksDriver {
             return -1;
         }
     }
+
+    public static int task11() {
+        CustomerDao customerDao = new CustomerDao();
+        try {
+            List<Customer> customers = customerDao.getCustomersRankedByPoints();
+            System.out.println(customers.toString());
+            // returning #1 customer's id
+            return customers.get(0).getCustomerId();
+            
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#11:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
 }

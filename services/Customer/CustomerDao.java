@@ -2,8 +2,10 @@ package services.Customer;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnection;
@@ -75,7 +77,42 @@ public class CustomerDao implements ICustomerDao {
         // TODO Auto-generated method stub
         return null;
     }
-
+    
+    public List<Customer> getCustomersRankedByPoints() throws SQLException {
+        // task 11 implementation
+        // calling SQL function to get query table of customers grouped by loyalty_level, ordered by total_points asc for ret
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_customers_ranked_by_current_points_grouped_by_loyalty_level() }");
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        List<Customer> customers = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);  
+            properCase.execute();
+            ResultSet rs = (ResultSet)properCase.getObject(1);
+            while (rs.next()) {
+                Customer customer = new Customer();
+                customer.setCustomerId(rs.getInt("customer_id"));
+                customer.setFirstName(rs.getString("first_name"));
+                customer.setLastName(rs.getString("last_name"));
+                customer.setMidInitial(rs.getString("mid_initial"));
+                customer.setBirthMonth(rs.getString("birth_month"));
+                customer.setBirthDay(rs.getString("birth_day"));
+                customer.setPhoneNumber(rs.getString("phone_number"));
+                customer.setPhoneType(rs.getString("phone_type"));
+                customer.setLoyaltyLevel(rs.getString("loyalty_level"));
+                customer.setCurrentPoints(rs.getFloat("current_points"));
+                customer.setTotalPoints(rs.getFloat("total_points"));
+                customers.add(customer);
+            }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return customers;
+    }
     @Override
     public void updateCustomer(Customer customer) throws SQLException {
         // TODO Auto-generated method stub
