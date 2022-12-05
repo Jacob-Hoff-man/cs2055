@@ -117,24 +117,56 @@ public class CoffeeDao implements ICoffeeDao {
 
     @Override
     public List<Coffee> getCoffees() throws SQLException {
-        String query = "SELECT * FROM COFFEE";
-        PreparedStatement ps = conn.prepareStatement(query);
-        ResultSet rs = ps.executeQuery();
+        // jdbc implementation
+        // String query = "SELECT * FROM COFFEE";
+        // PreparedStatement ps = conn.prepareStatement(query);
+        // ResultSet rs = ps.executeQuery();
+        // List<Coffee> coffees = new ArrayList<>();
+
+        // while (rs.next()) {
+        //     Coffee coffee = new Coffee();
+        //     coffee.setCoffeeId(rs.getInt("coffee_id"));
+        //     coffee.setCoffeeName(rs.getString("coffee_name"));
+        //     coffee.setDescription(rs.getString("description"));
+        //     coffee.setCountry(rs.getString("country"));
+        //     coffee.setIntensity(rs.getInt("intensity"));
+        //     coffee.setPrice(rs.getFloat("price"));
+        //     coffee.setRedeemPoints(rs.getFloat("redeem_points"));
+        //     coffee.setRewardPoints(rs.getFloat("reward_points"));
+        //     coffees.add(coffee);
+        // }
+
+        // return coffees;
+
+        // task 13 implementation
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_coffees() }");
+        // calling SQL function to get the newly inserted coffee's coffee_id for ret
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
         List<Coffee> coffees = new ArrayList<>();
-
-        while (rs.next()) {
-            Coffee coffee = new Coffee();
-            coffee.setCoffeeId(rs.getInt("coffee_id"));
-            coffee.setCoffeeName(rs.getString("coffee_name"));
-            coffee.setDescription(rs.getString("description"));
-            coffee.setCountry(rs.getString("country"));
-            coffee.setIntensity(rs.getInt("intensity"));
-            coffee.setPrice(rs.getFloat("price"));
-            coffee.setRedeemPoints(rs.getFloat("redeem_points"));
-            coffee.setRewardPoints(rs.getFloat("reward_points"));
-            coffees.add(coffee);
+        try {
+            conn.setAutoCommit(false);
+            properCase.execute();
+            ResultSet rs = (ResultSet)properCase.getObject(1);
+            while (rs.next()) {
+                Coffee coffee = new Coffee();
+                coffee.setCoffeeId(rs.getInt("coffee_id"));
+                coffee.setCoffeeName(rs.getString("coffee_name"));
+                coffee.setDescription(rs.getString("description"));
+                coffee.setCountry(rs.getString("country"));
+                coffee.setIntensity(rs.getInt("intensity"));
+                coffee.setPrice(rs.getFloat("price"));
+                coffee.setRedeemPoints(rs.getFloat("redeem_points"));
+                coffee.setRewardPoints(rs.getFloat("reward_points"));
+                coffees.add(coffee);
+            }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
         }
-
         return coffees;
     }
 

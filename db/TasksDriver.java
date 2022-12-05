@@ -620,4 +620,28 @@ public class TasksDriver {
         }
 
     }
+
+    public static int task13() {
+        CoffeeDao coffeeDao = new CoffeeDao();
+        try {
+            String output;
+            List<Coffee> coffees = coffeeDao.getCoffees();
+            if (coffees.isEmpty()) {
+                output = "No Coffees are currently offered by BoutiqueCoffee.";
+            } else {
+                output = coffees.toString();
+            }
+
+            System.out.println(output);
+            return 1;
+            
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#5:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
 }

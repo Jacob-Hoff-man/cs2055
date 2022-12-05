@@ -471,3 +471,18 @@ BEGIN
 END
 $$;
 
+-- Task 13
+CREATE OR REPLACE FUNCTION get_coffees()
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT *
+    FROM COFFEE;
+
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
+
+
