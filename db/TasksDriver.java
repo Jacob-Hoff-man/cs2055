@@ -2,7 +2,10 @@ package db;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -14,11 +17,14 @@ import models.Coffee;
 import models.Customer;
 import models.LoyaltyProgram;
 import models.Promotion;
+import models.Record;
+import models.Sale;
 import models.Store;
 import services.Coffee.CoffeeDao;
 import services.Customer.CustomerDao;
 import services.LoyaltyProgram.LoyaltyProgramDao;
 import services.Promotion.PromotionDao;
+import services.Sale.SaleDao;
 import services.Store.StoreDao;
 
 public class TasksDriver {
@@ -43,6 +49,19 @@ public class TasksDriver {
         try {
             return Date.valueOf(inputStr) != null;
         } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public static boolean stringIsValidTimestampValue(String inputStr)
+    { 
+        SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        try{
+        format.parse(inputStr);
+        return true;
+        }
+        catch(ParseException e)
+        {
             return false;
         }
     }
@@ -505,7 +524,7 @@ public class TasksDriver {
             System.out.println(customers.toString());
             // returning #1 customer's id
             return customers.get(0).getCustomerId();
-            
+
         } catch (SQLException e) {
             System.out.println("An error occured while performing Task#11:");
             System.out.println(e.getMessage());
@@ -514,5 +533,91 @@ public class TasksDriver {
             System.out.println(e.getStackTrace());
             return -1;
         }
+    }
+
+    public static int task12() {
+        Scanner myScanner = new Scanner(System.in);
+
+        System.out.println("Enter Customer Id:");
+        String customerId = myScanner.nextLine();
+        while(!stringIsValidIntValue(customerId)) {
+            System.out.println("Enter Customer Id (Int Value Only):");
+            customerId = myScanner.nextLine();
+        }
+
+        System.out.println("Enter Store Number:");
+        String storeNumber = myScanner.nextLine();
+        while(!stringIsValidIntValue(storeNumber)) {
+            System.out.println("Enter Store Number (Int Value Only):");
+            storeNumber = myScanner.nextLine();
+        }
+
+        System.out.println("Enter Sale's Purchased Time:");
+        String purchasedTime = myScanner.nextLine();
+        while(!stringIsValidTimestampValue(purchasedTime)) {
+            System.out.println("Enter Sale's Purchased Time (yyyy-MM-dd HH:mm:ss.SSSSSS Format Only):");
+            purchasedTime = myScanner.nextLine();
+        }
+        
+        List<Record> records = new ArrayList<Record>();
+        String flag = "y";
+        int coffeeCount = 0;
+        while(flag.equals("y")) {
+            coffeeCount++;
+            System.out.println("Coffee #" + coffeeCount + " Values:");
+            
+            System.out.println("Enter Coffee Id:");
+            String coffeeId = myScanner.nextLine();
+            while(!stringIsValidIntValue(coffeeId)) {
+                System.out.println("Enter Coffee Id (Int Value Only):");
+                coffeeId = myScanner.nextLine();
+            }
+    
+            System.out.println("Enter Coffee's Purchased Portion Value:");
+            String purchasedPortion = myScanner.nextLine();
+            while(!stringIsValidFloatValue(purchasedPortion)) {
+                System.out.println("Enter Coffee's Purchased Portion Value (Float Value Only):");
+                purchasedPortion = myScanner.nextLine();
+            }
+    
+            System.out.println("Enter Coffee's Redeemed Portion Value:");
+            String redeemedPortion = myScanner.nextLine();
+            while(!stringIsValidFloatValue(redeemedPortion)) {
+                System.out.println("Enter Coffee's Redeemed Portion Value (Float Value Only):");
+                redeemedPortion = myScanner.nextLine();
+            }
+
+            Record record = new Record();
+            record.setStoreNumber(Integer.parseInt(storeNumber));
+            record.setCoffeeId(Integer.parseInt(coffeeId));
+            record.setPurchasedPortion(Float.parseFloat(purchasedPortion));
+            record.setRedeemedPortion(Float.parseFloat(redeemedPortion));
+
+            records.add(record);
+
+            System.out.println("Enter Another Coffee? (type 'y' for yes)");
+            flag = myScanner.nextLine();
+
+        }
+
+        Sale sale = new Sale();
+        sale.setCustomerId(Integer.parseInt(customerId));
+        sale.setPurchasedTime(Timestamp.valueOf(purchasedTime));
+        System.out.println("TIMESTAMP PRINT:" + sale.getPurchasedTime());
+        sale.setRecords(records);
+
+        SaleDao saleDao = new SaleDao();
+        try {
+            return saleDao.addSale(sale);
+
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#12:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+
     }
 }

@@ -104,16 +104,14 @@ CREATE TABLE CUSTOMER (
 
 -- Assumptions:
 ---- sales are associated with a specific customer (require a customer_id)
----- purchased_portion and redeemed_portion must be positive values.
 ---- sales require specified purchased_portion and redeemed_portion values
 ---- if not specified, the default purchased_time is the current time
 DROP TABLE IF EXISTS SALE CASCADE;
 CREATE TABLE SALE (
-  Purchase_Id int NOT NULL,
+  Purchase_Id serial NOT NULL,
   Customer_Id int NOT NULL,
-  Purchased_Time time DEFAULT CURRENT_TIME,
-  Purchased_Portion float NOT NULL CHECK (Purchased_Portion >= 0),
-  Redeemed_Portion float NOT NULL CHECK (Redeemed_Portion >= 0),
+  Purchased_Time timestamp DEFAULT CURRENT_TIMESTAMP,
+  Balance float,
 
   CONSTRAINT PK_SALE PRIMARY KEY (Purchase_Id),
   CONSTRAINT FK_CUSTOMER FOREIGN KEY (Customer_Id) REFERENCES CUSTOMER(Customer_Id)
@@ -164,11 +162,17 @@ CREATE TABLE FEATURES(
                   ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+-- Assumptions:
+---- quantity must be >= 1.
+---- purchased_portion and redeemed_portion must be positive values.
 DROP TABLE IF EXISTS RECORDS CASCADE;
 CREATE TABLE RECORDS(
     Purchase_Id int NOT NULL,
     Store_Number int NOT NULL,
     Coffee_Id int NOT NULL,
+    Quantity int NOT NULL DEFAULT 1 NOT NULL CHECK (Quantity >= 1),
+    Purchased_Portion float NOT NULL DEFAULT 0 CHECK (Purchased_Portion >= 0),
+    Redeemed_Portion float NOT NULL DEFAULT 0 CHECK (Redeemed_Portion >= 0),
 
     CONSTRAINT RECORDS_PK PRIMARY KEY (Purchase_Id, Store_Number, Coffee_Id),
     CONSTRAINT SALE_FK FOREIGN KEY (Purchase_Id) REFERENCES SALE(Purchase_Id)
