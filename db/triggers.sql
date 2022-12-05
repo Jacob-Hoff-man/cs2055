@@ -411,65 +411,70 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE add_customer_sale_with_recorded_store_and_coffee(IN inp_customer_id int, IN inp_store_number int, IN inp_purchased_time timestamp without time zone, IN inp_coffee_id int[], inp_purchased_portions double precision[], inp_redeemed_portions double precision[], OUT new_purchase_id int)
-LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION add_new_sale(inp_customer_id int, inp_purchased_time timestamp)
+RETURNS INT
 AS $$
 DECLARE
-    purchased_portion_total float := 0;
-    coffee_price_total float := 0;
-    current_customer_points float;
-    i int;
-    n int;
-    current_redeem_points float;
-    current_price float;
-    current_discount_factor float := 0;
+    new_purchase_id int;
 BEGIN
-
     INSERT INTO SALE (customer_id, purchased_time)
     VALUES (inp_customer_id, inp_purchased_time)
     RETURNING SALE.purchase_id INTO new_purchase_id;
-    n := ARRAY_LENGTH(inp_coffee_id, 1);
 
-    SELECT current_points
-    INTO current_customer_points
-    FROM CUSTOMER
+    RETURN new_purchase_id;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_coffee_redeem_points(inp_coffee_id int)
+RETURNS float
+AS $$
+DECLARE
+    ret_redeem_points float;
+BEGIN
+    SELECT redeem_points INTO ret_redeem_points
+    FROM COFFEE
+    WHERE coffee_id = inp_coffee_id;
+
+    RETURN ret_redeem_points;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_coffee_price(inp_coffee_id int)
+RETURNS float
+AS $$
+DECLARE
+    ret_price float;
+BEGIN
+    SELECT price INTO ret_price
+    FROM COFFEE
+    WHERE coffee_id = inp_coffee_id;
+
+    RETURN ret_price;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_sale_balance(inp_purchase_id int, inp_balance float)
+RETURNS int
+AS $$
+BEGIN
+    UPDATE SALE SET balance = inp_balance
+    WHERE purchase_id = inp_purchase_id;
+
+    RETURN inp_purchase_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_customer_current_points(inp_customer_id int, inp_current_points float)
+RETURNS int
+AS $$
+BEGIN
+    UPDATE CUSTOMER SET current_points = inp_current_points
     WHERE customer_id = inp_customer_id;
 
-    IF (n > 0) THEN
-        FOR i in 1..n LOOP
-            purchased_portion_total := purchased_portion_total + inp_purchased_portions[i];
-
-            IF inp_redeemed_portions[i] > current_customer_points THEN
-                RAISE EXCEPTION 'ERROR: Customer has insufficient reward points balance for this Sale.';
-            END IF;
-
-            SELECT redeem_points, price
-            INTO current_redeem_points, current_price
-            FROM COFFEE
-            WHERE coffee_id = i;
-
-            current_discount_factor := inp_redeemed_portions[i] / current_redeem_points;
-            IF current_discount_factor > 1 THEN
-                current_discount_factor := 1;
-                current_customer_points := current_customer_points - current_redeem_points;
-            ELSE
-                current_customer_points := current_customer_points - inp_redeemed_portions;
-            END IF;
-
-            coffee_price_total := coffee_price_total + current_price * (1 - current_discount_factor);
-
-            CALL add_records_or_increment_records_quantity(new_purchase_id, inp_store_number, inp_coffee_id[i], inp_purchased_portions[i], inp_redeemed_portions[i]);
-
-        END LOOP;
-
-        UPDATE SALE SET balance = (coffee_price_total - purchased_portion_total)
-        WHERE purchase_id = new_purchase_id;
-
-    ELSE
-        RAISE EXCEPTION 'ERROR: A Sale cannot be inserted without any sold Coffees.';
-    END IF;
-END
-$$;
+    RETURN inp_customer_id;
+END;
+$$ LANGUAGE plpgsql;
 
 -- Task 13
 CREATE OR REPLACE FUNCTION get_coffees()
