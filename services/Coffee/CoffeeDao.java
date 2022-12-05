@@ -140,8 +140,44 @@ public class CoffeeDao implements ICoffeeDao {
 
         // task 13 implementation
         CallableStatement properCase = conn.prepareCall("{ ? = call get_coffees() }");
-        // calling SQL function to get the newly inserted coffee's coffee_id for ret
+        // calling SQL function to get the coffees in db for ret
         properCase.registerOutParameter(1, Types.REF_CURSOR);
+        List<Coffee> coffees = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);
+            properCase.execute();
+            ResultSet rs = (ResultSet)properCase.getObject(1);
+            while (rs.next()) {
+                Coffee coffee = new Coffee();
+                coffee.setCoffeeId(rs.getInt("coffee_id"));
+                coffee.setCoffeeName(rs.getString("coffee_name"));
+                coffee.setDescription(rs.getString("description"));
+                coffee.setCountry(rs.getString("country"));
+                coffee.setIntensity(rs.getInt("intensity"));
+                coffee.setPrice(rs.getFloat("price"));
+                coffee.setRedeemPoints(rs.getFloat("redeem_points"));
+                coffee.setRewardPoints(rs.getFloat("reward_points"));
+                coffees.add(coffee);
+            }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return coffees;
+    }
+
+    public List<Coffee> getCoffeesByIntensityAndTwoKeywords(int intensity, String kw1, String kw2) throws SQLException {
+        // task 14 implementation
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_coffees_by_intensity_and_two_keywords( ?, ?, ?) }");
+        // calling SQL function to get the coffees in db by matching intensity, kw1, kw2 for ret
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        properCase.setInt(2, intensity);
+        properCase.setString(3, kw1);
+        properCase.setString(4, kw2);
         List<Coffee> coffees = new ArrayList<>();
         try {
             conn.setAutoCommit(false);

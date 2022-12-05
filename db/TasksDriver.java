@@ -636,12 +636,51 @@ public class TasksDriver {
             return 1;
             
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#5:");
+            System.out.println("An error occured while performing Task#13:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
             System.out.println(e.getStackTrace());
             return -1;
         }
+    }
+
+    public static int task14() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Intensity:");
+        String intensity = myScanner.nextLine();
+        while(!stringIsValidIntValue(intensity)) {
+            System.out.println("Enter Intensity (Int Value Between 1-12 Only):");
+            intensity = myScanner.nextLine();
+        }
+
+        System.out.println("Enter Keyword 1 Contained In Coffee Name:");
+        String kw1 = myScanner.nextLine();
+
+        System.out.println("Enter Keyword 1 Contained In Coffee Name:");
+        String kw2 = myScanner.nextLine();
+
+        CoffeeDao coffeeDao = new CoffeeDao();
+        try {
+            String output;
+            List<Coffee> coffees = coffeeDao.getCoffeesByIntensityAndTwoKeywords(Integer.parseInt(intensity), kw1, kw2);
+            if (coffees.isEmpty()) {
+                output = "No Coffees satisfied these conditions.";
+            } else {
+                output = coffees.toString();
+            }
+
+            System.out.println(output);
+            return 1;
+            
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#14:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+
     }
 }

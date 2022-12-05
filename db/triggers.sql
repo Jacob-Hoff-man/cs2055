@@ -485,4 +485,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Task 14
+CREATE OR REPLACE FUNCTION get_coffees_by_intensity_and_two_keywords(inp_intensity int, inp_kw1 varchar(50), inp_kw2 varchar(50))
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT *
+    FROM COFFEE
+    WHERE intensity = inp_intensity
+    AND POSITION(inp_kw1 IN coffee_name) > 0
+    AND POSITION(inp_kw2 IN coffee_name) > 0;
+
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
 
