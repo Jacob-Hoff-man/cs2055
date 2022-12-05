@@ -32,6 +32,56 @@ public class TasksDriver {
     protected static final String floatRegex = "[-+]?[0-9]*\\.?[0-9]+";
     protected static final String[] storeTypes = {"kiosk", "sitting"};
 
+    public static int taskRunner() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Task Number:");
+        String taskNumber = myScanner.nextLine();
+        while(!stringIsValidIntValue(taskNumber)) {
+            System.out.println("Enter Task Number (Int Value Between 1-16 Only):");
+            taskNumber = myScanner.nextLine();
+        }
+        return taskRunner(Integer.parseInt(taskNumber));
+    }
+
+    public static int taskRunner(int taskNumber) {
+        switch(taskNumber) {
+            case 1:
+                return TasksDriver.task1();
+            case 2:
+                return TasksDriver.task2();
+            case 3:
+                return TasksDriver.task3();
+            case 4:
+                return TasksDriver.task4();
+            case 5:
+                return TasksDriver.task5();
+            case 6:
+                return TasksDriver.task6();
+            case 7:
+                return TasksDriver.task7();
+            case 8:
+                return TasksDriver.task8();
+            case 9:
+                return TasksDriver.task9();
+            case 10:
+                return TasksDriver.task10();
+            case 11:
+                return TasksDriver.task11();
+            case 12:
+                return TasksDriver.task12();
+            case 13:
+                return TasksDriver.task13();
+            case 14:
+                return TasksDriver.task14();
+            case 15:
+                return -1; //TasksDriver.task15();
+            case 16:
+                return -1; //TasksDriver.task16();
+            default:
+                return -1;
+        }
+    }
+
     //helpers
     public static boolean stringContainsItemFromList(String inputStr, String[] items) {
         return Arrays.stream(items).anyMatch(inputStr::contains);

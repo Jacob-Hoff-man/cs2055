@@ -13,6 +13,8 @@ public class DBConnection {
     /* static db connection values */
     private static String dbDriverClassName = "org.postgresql.Driver";
     private static String dbLocalUrl = "jdbc:postgresql://localhost:5432/";
+    /* default value set to local psql values */
+    /* TODO: set up user value input from cli args or something */
     private static String dbLocalUsername = "postgres";
     private static String dbLocalPass = "data123";
 
@@ -35,5 +37,13 @@ public class DBConnection {
 
     public static Connection getConnection() {
         return conn;
+    }
+
+    public void setDbUsername(String newUsername) {
+        dbLocalUsername = newUsername;
+    }
+
+    public void setDbPassword(String newPass) {
+        dbLocalPass = newPass;
     }
 }
