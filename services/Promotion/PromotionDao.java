@@ -1,9 +1,11 @@
 package services.Promotion;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,35 +65,66 @@ public class PromotionDao implements IPromotionDao {
     }
 
     public int addPromotionWithIncludedCoffee(Promotion promotion, int coffeeId) throws SQLException {
-        try {
-            conn.setAutoCommit(false);
-            // insert promo entity into table
-            int promoNumber = addPromotion(promotion);
-            // insert includes relationship entity into table
-            addIncludes(promoNumber, coffeeId);
-            // commit transaction
-            conn.commit();
-            conn.setAutoCommit(true);
-            // return the new promo's generated id from db
-            return getPromotion(promotion.getPromoName()).getPromoNumber();
+        // // jdbc implementation
+        // try {
+        //     conn.setAutoCommit(false);
+        //     // insert promo entity into table
+        //     int promoNumber = addPromotion(promotion);
+        //     // insert includes relationship entity into table
+        //     addIncludes(promoNumber, coffeeId);
+        //     // commit transaction
+        //     conn.commit();
+        //     conn.setAutoCommit(true);
+        //     // return the new promo's generated id from db
+        //     return getPromotion(promotion.getPromoName()).getPromoNumber();
 
-        } catch (SQLException e1) {
-            // rollback any changes that occured before transaction failure
-            try {
-                conn.rollback();
-                throw new SQLException(e1);
-            } catch (SQLException e2) {
-                System.out.println("An error occured while performing rollback:");
-                System.out.println(e2.getMessage());
-                System.out.println(e2.getErrorCode());
-                System.out.println(e2.getSQLState());
-                System.out.println(e2.getStackTrace());
-                throw new SQLException(e1);
-            }
-        } 
+        // } catch (SQLException e1) {
+        //     // rollback any changes that occured before transaction failure
+        //     try {
+        //         conn.rollback();
+        //         throw new SQLException(e1);
+        //     } catch (SQLException e2) {
+        //         System.out.println("An error occured while performing rollback:");
+        //         System.out.println(e2.getMessage());
+        //         System.out.println(e2.getErrorCode());
+        //         System.out.println(e2.getSQLState());
+        //         System.out.println(e2.getStackTrace());
+        //         throw new SQLException(e1);
+        //     }
+        // }
+        
+        // task 3 implementation
+        CallableStatement properCase = conn.prepareCall("call add_promotion_with_included_coffee( ?, ?, ?, ? )");
+        // calling SQL procedure to insert new store and includes tuples in db
+        properCase.setString(1, promotion.getPromoName());
+        properCase.setDate(2, promotion.getStartDate());
+        properCase.setDate(3, promotion.getEndDate());
+        properCase.setInt(4, coffeeId);
+        properCase.execute();
+
+        properCase = conn.prepareCall("{ ? = call get_promotion_number( ? ) }");
+        // calling SQL function to get the newly inserted promotion's promo_number for ret
+        properCase.registerOutParameter(1, Types.INTEGER);
+        properCase.setString(2, promotion.getPromoName());
+        properCase.execute();
+        return properCase.getInt(1);
+    }
+    
+    public int addPromotionWithOfferedStore(int promoNumber, int storeNumber) throws SQLException {
+        // task 4 implementation
+        CallableStatement properCase = conn.prepareCall("call add_promotion_offering_at_store( ?, ? )");
+        // calling SQL procedure to insert new store and includes tuples in db
+        properCase.setInt(1, promoNumber);
+        properCase.setInt(2, storeNumber);
+
+        properCase.execute();
+
+        // If no SQL Error was thrown, return storeNumber as success message
+        return storeNumber;
     }
 
     public int addPromotionWithOfferedStore(Promotion promotion, int storeNumber) throws SQLException {
+        // jdbc implementation
         try {
             conn.setAutoCommit(false);
             // insert promo entity into table
@@ -117,7 +150,8 @@ public class PromotionDao implements IPromotionDao {
                 System.out.println(e2.getStackTrace());
                 throw new SQLException(e1);
             }
-        } 
+        }
+        
     }
 
     @Override
@@ -261,5 +295,68 @@ public class PromotionDao implements IPromotionDao {
                 throw new SQLException(e1);
             }
         }
+    }
+
+    public List<Promotion> getPromotionsOfferedByStore(int storeNumber) throws SQLException {
+        // task 6 implementation
+        // calling SQL function to get query table of promotions offered by store for ret
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_promotions_offered_by_store( ? ) }");
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        properCase.setInt(2, storeNumber);
+        List<Promotion> promotions = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);  
+            properCase.execute();
+            ResultSet rs = (ResultSet)properCase.getObject(1);
+            while (rs.next()) {
+                Promotion promotion = new Promotion();
+                promotion.setPromoNumber(rs.getInt("promo_number"));
+                promotion.setPromoName(rs.getString("promo_name"));
+                promotion.setStartDate(rs.getDate("start_date"));
+                promotion.setEndDate(rs.getDate("end_date"));
+
+                promotions.add(promotion);
+            }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return promotions;
+    }
+
+    public List<Promotion> getPromotionsOfferedByStoreByCoffeeId(int storeNumber, int coffeeId) throws SQLException {
+        // task 6 implementation
+        // calling SQL function to get query table of promotions offered by store and coffee for ret
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_promotions_offered_by_store_by_coffee_id( ?, ? ) }");
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        properCase.setInt(2, storeNumber);
+        properCase.setInt(3, coffeeId);
+        List<Promotion> promotions = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);  
+            properCase.execute();
+            ResultSet rs = (ResultSet)properCase.getObject(1);
+            while (rs.next()) {
+                Promotion promotion = new Promotion();
+                promotion.setPromoNumber(rs.getInt("promo_number"));
+                promotion.setPromoName(rs.getString("promo_name"));
+                promotion.setStartDate(rs.getDate("start_date"));
+                promotion.setEndDate(rs.getDate("end_date"));
+
+                promotions.add(promotion);
+            }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return promotions;
     }
 }

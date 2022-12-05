@@ -78,16 +78,16 @@ public class Coffee {
 
     @Override
     public String toString() {
-        return "{" +
-            " coffeeId='" + getCoffeeId() + "'" +
-            ", coffeeName='" + getCoffeeName() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", country='" + getCountry() + "'" +
-            ", intensity='" + getIntensity() + "'" +
-            ", price='" + getPrice() + "'" +
-            ", redeemPoints='" + getRedeemPoints() + "'" +
-            ", rewardPoints='" + getRewardPoints() + "'" +
-            "}";
+        return "\n{" +
+            "coffeeId='" + getCoffeeId() + "'" +
+            ",\n coffeeName='" + getCoffeeName() + "'" +
+            ",\n description='" + getDescription() + "'" +
+            ",\n country='" + getCountry() + "'" +
+            ",\n intensity='" + getIntensity() + "'" +
+            ",\n price='" + getPrice() + "'" +
+            ",\n redeemPoints='" + getRedeemPoints() + "'" +
+            ",\n rewardPoints='" + getRewardPoints() + "'" +
+            "}\n";
     }
 
 

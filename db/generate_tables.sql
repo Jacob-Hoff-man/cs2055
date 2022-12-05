@@ -56,7 +56,7 @@ CREATE TABLE STORE(
 
 DROP DOMAIN IF EXISTS Loyalty_Level_Enum CASCADE;
 CREATE DOMAIN Loyalty_Level_Enum AS varchar(10)
-CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond'));
+CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'test'));
 -- Assumptions:
 ---- Total_Points_Value_Unlocked_At must be positive value and cannot be NULL
 ---- Booster_Value must be a float in the range 1.0 - 4.0, and cannot be NULL
@@ -85,7 +85,7 @@ CONSTRAINT month_enum_value CHECK (VALUE in ('jan', 'feb', 'mar', 'apr', 'may', 
 ---- Current_Points and Total_Points must be positive values, and by default are 0.
 DROP TABLE IF EXISTS CUSTOMER CASCADE;
 CREATE TABLE CUSTOMER (
-    Customer_Id int NOT NULL,
+    Customer_Id serial NOT NULL,
     First_Name varchar(50) NOT NULL,
     Last_Name varchar(50) NOT NULL,
     Mid_Initial char(1),
@@ -93,9 +93,9 @@ CREATE TABLE CUSTOMER (
     Birth_Day char(2) NOT NULL,
     Phone_Number varchar(16) NOT NULL,
     Phone_Type Phone_Enum NOT NULL,
-    Loyalty_Level Loyalty_Level_Enum DEFAULT NULL,
-    Current_Points float CHECK (Current_Points >= 0) DEFAULT NULL,
-    Total_Points float CHECK (Total_Points >= 0) DEFAULT NULL,
+    Loyalty_Level Loyalty_Level_Enum DEFAULT 'basic',
+    Current_Points float CHECK (Current_Points >= 0) DEFAULT 0,
+    Total_Points float CHECK (Total_Points >= 0) DEFAULT 0,
 
     CONSTRAINT PK_CUSTOMER PRIMARY KEY (Customer_Id),
     CONSTRAINT UQ_PHONE UNIQUE (Phone_Number),
@@ -104,16 +104,14 @@ CREATE TABLE CUSTOMER (
 
 -- Assumptions:
 ---- sales are associated with a specific customer (require a customer_id)
----- purchased_portion and redeemed_portion must be positive values.
 ---- sales require specified purchased_portion and redeemed_portion values
 ---- if not specified, the default purchased_time is the current time
 DROP TABLE IF EXISTS SALE CASCADE;
 CREATE TABLE SALE (
-  Purchase_Id int NOT NULL,
+  Purchase_Id serial NOT NULL,
   Customer_Id int NOT NULL,
-  Purchased_Time time DEFAULT CURRENT_TIME,
-  Purchased_Portion float NOT NULL CHECK (Purchased_Portion >= 0),
-  Redeemed_Portion float NOT NULL CHECK (Redeemed_Portion >= 0),
+  Purchased_Time timestamp DEFAULT CURRENT_TIMESTAMP,
+  Balance float,
 
   CONSTRAINT PK_SALE PRIMARY KEY (Purchase_Id),
   CONSTRAINT FK_CUSTOMER FOREIGN KEY (Customer_Id) REFERENCES CUSTOMER(Customer_Id)
@@ -164,11 +162,17 @@ CREATE TABLE FEATURES(
                   ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+-- Assumptions:
+---- quantity must be >= 1.
+---- purchased_portion and redeemed_portion must be positive values.
 DROP TABLE IF EXISTS RECORDS CASCADE;
 CREATE TABLE RECORDS(
     Purchase_Id int NOT NULL,
     Store_Number int NOT NULL,
     Coffee_Id int NOT NULL,
+    Quantity int NOT NULL DEFAULT 1 NOT NULL CHECK (Quantity >= 1),
+    Purchased_Portion float NOT NULL DEFAULT 0 CHECK (Purchased_Portion >= 0),
+    Redeemed_Portion float NOT NULL DEFAULT 0 CHECK (Redeemed_Portion >= 0),
 
     CONSTRAINT RECORDS_PK PRIMARY KEY (Purchase_Id, Store_Number, Coffee_Id),
     CONSTRAINT SALE_FK FOREIGN KEY (Purchase_Id) REFERENCES SALE(Purchase_Id)
