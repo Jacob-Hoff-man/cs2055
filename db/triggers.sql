@@ -507,3 +507,142 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Trigger Assumptions:
+---- Trigger 1:
+----- When a customer makes a Sale, if the Birth_Month and Birth_Day of the specified Customer_Id
+----- matches the Sale's date, the final reward points earned for purchasing a coffee will be multiplied by 1.10 (10%).
+---- Trigger 3:
+----- After a customer makes a sale, the final reward points value calculated for a sale will be
+----- added to the Customer's Current_Points and Total_Points.
+CREATE OR REPLACE FUNCTION get_coffee_reward_points(inp_coffee_id int)
+RETURNS float
+AS $$
+DECLARE
+    ret_redeem_points float;
+BEGIN
+    SELECT redeem_points INTO ret_redeem_points
+    FROM COFFEE
+    WHERE coffee_id = inp_coffee_id;
+
+    RETURN ret_redeem_points;
+END;
+$$ LANGUAGE plpgsql;
+
+-- CREATE OR REPLACE FUNCTION is_customer_birthday(inp_customer_id int)
+-- RETURNS BOOLEAN
+-- AS $$
+-- DECLARE
+--     clock_date date;
+--     clock_day char(2);
+--     clock_numeric_month char(2);
+--     customer_birth_day char(2);
+--     customer_birth_month char(3);
+--     ret bool;
+-- BEGIN
+--     SELECT p_date INTO clock_date FROM CLOCK;
+--
+--     SELECT birth_day, birth_month INTO customer_birth_day, customer_birth_month
+--     FROM CUSTOMER
+--     WHERE customer_id = inp_customer_id;
+--
+--     SELECT extract(DAY FROM clock_date) INTO clock_day;
+--     SELECT extract(MONTH FROM clock_date) INTO clock_numeric_month;
+--
+--     IF FOUND THEN
+--        CASE clock_numeric_month
+--            WHEN '01' AND customer_birth_month = 'jan' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '02' AND customer_birth_month = 'feb' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '03' AND customer_birth_month = 'mar' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '04' AND customer_birth_month = 'apr' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '05' AND customer_birth_month = 'may' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '06' AND customer_birth_month = 'jun' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '07' AND customer_birth_month = 'jul' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '08' AND customer_birth_month = 'aug' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '09' AND customer_birth_month = 'sep' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '10' AND customer_birth_month = 'oct' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '11' AND customer_birth_month = 'nov' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '12' AND customer_birth_month = 'dec' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--       END CASE;
+--     END IF;
+--
+--     IF ret = TRUE THEN
+--         RETURN TRUE;
+--     ELSE
+--         RETURN FALSE;
+--     END IF;
+--
+-- END;
+-- $$
+-- LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_customer_current_points_and_total_points(inp_customer_id int, inp_current_points float, inp_total_points float)
+RETURNS int
+AS $$
+BEGIN
+    UPDATE CUSTOMER SET (current_points, total_points) = (inp_current_points, inp_total_points)
+    WHERE customer_id = inp_customer_id;
+
+    RETURN inp_customer_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION after_update_on_sale()
+RETURNS trigger AS
+$$
+DECLARE
+    total_earned_points float;
+    current_reward_points float;
+    current_total_points float;
+BEGIN
+    SELECT SUM(reward_points) INTO total_earned_points
+    FROM COFFEE
+    WHERE coffee_id IN (
+        SELECT coffee_id
+        FROM SALE NATURAL JOIN RECORDS
+        WHERE purchase_id = old.purchase_id
+    );
+
+    current_reward_points := get_customer_current_points(old.customer_id);
+    current_total_points := get_customer_total_points(old.customer_id);
+
+--     IF (is_customer_birthday(old.customer_id)) THEN
+--         total_earned_points := total_earned_points * 1.10;
+--     END IF;
+
+    current_reward_points := current_reward_points + total_earned_points;
+    current_total_points := current_total_points + total_earned_points;
+
+    PERFORM update_customer_current_points_and_total_points(old.customer_id, current_reward_points, current_total_points);
+    RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS after_update_on_sale ON SALE;
+CREATE TRIGGER after_update_on_sale
+AFTER UPDATE ON SALE FOR EACH ROW EXECUTE PROCEDURE after_update_on_sale();
+
+---- Trigger 2:
+----- For different Loyalty_Level of Loyalty_Program, there’s a
+----- different Booster_value that is multiplied by the Reward_Points
+----- for the final reward points earned for purchasing a Coffee.
+
+---- Trigger 4:
+----- Customer’s Loyalty_Level will get updated if their Total_Points
+----- increases to a certain level (Total_Points_Value_Unlocked_At).
+---- Trigger 5:
+----- A Promotion (by Promotion_Id) will be removed whenever it's end_date
+----- is equal to the current date.
+
