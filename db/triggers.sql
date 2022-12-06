@@ -634,15 +634,37 @@ DROP TRIGGER IF EXISTS after_update_on_sale ON SALE;
 CREATE TRIGGER after_update_on_sale
 AFTER UPDATE ON SALE FOR EACH ROW EXECUTE PROCEDURE after_update_on_sale();
 
+-- TODO:
+
+-- Still working on is_customer_birthday to increase sale earned points by 10% after update of sale
+
+-- Still working on the following trigger:
 ---- Trigger 2:
 ----- For different Loyalty_Level of Loyalty_Program, there’s a
 ----- different Booster_value that is multiplied by the Reward_Points
 ----- for the final reward points earned for purchasing a Coffee.
 
----- Trigger 4:
+----
 ----- Customer’s Loyalty_Level will get updated if their Total_Points
 ----- increases to a certain level (Total_Points_Value_Unlocked_At).
+
+-- Still working on the following trigger:
 ---- Trigger 5:
 ----- A Promotion (by Promotion_Id) will be removed whenever it's end_date
 ----- is equal to the current date.
+
+-- Still need to do TASK 15:
+---- Select all sales that have occurred in the last X months (30 days * X, call it day_count)
+------ use the CLOCK to get p_time (end_date) and then determine the start_date based on day_count and end_date
+------ get sales only where the purchasedDate falls within start_date - end_date range
+-------- order by purchased_time (most recent sales first)
+------ with the sales, you can join with Records (coffees sold on sale), and this can be used to calculate revenue of each store
+------ how to do? group the coffees sold by store and then sum their purchased_portions
+------ how to do? return all of the kth highest revenue positions that tie....
+
+-- Still need to do TASK 16:
+---- same as 15, get list of sales where the purchasedDate falls within start_date - end_date range
+------
+
+---- can't type any more because i am running out of time for submission :(
 
