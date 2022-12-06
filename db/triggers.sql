@@ -411,65 +411,70 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE PROCEDURE add_customer_sale_with_recorded_store_and_coffee(IN inp_customer_id int, IN inp_store_number int, IN inp_purchased_time timestamp without time zone, IN inp_coffee_id int[], inp_purchased_portions double precision[], inp_redeemed_portions double precision[], OUT new_purchase_id int)
-LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION add_new_sale(inp_customer_id int, inp_purchased_time timestamp)
+RETURNS INT
 AS $$
 DECLARE
-    purchased_portion_total float := 0;
-    coffee_price_total float := 0;
-    current_customer_points float;
-    i int;
-    n int;
-    current_redeem_points float;
-    current_price float;
-    current_discount_factor float := 0;
+    new_purchase_id int;
 BEGIN
-
     INSERT INTO SALE (customer_id, purchased_time)
     VALUES (inp_customer_id, inp_purchased_time)
     RETURNING SALE.purchase_id INTO new_purchase_id;
-    n := ARRAY_LENGTH(inp_coffee_id, 1);
 
-    SELECT current_points
-    INTO current_customer_points
-    FROM CUSTOMER
+    RETURN new_purchase_id;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_coffee_redeem_points(inp_coffee_id int)
+RETURNS float
+AS $$
+DECLARE
+    ret_redeem_points float;
+BEGIN
+    SELECT redeem_points INTO ret_redeem_points
+    FROM COFFEE
+    WHERE coffee_id = inp_coffee_id;
+
+    RETURN ret_redeem_points;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_coffee_price(inp_coffee_id int)
+RETURNS float
+AS $$
+DECLARE
+    ret_price float;
+BEGIN
+    SELECT price INTO ret_price
+    FROM COFFEE
+    WHERE coffee_id = inp_coffee_id;
+
+    RETURN ret_price;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_sale_balance(inp_purchase_id int, inp_balance float)
+RETURNS int
+AS $$
+BEGIN
+    UPDATE SALE SET balance = inp_balance
+    WHERE purchase_id = inp_purchase_id;
+
+    RETURN inp_purchase_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_customer_current_points(inp_customer_id int, inp_current_points float)
+RETURNS int
+AS $$
+BEGIN
+    UPDATE CUSTOMER SET current_points = inp_current_points
     WHERE customer_id = inp_customer_id;
 
-    IF (n > 0) THEN
-        FOR i in 1..n LOOP
-            purchased_portion_total := purchased_portion_total + inp_purchased_portions[i];
-
-            IF inp_redeemed_portions[i] > current_customer_points THEN
-                RAISE EXCEPTION 'ERROR: Customer has insufficient reward points balance for this Sale.';
-            END IF;
-
-            SELECT redeem_points, price
-            INTO current_redeem_points, current_price
-            FROM COFFEE
-            WHERE coffee_id = i;
-
-            current_discount_factor := inp_redeemed_portions[i] / current_redeem_points;
-            IF current_discount_factor > 1 THEN
-                current_discount_factor := 1;
-                current_customer_points := current_customer_points - current_redeem_points;
-            ELSE
-                current_customer_points := current_customer_points - inp_redeemed_portions;
-            END IF;
-
-            coffee_price_total := coffee_price_total + current_price * (1 - current_discount_factor);
-
-            CALL add_records_or_increment_records_quantity(new_purchase_id, inp_store_number, inp_coffee_id[i], inp_purchased_portions[i], inp_redeemed_portions[i]);
-
-        END LOOP;
-
-        UPDATE SALE SET balance = (coffee_price_total - purchased_portion_total)
-        WHERE purchase_id = new_purchase_id;
-
-    ELSE
-        RAISE EXCEPTION 'ERROR: A Sale cannot be inserted without any sold Coffees.';
-    END IF;
-END
-$$;
+    RETURN inp_customer_id;
+END;
+$$ LANGUAGE plpgsql;
 
 -- Task 13
 CREATE OR REPLACE FUNCTION get_coffees()
@@ -501,4 +506,165 @@ BEGIN
     RETURN ref;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Trigger Assumptions:
+---- Trigger 1:
+----- When a customer makes a Sale, if the Birth_Month and Birth_Day of the specified Customer_Id
+----- matches the Sale's date, the final reward points earned for purchasing a coffee will be multiplied by 1.10 (10%).
+---- Trigger 3:
+----- After a customer makes a sale, the final reward points value calculated for a sale will be
+----- added to the Customer's Current_Points and Total_Points.
+CREATE OR REPLACE FUNCTION get_coffee_reward_points(inp_coffee_id int)
+RETURNS float
+AS $$
+DECLARE
+    ret_redeem_points float;
+BEGIN
+    SELECT redeem_points INTO ret_redeem_points
+    FROM COFFEE
+    WHERE coffee_id = inp_coffee_id;
+
+    RETURN ret_redeem_points;
+END;
+$$ LANGUAGE plpgsql;
+
+-- CREATE OR REPLACE FUNCTION is_customer_birthday(inp_customer_id int)
+-- RETURNS BOOLEAN
+-- AS $$
+-- DECLARE
+--     clock_date date;
+--     clock_day char(2);
+--     clock_numeric_month char(2);
+--     customer_birth_day char(2);
+--     customer_birth_month char(3);
+--     ret bool;
+-- BEGIN
+--     SELECT p_date INTO clock_date FROM CLOCK;
+--
+--     SELECT birth_day, birth_month INTO customer_birth_day, customer_birth_month
+--     FROM CUSTOMER
+--     WHERE customer_id = inp_customer_id;
+--
+--     SELECT extract(DAY FROM clock_date) INTO clock_day;
+--     SELECT extract(MONTH FROM clock_date) INTO clock_numeric_month;
+--
+--     IF FOUND THEN
+--        CASE clock_numeric_month
+--            WHEN '01' AND customer_birth_month = 'jan' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '02' AND customer_birth_month = 'feb' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '03' AND customer_birth_month = 'mar' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '04' AND customer_birth_month = 'apr' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '05' AND customer_birth_month = 'may' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '06' AND customer_birth_month = 'jun' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '07' AND customer_birth_month = 'jul' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '08' AND customer_birth_month = 'aug' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '09' AND customer_birth_month = 'sep' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '10' AND customer_birth_month = 'oct' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '11' AND customer_birth_month = 'nov' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--            WHEN '12' AND customer_birth_month = 'dec' AND clock_day = customer_birth_day THEN
+--             ret := TRUE;
+--       END CASE;
+--     END IF;
+--
+--     IF ret = TRUE THEN
+--         RETURN TRUE;
+--     ELSE
+--         RETURN FALSE;
+--     END IF;
+--
+-- END;
+-- $$
+-- LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_customer_current_points_and_total_points(inp_customer_id int, inp_current_points float, inp_total_points float)
+RETURNS int
+AS $$
+BEGIN
+    UPDATE CUSTOMER SET (current_points, total_points) = (inp_current_points, inp_total_points)
+    WHERE customer_id = inp_customer_id;
+
+    RETURN inp_customer_id;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION after_update_on_sale()
+RETURNS trigger AS
+$$
+DECLARE
+    total_earned_points float;
+    current_reward_points float;
+    current_total_points float;
+BEGIN
+    SELECT SUM(reward_points) INTO total_earned_points
+    FROM COFFEE
+    WHERE coffee_id IN (
+        SELECT coffee_id
+        FROM SALE NATURAL JOIN RECORDS
+        WHERE purchase_id = old.purchase_id
+    );
+
+    current_reward_points := get_customer_current_points(old.customer_id);
+    current_total_points := get_customer_total_points(old.customer_id);
+
+--     IF (is_customer_birthday(old.customer_id)) THEN
+--         total_earned_points := total_earned_points * 1.10;
+--     END IF;
+
+    current_reward_points := current_reward_points + total_earned_points;
+    current_total_points := current_total_points + total_earned_points;
+
+    PERFORM update_customer_current_points_and_total_points(old.customer_id, current_reward_points, current_total_points);
+    RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS after_update_on_sale ON SALE;
+CREATE TRIGGER after_update_on_sale
+AFTER UPDATE ON SALE FOR EACH ROW EXECUTE PROCEDURE after_update_on_sale();
+
+-- TODO:
+
+-- Still working on is_customer_birthday to increase sale earned points by 10% after update of sale
+
+-- Still working on the following trigger:
+---- Trigger 2:
+----- For different Loyalty_Level of Loyalty_Program, there’s a
+----- different Booster_value that is multiplied by the Reward_Points
+----- for the final reward points earned for purchasing a Coffee.
+
+----
+----- Customer’s Loyalty_Level will get updated if their Total_Points
+----- increases to a certain level (Total_Points_Value_Unlocked_At).
+
+-- Still working on the following trigger:
+---- Trigger 5:
+----- A Promotion (by Promotion_Id) will be removed whenever it's end_date
+----- is equal to the current date.
+
+-- Still need to do TASK 15:
+---- Select all sales that have occurred in the last X months (30 days * X, call it day_count)
+------ use the CLOCK to get p_time (end_date) and then determine the start_date based on day_count and end_date
+------ get sales only where the purchasedDate falls within start_date - end_date range
+-------- order by purchased_time (most recent sales first)
+------ with the sales, you can join with Records (coffees sold on sale), and this can be used to calculate revenue of each store
+------ how to do? group the coffees sold by store and then sum their purchased_portions
+------ how to do? return all of the kth highest revenue positions that tie....
+
+-- Still need to do TASK 16:
+---- same as 15, get list of sales where the purchasedDate falls within start_date - end_date range
+------
+
+---- can't type any more because i am running out of time for submission :(
 
