@@ -511,7 +511,9 @@ $$ LANGUAGE plpgsql;
 ---- Trigger 1:
 ----- When a customer makes a Sale, if the Birth_Month and Birth_Day of the specified Customer_Id
 ----- matches the Sale's date, the final reward points earned for purchasing a coffee will be multiplied by 1.10 (10%).
----- Trigger 3:
+----- For different Loyalty_Level of Loyalty_Program, there’s a
+----- different Booster_value that is multiplied by the Reward_Points
+----- for the final reward points earned for purchasing a Coffee.
 ----- After a customer makes a sale, the final reward points value calculated for a sale will be
 ----- added to the Customer's Current_Points and Total_Points.
 CREATE OR REPLACE FUNCTION get_coffee_reward_points(inp_coffee_id int)
@@ -683,6 +685,33 @@ END;
 $$
 LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION get_customer_loyalty_level_booster_value(inp_customer_id int)
+RETURNS float
+AS $$
+DECLARE
+    ret_booster_value float;
+BEGIN
+    SELECT booster_value INTO ret_booster_value FROM LOYALTY_PROGRAM
+    WHERE loyalty_level IN (
+        SELECT loyalty_level FROM CUSTOMER
+        WHERE customer_id = inp_customer_id
+    );
+
+    return ret_booster_value;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION customer_is_loyalty_member(inp_customer_id int)
+RETURNS BOOLEAN
+AS $$
+SELECT EXISTS ( SELECT *
+                    FROM CUSTOMER
+                    WHERE customer_id = inp_customer_id
+                    AND loyalty_level IS NOT NULL
+);
+$$
+LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION update_customer_current_points_and_total_points(inp_customer_id int, inp_current_points float, inp_total_points float)
 RETURNS int
 AS $$
@@ -713,7 +742,7 @@ BEGIN
     current_reward_points := get_customer_current_points(old.customer_id);
     current_total_points := get_customer_total_points(old.customer_id);
 
---  give 10% additional points whenever SALE PURCHASE TIME is the customer's birthday
+--  give 10% additional points whenever !SALE PURCHASE TIME! is the customer's birthday
     IF (is_sale_purchase_time_customer_birthday(old.customer_id, old.purchased_time)) THEN
         total_earned_points := total_earned_points * 1.10;
     END IF;
@@ -721,6 +750,15 @@ BEGIN
 --  give 10% additional points whenever p_clock is the customer's birthday
 --     IF (is_customer_birthday(old.customer_id)) THEN
 --         total_earned_points := total_earned_points * 1.10;
+--     END IF;
+
+--  give loyalty_level booster additional points
+    total_earned_points := total_earned_points *
+                           get_customer_loyalty_level_booster_value(old.customer_id);
+-- loyalty_level for a customer has default values, so always != null... replaced for opitmization
+--     IF (customer_is_loyalty_member(old.customer_id)) THEN
+--         total_earned_points := total_earned_points *
+--                                get_customer_loyalty_level_booster_value(old.customer_id);
 --     END IF;
 
     current_reward_points := current_reward_points + total_earned_points;
@@ -736,17 +774,49 @@ DROP TRIGGER IF EXISTS after_update_on_sale ON SALE;
 CREATE TRIGGER after_update_on_sale
 AFTER UPDATE ON SALE FOR EACH ROW EXECUTE PROCEDURE after_update_on_sale();
 
--- TODO:
-
--- Still working on the following trigger:
----- Trigger 2:
------ For different Loyalty_Level of Loyalty_Program, there’s a
------ different Booster_value that is multiplied by the Reward_Points
------ for the final reward points earned for purchasing a Coffee.
-
-----
+----- Trigger 2:
 ----- Customer’s Loyalty_Level will get updated if their Total_Points
 ----- increases to a certain level (Total_Points_Value_Unlocked_At).
+CREATE OR REPLACE FUNCTION get_highest_unlocked_loyalty_level(inp_total_points float)
+RETURNS varchar(10) AS
+$$
+DECLARE
+    highest_points_value_unlocked_at float;
+    ret_loyalty_level varchar(10);
+BEGIN
+    SELECT MAX(total_points_value_unlocked_at) INTO highest_points_value_unlocked_at
+    FROM (
+        SELECT *
+        FROM LOYALTY_PROGRAM
+        WHERE inp_total_points >= total_points_value_unlocked_at
+    )
+    AS unlocked_loyalty_levels;
+
+    SELECT loyalty_level INTO ret_loyalty_level
+    FROM LOYALTY_PROGRAM
+    WHERE total_points_value_unlocked_at = highest_points_value_unlocked_at;
+
+    return ret_loyalty_level;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION before_update_on_customer()
+RETURNS trigger AS
+$$
+DECLARE
+    new_loyalty_level varchar(10);
+BEGIN
+    new_loyalty_level := get_highest_unlocked_loyalty_level(new.total_points);
+    new.loyalty_level:= new_loyalty_level;
+    return new;
+END;
+$$
+LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS before_update_on_customer ON CUSTOMER;
+CREATE TRIGGER before_update_on_customer
+BEFORE UPDATE ON CUSTOMER FOR EACH ROW EXECUTE PROCEDURE before_update_on_customer();
 
 -- Still working on the following trigger:
 ---- Trigger 5:
@@ -767,4 +837,3 @@ AFTER UPDATE ON SALE FOR EACH ROW EXECUTE PROCEDURE after_update_on_sale();
 ------
 
 ---- can't type any more because i am running out of time for submission :(
-

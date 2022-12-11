@@ -16,7 +16,7 @@ INSERT INTO LOYALTY_PROGRAM VALUES ('platinum', 50000, 2.0);
 INSERT INTO LOYALTY_PROGRAM VALUES ('diamond', 500000, 4.0);
 
 -- Customers
-INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Jacob', 'Hof', 'A', 'jul', '08', '111-222-3333', 'mobile', 'diamond', 10000, 500000);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Jacob', 'Hof', 'A', 'jul', '08', '111-222-3333', 'mobile', 'platinum', 10000, 499999);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Kairuo', 'Yan', 'K', 'jan', '01', '222-222-3333', 'home', 'basic', 0, 0);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Bob', 'Ross', 'K', 'feb', '02', '333-222-3333', 'work', 'silver', 2500, 2500);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Luke', 'Skywalker', 'A', 'mar', '03', '444-222-3333', 'other', 'gold', 5000, 5000);

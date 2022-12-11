@@ -62,13 +62,15 @@ CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver'
 -- Assumptions:
 ---- Total_Points_Value_Unlocked_At must be positive value and cannot be NULL
 ---- Booster_Value must be a float in the range 1.0 - 4.0, and cannot be NULL
+---- Total_Points_Value_Unlocked_At must be unique
 DROP TABLE IF EXISTS LOYALTY_PROGRAM CASCADE;
 CREATE TABLE LOYALTY_PROGRAM (
     Loyalty_Level Loyalty_Level_Enum NOT NULL,
     Total_Points_Value_Unlocked_At float CHECK (Total_Points_Value_Unlocked_At >= 0) NOT NULL,
     Booster_Value float CHECK (Booster_Value >= 1 AND Booster_Value <= 4) NOT NULL,
 
-    CONSTRAINT LOYALTY_PROGRAM_PK PRIMARY KEY (Loyalty_Level)
+    CONSTRAINT LOYALTY_PROGRAM_PK PRIMARY KEY (Loyalty_Level),
+    CONSTRAINT UQ_Total_Points_Value_Unlocked_At UNIQUE(Total_Points_Value_Unlocked_At)
 );
 
 DROP DOMAIN IF EXISTS Phone_Enum CASCADE;
