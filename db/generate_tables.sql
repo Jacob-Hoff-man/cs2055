@@ -10,7 +10,9 @@
 ---- p_date can not be null
 DROP TABLE IF EXISTS CLOCK cascade;
 CREATE TABLE CLOCK(
-    p_date date NOT NULL
+    p_date date NOT NULL,
+
+    CONSTRAINT clock_pk PRIMARY KEY (p_date)
 );
 
 
