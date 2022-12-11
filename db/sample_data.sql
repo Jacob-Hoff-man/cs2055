@@ -221,4 +221,4 @@ INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(48,2,6);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(49,3,12);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(50,2,3);
 
-INSERT INTO CLOCK VALUES('2022-11-26');
+INSERT INTO CLOCK VALUES('2022-07-09');

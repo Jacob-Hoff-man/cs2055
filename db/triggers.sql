@@ -528,64 +528,160 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- CREATE OR REPLACE FUNCTION is_customer_birthday(inp_customer_id int)
--- RETURNS BOOLEAN
--- AS $$
--- DECLARE
---     clock_date date;
---     clock_day char(2);
---     clock_numeric_month char(2);
---     customer_birth_day char(2);
---     customer_birth_month char(3);
---     ret bool;
--- BEGIN
---     SELECT p_date INTO clock_date FROM CLOCK;
---
---     SELECT birth_day, birth_month INTO customer_birth_day, customer_birth_month
---     FROM CUSTOMER
---     WHERE customer_id = inp_customer_id;
---
---     SELECT extract(DAY FROM clock_date) INTO clock_day;
---     SELECT extract(MONTH FROM clock_date) INTO clock_numeric_month;
---
---     IF FOUND THEN
---        CASE clock_numeric_month
---            WHEN '01' AND customer_birth_month = 'jan' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '02' AND customer_birth_month = 'feb' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '03' AND customer_birth_month = 'mar' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '04' AND customer_birth_month = 'apr' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '05' AND customer_birth_month = 'may' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '06' AND customer_birth_month = 'jun' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '07' AND customer_birth_month = 'jul' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '08' AND customer_birth_month = 'aug' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '09' AND customer_birth_month = 'sep' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '10' AND customer_birth_month = 'oct' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '11' AND customer_birth_month = 'nov' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---            WHEN '12' AND customer_birth_month = 'dec' AND clock_day = customer_birth_day THEN
---             ret := TRUE;
---       END CASE;
---     END IF;
---
---     IF ret = TRUE THEN
---         RETURN TRUE;
---     ELSE
---         RETURN FALSE;
---     END IF;
---
--- END;
--- $$
--- LANGUAGE plpgsql;
+CREATE OR REPLACE FUNCTION get_customer_birth_day(inp_customer_id int)
+RETURNS char(2)
+AS $$
+DECLARE
+    ret_birth_day float;
+BEGIN
+    SELECT birth_day INTO ret_birth_day
+    FROM CUSTOMER
+    WHERE customer_id = inp_customer_id;
+
+    RETURN ret_birth_day;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_customer_birth_month(inp_customer_id int)
+RETURNS char(3)
+AS $$
+DECLARE
+    ret_birth_month char(3);
+BEGIN
+    SELECT birth_month INTO ret_birth_month
+    FROM CUSTOMER
+    WHERE customer_id = inp_customer_id;
+
+    RETURN ret_birth_month;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_p_clock_day()
+RETURNS char(2)
+AS $$
+DECLARE
+    ret_day_string char(2);
+BEGIN
+    SELECT cast(date_part('day', p_date) as char(2)) INTO ret_day_string
+    FROM CLOCK;
+
+    RETURN ret_day_string;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_p_clock_month()
+RETURNS char(3)
+AS $$
+DECLARE
+    ret_month float;
+    ret_month_string char(3);
+BEGIN
+    SELECT date_part('month', p_date) INTO ret_month
+    FROM CLOCK;
+
+    CASE ret_month
+        WHEN '1' THEN ret_month_string := 'jan';
+        WHEN '2' THEN ret_month_string := 'feb';
+        WHEN '3' THEN ret_month_string := 'mar';
+        WHEN '4' THEN ret_month_string := 'apr';
+        WHEN '5' THEN ret_month_string := 'may';
+        WHEN '6' THEN ret_month_string := 'jun';
+        WHEN '7' THEN ret_month_string := 'jul';
+        WHEN '8' THEN ret_month_string := 'aug';
+        WHEN '9' THEN ret_month_string := 'sep';
+        WHEN '10' THEN ret_month_string := 'oct';
+        WHEN '11' THEN ret_month_string := 'nov';
+        WHEN '12' THEN ret_month_string := 'dec';
+    END CASE;
+
+    RETURN ret_month_string;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_timestamp_day(inp_timestamp timestamp)
+RETURNS char(2)
+AS $$
+BEGIN
+    return cast(date_part('day', inp_timestamp) as char(2));
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_timestamp_month(inp_timestamp timestamp)
+RETURNS char(3)
+AS $$
+DECLARE
+    ret_month_string char(3);
+BEGIN
+    CASE date_part('month', inp_timestamp)
+        WHEN '1' THEN ret_month_string := 'jan';
+        WHEN '2' THEN ret_month_string := 'feb';
+        WHEN '3' THEN ret_month_string := 'mar';
+        WHEN '4' THEN ret_month_string := 'apr';
+        WHEN '5' THEN ret_month_string := 'may';
+        WHEN '6' THEN ret_month_string := 'jun';
+        WHEN '7' THEN ret_month_string := 'jul';
+        WHEN '8' THEN ret_month_string := 'aug';
+        WHEN '9' THEN ret_month_string := 'sep';
+        WHEN '10' THEN ret_month_string := 'oct';
+        WHEN '11' THEN ret_month_string := 'nov';
+        WHEN '12' THEN ret_month_string := 'dec';
+    END CASE;
+
+    RETURN ret_month_string;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION is_customer_birthday(inp_customer_id int)
+RETURNS BOOLEAN
+AS $$
+DECLARE
+    birth_month char(3);
+    birth_day char(2);
+    p_month char(3);
+    p_day char(2);
+BEGIN
+    birth_day := get_customer_birth_day(inp_customer_id);
+    birth_month := get_customer_birth_month(inp_customer_id);
+    p_day := get_p_clock_day();
+    p_month := get_p_clock_month();
+
+    raise notice 'CUSTOMER BDAY Value: %', birth_day;
+    raise notice 'CUSTOMER BMONTH Value: %', birth_month;
+    raise notice 'CLOCK DAY Value: %', p_day;
+    raise notice 'CLOCK MONTH Value: %', p_month;
+
+
+    IF (birth_day = p_day AND birth_month = p_month) THEN
+        return true;
+    ELSE
+        return false;
+    END IF;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION is_sale_purchase_time_customer_birthday(inp_customer_id int, inp_timestamp timestamp)
+RETURNS BOOLEAN
+AS $$
+DECLARE
+    birth_month char(3);
+    birth_day char(2);
+    ts_month char(3);
+    ts_day char(2);
+BEGIN
+    birth_day := get_customer_birth_day(inp_customer_id);
+    birth_month := get_customer_birth_month(inp_customer_id);
+    ts_day := get_timestamp_day(inp_timestamp);
+    ts_month := get_timestamp_month(inp_timestamp);
+
+    IF (birth_day = ts_day AND birth_month = ts_month) THEN
+        return true;
+    ELSE
+        return false;
+    END IF;
+END;
+$$
+LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION update_customer_current_points_and_total_points(inp_customer_id int, inp_current_points float, inp_total_points float)
 RETURNS int
@@ -617,6 +713,12 @@ BEGIN
     current_reward_points := get_customer_current_points(old.customer_id);
     current_total_points := get_customer_total_points(old.customer_id);
 
+--  give 10% additional points whenever SALE PURCHASE TIME is the customer's birthday
+    IF (is_sale_purchase_time_customer_birthday(old.customer_id, old.purchased_time)) THEN
+        total_earned_points := total_earned_points * 1.10;
+    END IF;
+
+--  give 10% additional points whenever p_clock is the customer's birthday
 --     IF (is_customer_birthday(old.customer_id)) THEN
 --         total_earned_points := total_earned_points * 1.10;
 --     END IF;
@@ -635,8 +737,6 @@ CREATE TRIGGER after_update_on_sale
 AFTER UPDATE ON SALE FOR EACH ROW EXECUTE PROCEDURE after_update_on_sale();
 
 -- TODO:
-
--- Still working on is_customer_birthday to increase sale earned points by 10% after update of sale
 
 -- Still working on the following trigger:
 ---- Trigger 2:
