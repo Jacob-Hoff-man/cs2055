@@ -10,9 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import exceptions.CoffeeByIdDoesNotExistException;
-import exceptions.PromotionByIdDoesNotExistException;
-import exceptions.StoreByIdDoesNotExistException;
 import models.Coffee;
 import models.Customer;
 import models.LoyaltyProgram;

@@ -145,6 +145,21 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION get_stores_with_promotions_by_coffee_id(inp_coffee_id int)
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+BEGIN
+    OPEN ref FOR SELECT * FROM STORE WHERE store_number IN (
+        SELECT DISTINCT store_number
+        FROM OFFERS NATURAL JOIN INCLUDES
+        WHERE coffee_id = inp_coffee_id
+    );
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Task 6
 CREATE OR REPLACE FUNCTION get_promotions_offered_by_store(inp_store_number int)
 RETURNS refcursor
@@ -199,7 +214,7 @@ BEGIN
                 FROM STORE WHERE (latitude, longitude) IN
                     (SELECT latitude, longitude
                     FROM STORE
-                    ORDER BY euclidean_distance(10, 10, latitude, longitude) ASC
+                    ORDER BY euclidean_distance(inp_latitude, inp_longitude, latitude, longitude) ASC
                     LIMIT 1
                     );
     RETURN ref;
@@ -821,7 +836,9 @@ BEFORE UPDATE ON CUSTOMER FOR EACH ROW EXECUTE PROCEDURE before_update_on_custom
 -- Still working on the following trigger:
 ---- Trigger 5:
 ----- A Promotion (by Promotion_Id) will be removed whenever it's end_date
------ is equal to the current date.
+----- is equal to the current date (p_date in CLOCK).
+----- After update on CLOCK, remove any promos where p_date = end_date
+
 
 -- Still need to do TASK 15:
 ---- Select all sales that have occurred in the last X months (30 days * X, call it day_count)
@@ -835,5 +852,3 @@ BEFORE UPDATE ON CUSTOMER FOR EACH ROW EXECUTE PROCEDURE before_update_on_custom
 -- Still need to do TASK 16:
 ---- same as 15, get list of sales where the purchasedDate falls within start_date - end_date range
 ------
-
----- can't type any more because i am running out of time for submission :(
