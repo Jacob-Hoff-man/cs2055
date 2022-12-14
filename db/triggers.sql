@@ -833,12 +833,52 @@ DROP TRIGGER IF EXISTS before_update_on_customer ON CUSTOMER;
 CREATE TRIGGER before_update_on_customer
 BEFORE UPDATE ON CUSTOMER FOR EACH ROW EXECUTE PROCEDURE before_update_on_customer();
 
--- Still working on the following trigger:
----- Trigger 5:
+---- Trigger 3:
 ----- A Promotion (by Promotion_Id) will be removed whenever it's end_date
 ----- is equal to the current date (p_date in CLOCK).
 ----- After update on CLOCK, remove any promos where p_date = end_date
+CREATE OR REPLACE FUNCTION get_p_clock_date()
+RETURNS date AS
+$$
+DECLARE
+    ret_date date;
+BEGIN
+    SELECT p_date INTO ret_date
+    FROM CLOCK;
+    RETURN ret_date;
+END;
+$$
+LANGUAGE plpgsql;
 
+CREATE OR REPLACE PROCEDURE update_clock_date(inp_date date)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE CLOCK SET p_date = inp_date
+    WHERE p_date = get_p_clock_date();
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION after_update_on_clock()
+RETURNS trigger
+AS
+$$
+BEGIN
+    DELETE FROM PROMOTION
+    WHERE promo_number IN (
+        SELECT promo_number
+        FROM PROMOTION
+        WHERE end_date <= new.p_date
+    );
+    RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+DROP TRIGGER IF EXISTS after_update_on_clock ON CLOCK;
+CREATE TRIGGER after_update_on_clock
+AFTER UPDATE ON CLOCK FOR EACH ROW EXECUTE PROCEDURE after_update_on_clock();
 
 -- Still need to do TASK 15:
 ---- Select all sales that have occurred in the last X months (30 days * X, call it day_count)

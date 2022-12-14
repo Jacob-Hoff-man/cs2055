@@ -17,6 +17,7 @@ import models.Promotion;
 import models.Record;
 import models.Sale;
 import models.Store;
+import services.ClockDao;
 import services.Coffee.CoffeeDao;
 import services.Customer.CustomerDao;
 import services.LoyaltyProgram.LoyaltyProgramDao;
@@ -71,7 +72,7 @@ public class TasksDriver {
             case 14:
                 return TasksDriver.task14();
             case 15:
-                return -1; //TasksDriver.task15();
+                return TasksDriver.task15();
             case 16:
                 return -1; //TasksDriver.task16();
             default:
@@ -729,5 +730,26 @@ public class TasksDriver {
             return -1;
         }
 
+    }
+
+    public static int task15() {
+        ClockDao clockDao = new ClockDao();
+        try {
+            Date myDate = Date.valueOf("2023-11-15");
+            String output = clockDao.updateClock(myDate).toString();
+            System.out.println(output);
+            return 1;
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#14:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
+
+    public static int task16() {
+        return -1;
     }
 }
