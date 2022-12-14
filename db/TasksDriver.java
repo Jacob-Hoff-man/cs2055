@@ -733,14 +733,29 @@ public class TasksDriver {
     }
 
     public static int task15() {
-        ClockDao clockDao = new ClockDao();
+        Scanner myScanner = new Scanner(System.in);
+
+        System.out.println("Enter number of stores (top K):");
+        String k = myScanner.nextLine();
+        while(!stringIsValidIntValue(k)) {
+            System.out.println("Enter number of stores (top K) (Int Value Only):");
+            k = myScanner.nextLine();
+        }
+
+        System.out.println("Enter number of months:");
+        String months = myScanner.nextLine();
+        while(!stringIsValidIntValue(months)) {
+            System.out.println("Enter number of months (Int Value Only):");
+            months = myScanner.nextLine();
+        }
+
+        StoreDao storeDao = new StoreDao();
         try {
-            Date myDate = Date.valueOf("2023-11-15");
-            String output = clockDao.updateClock(myDate).toString();
-            System.out.println(output);
+            List<Integer> storeNumbers = storeDao.getTopKStoresByHighestRevenueInXMonths(Integer.parseInt(k), Integer.parseInt(months));
+            System.out.println(storeNumbers.toString());
             return 1;
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#14:");
+            System.out.println("An error occured while performing Task#15:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());

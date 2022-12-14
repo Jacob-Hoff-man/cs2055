@@ -2,6 +2,8 @@
 -- CoffeeBoutique CS 1555/2055 Fall 2022
 -- Jacob Hoffman and Kairuo Yan
 -------------------------------------------
+
+-- TASKS --
 -- task 1
 CREATE OR REPLACE PROCEDURE add_store(inp_store_name varchar(50), inp_longitude float, inp_latitude float, inp_store_type varchar(7))
 LANGUAGE plpgsql
@@ -522,6 +524,39 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Task 15
+CREATE OR REPLACE FUNCTION get_top_k_stores_by_highest_revenue_in_x_months(inp_k int, inp_months int)
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+    num_days int := 30 * inp_months;
+    end_date date;
+    start_date date;
+BEGIN
+    end_date := get_p_clock_date();
+    start_date := end_date - num_days;
+
+    OPEN ref FOR SELECT store_number
+                 FROM STORE NATURAL JOIN (
+                     SELECT *
+                     FROM RECORDS NATURAL JOIN SALE
+                     WHERE DATE(purchased_time) >= start_date
+                     AND DATE(purchased_time) <= end_date
+                 ) AS X_MONTHS_RECORDS
+                 GROUP BY store_number
+                 ORDER BY SUM(purchased_portion) DESC
+                 FETCH FIRST inp_k ROWS WITH TIES;
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Still need to do TASK 16:
+---- same as 15, get list of sales where the purchasedDate falls within start_date - end_date range
+------
+
+
+-- TRIGGERS --
 -- Trigger Assumptions:
 ---- Trigger 1:
 ----- When a customer makes a Sale, if the Birth_Month and Birth_Day of the specified Customer_Id
@@ -875,20 +910,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
-
 DROP TRIGGER IF EXISTS after_update_on_clock ON CLOCK;
 CREATE TRIGGER after_update_on_clock
 AFTER UPDATE ON CLOCK FOR EACH ROW EXECUTE PROCEDURE after_update_on_clock();
 
--- Still need to do TASK 15:
----- Select all sales that have occurred in the last X months (30 days * X, call it day_count)
------- use the CLOCK to get p_time (end_date) and then determine the start_date based on day_count and end_date
------- get sales only where the purchasedDate falls within start_date - end_date range
--------- order by purchased_time (most recent sales first)
------- with the sales, you can join with Records (coffees sold on sale), and this can be used to calculate revenue of each store
------- how to do? group the coffees sold by store and then sum their purchased_portions
------- how to do? return all of the kth highest revenue positions that tie....
-
--- Still need to do TASK 16:
----- same as 15, get list of sales where the purchasedDate falls within start_date - end_date range
-------

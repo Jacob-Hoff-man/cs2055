@@ -58,7 +58,7 @@ INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 3', '202
 
 -- Purchase (Sale)
 INSERT INTO SALE (customer_id) VALUES(1);
-INSERT INTO SALE (customer_id) VALUES(20);
+INSERT INTO SALE (customer_id, purchased_time) VALUES(20, '2021-12-14 20:47:39.252666');
 INSERT INTO SALE (customer_id) VALUES(5);
 INSERT INTO SALE (customer_id) VALUES(3);
 INSERT INTO SALE (customer_id) VALUES(1);
@@ -169,9 +169,9 @@ INSERT INTO FEATURES VALUES(11,3);
 INSERT INTO FEATURES VALUES(12,3);
 
 -- Records
-INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(1,1,1);
-INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(2,2,2);
-INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(3,3,1);
+INSERT INTO RECORDS (purchase_id, store_number, coffee_id, purchased_portion) VALUES(1,1,1, 100);
+INSERT INTO RECORDS (purchase_id, store_number, coffee_id, purchased_portion) VALUES(2,2,2, 1000);
+INSERT INTO RECORDS (purchase_id, store_number, coffee_id, purchased_portion) VALUES(3,3,1, 100);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(3,2,2);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(4,1,2);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(5,2,2);
@@ -221,4 +221,4 @@ INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(48,2,6);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(49,3,12);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(50,2,3);
 
-INSERT INTO CLOCK VALUES('2022-07-09');
+INSERT INTO CLOCK VALUES('2022-12-30');
