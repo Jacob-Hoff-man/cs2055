@@ -575,12 +575,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Still need to do TASK 16:
-
----- same as 15, get list of sales where the purchasedDate falls within start_date - end_date range
-------
-
-
 -- TRIGGERS --
 -- Trigger Assumptions:
 ---- Trigger 1:
