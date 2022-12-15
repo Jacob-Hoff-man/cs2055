@@ -551,7 +551,32 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Task 16
+CREATE OR REPLACE FUNCTION get_top_k_customers_by_highest_purchased_sum_in_x_months(inp_k int, inp_months int)
+RETURNS refcursor
+AS $$
+DECLARE
+    ref refcursor;
+    num_days int := 30 * inp_months;
+    end_date date;
+    start_date date;
+BEGIN
+    end_date := get_p_clock_date();
+    start_date := end_date - num_days;
+
+    OPEN ref FOR SELECT customer_id
+                 FROM SALE NATURAL JOIN RECORDS
+                 WHERE DATE(purchased_time) >= start_date
+                 AND DATE(purchased_time) <= end_date
+                 GROUP BY customer_id
+                 ORDER BY SUM(purchased_portion) DESC
+                 FETCH FIRST inp_k ROWS WITH TIES;
+    RETURN ref;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Still need to do TASK 16:
+
 ---- same as 15, get list of sales where the purchasedDate falls within start_date - end_date range
 ------
 

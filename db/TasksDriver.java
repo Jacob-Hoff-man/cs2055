@@ -74,7 +74,7 @@ public class TasksDriver {
             case 15:
                 return TasksDriver.task15();
             case 16:
-                return -1; //TasksDriver.task16();
+                return TasksDriver.task16();
             default:
                 return -1;
         }
@@ -765,6 +765,34 @@ public class TasksDriver {
     }
 
     public static int task16() {
-        return -1;
+        Scanner myScanner = new Scanner(System.in);
+
+        System.out.println("Enter number of customers (top K):");
+        String k = myScanner.nextLine();
+        while(!stringIsValidIntValue(k)) {
+            System.out.println("Enter number of customers (top K) (Int Value Only):");
+            k = myScanner.nextLine();
+        }
+
+        System.out.println("Enter number of months:");
+        String months = myScanner.nextLine();
+        while(!stringIsValidIntValue(months)) {
+            System.out.println("Enter number of months (Int Value Only):");
+            months = myScanner.nextLine();
+        }
+
+        CustomerDao customerDao = new CustomerDao();
+        try {
+            List<Integer> customerIds = customerDao.getTopKCustomersByHighestPurchasedSumInXMonths(Integer.parseInt(k), Integer.parseInt(months));
+            System.out.println(customerIds.toString());
+            return 1;
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#15:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
     }
 }

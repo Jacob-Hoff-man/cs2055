@@ -113,6 +113,32 @@ public class CustomerDao implements ICustomerDao {
         }
         return customers;
     }
+
+    public List<Integer> getTopKCustomersByHighestPurchasedSumInXMonths(int k, int months) throws SQLException {
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_top_k_customers_by_highest_purchased_sum_in_x_months( ?, ? ) }");
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        properCase.setInt(2, k);
+        properCase.setInt(3, months);
+        List<Integer> customerIds = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);
+                properCase.execute();
+                ResultSet rs = (ResultSet)properCase.getObject(1);
+                while (rs.next()) {
+                    int customerId = rs.getInt("customer_id");
+                    customerIds.add(customerId);
+                }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return customerIds;
+    }
+
     @Override
     public void updateCustomer(Customer customer) throws SQLException {
         // TODO Auto-generated method stub
