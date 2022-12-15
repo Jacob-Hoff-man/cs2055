@@ -137,7 +137,7 @@ public class TasksTests {
         Promotion promotion = new Promotion();
         promotion.setPromoName("TASK_3_TEST_CASE_1");
         promotion.setStartDate(Date.valueOf("2022-10-01"));
-        promotion.setEndDate(Date.valueOf("2022-10-01"));
+        promotion.setEndDate(Date.valueOf("2022-10-10"));
 
         int promoNumber = TasksDriver.task3(promotion, 1);
 
@@ -152,7 +152,7 @@ public class TasksTests {
         Promotion promotion = new Promotion();
         promotion.setPromoName("TASK_3_TEST_CASE_1");
         promotion.setStartDate(Date.valueOf("2022-10-01"));
-        promotion.setEndDate(Date.valueOf("2022-10-01"));
+        promotion.setEndDate(Date.valueOf("2022-10-10"));
 
         int promoNumber = TasksDriver.task3(promotion, 1);
         promotion.setPromoNumber(promoNumber);
@@ -179,7 +179,7 @@ public class TasksTests {
         Promotion promotion = new Promotion();
         promotion.setPromoName("TASK_4_TEST_CASE_1");
         promotion.setStartDate(Date.valueOf("2022-10-01"));
-        promotion.setEndDate(Date.valueOf("2022-10-01"));
+        promotion.setEndDate(Date.valueOf("2022-10-10"));
 
         int promoNumber = TasksDriver.task3(promotion, 1);
         // return if new promo failed to insert into db
@@ -196,7 +196,7 @@ public class TasksTests {
         Promotion promotion = new Promotion();
         promotion.setPromoName("TASK_4_TEST_CASE_1");
         promotion.setStartDate(Date.valueOf("2022-10-01"));
-        promotion.setEndDate(Date.valueOf("2022-10-01"));
+        promotion.setEndDate(Date.valueOf("2022-10-10"));
 
         int promoNumber = TasksDriver.task3(promotion, 1);
         // return if new promo failed to insert into db
@@ -724,14 +724,14 @@ public class TasksTests {
         return TasksDriver.task8(loyaltyProgram) == -1;
 
     } 
-
+    // If the booster value is < 1 or > 4, should fail
     public static boolean task8TestCase6() {
         DBConnection.restartDatabaseState();
         
         LoyaltyProgram loyaltyProgram = new LoyaltyProgram();
         loyaltyProgram.setLoyaltyLevel("invalid_loyalty_level_string");
-        loyaltyProgram.setTotalPointsValueUnlockedAt((float)0.0);
-        loyaltyProgram.setBoosterValue((float)1.9);
+        loyaltyProgram.setTotalPointsValueUnlockedAt((float)10.0);
+        loyaltyProgram.setBoosterValue((float)5);
         // check if task returns -1
         return TasksDriver.task8(loyaltyProgram) == -1;
 
@@ -818,7 +818,7 @@ public class TasksTests {
         DBConnection.restartDatabaseState();
 
         // expected values -- using only the customer ids for simplifying the test
-        int [] eCustomerIds = {7, 2, 20, 13, 14, 15, 16, 17, 18, 19, 10, 11, 12, 8, 6, 4, 5, 1, 3, 9};
+        int [] eCustomerIds = {7, 2, 20, 13, 14, 15, 16, 17, 18, 19, 10, 11, 12, 6, 8, 4, 5, 1, 3, 9};
 
         CustomerDao customerDao = new CustomerDao();
         try {
@@ -1057,7 +1057,7 @@ public class TasksTests {
     // If multiple stores have the same revenue, their order in the returned result can be arbitrary.
     // If multiple stores have the same revenue in the Kth highest revenue position, their store IDs
     // should all be returned.
-    // all sales, k = 2, but 3 stores are returns becuase 1, 3 tie for rank 2
+    // all sales, k = 2, but 3 stores are returns because 1, 3 tie for rank 2
     public static boolean task15TestCase4() {
         DBConnection.restartDatabaseState();
         // expected values
@@ -1157,7 +1157,7 @@ public class TasksTests {
         }
     }
 
-    // all sales, k = 2, but 3 customers are returns becuase 1, 3 tie for rank 2
+    // all sales, k = 2, but 3 customers are returns because 1, 3 tie for rank 2
     public static boolean task16TestCase4() {
         DBConnection.restartDatabaseState();
         // expected values
@@ -1241,6 +1241,9 @@ public class TasksTests {
             int purchaseId = saleDao.addSale(sale);
             float newCurrentPoints = (float)customerDao.getCustomerCurrentPoints(4);
             float newTotalPoints = (float)customerDao.getCustomerTotalPoints(4);
+            
+            System.out.println("expected current points= " + eCurrentPoints + ", actual current points=" + newCurrentPoints);
+            System.out.println("expected total points= " + eTotalPoints + ", actual total points=" + newTotalPoints);
             return (eCurrentPoints == newCurrentPoints && eTotalPoints == newTotalPoints);
 
         } catch (SQLException e) {
@@ -1298,6 +1301,9 @@ public class TasksTests {
             int purchaseId = saleDao.addSale(sale);
             float newCurrentPoints = (float)customerDao.getCustomerCurrentPoints(9);
             float newTotalPoints = (float)customerDao.getCustomerTotalPoints(9);
+
+            System.out.println("expected current points= " + eCurrentPoints + ", actual current points=" + newCurrentPoints);
+            System.out.println("expected total points= " + eTotalPoints + ", actual total points=" + newTotalPoints);
             return (eCurrentPoints == newCurrentPoints && eTotalPoints == newTotalPoints);
 
         } catch (SQLException e) {
@@ -1356,6 +1362,9 @@ public class TasksTests {
             int purchaseId = saleDao.addSale(sale);
             float newCurrentPoints = (float)customerDao.getCustomerCurrentPoints(2);
             float newTotalPoints = (float)customerDao.getCustomerTotalPoints(2);
+
+            System.out.println("expected current points= " + eCurrentPoints + ", actual current points=" + newCurrentPoints);
+            System.out.println("expected total points= " + eTotalPoints + ", actual total points=" + newTotalPoints);
             return (eCurrentPoints == newCurrentPoints && eTotalPoints == newTotalPoints);
 
         } catch (SQLException e) {
@@ -1405,6 +1414,8 @@ public class TasksTests {
         try {
             int purchaseId = saleDao.addSale(sale);
             Customer updatedCustomer = customerDao.getCustomer(8);
+
+            System.out.println("expected customer loyalty level= " + eLoyaltyLevel + ", actual customer loyalty level=" + updatedCustomer.getLoyaltyLevel());
             return (updatedCustomer.getLoyaltyLevel().equals(eLoyaltyLevel));
 
         } catch (SQLException e) {
