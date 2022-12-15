@@ -66,7 +66,7 @@ $$
 LANGUAGE SQL;
 
 ALTER TABLE INCLUDES
-   ADD CONSTRAINT coffee_exists CHECK (check_if_coffee_exists(coffee_id));
+   ADD CONSTRAINT coffee_exists CHECK (check_if_coffee_exists(coffee_id)) DEFERRABLE;
 
 CREATE OR REPLACE PROCEDURE add_promotion_with_included_coffee(inp_promo_name varchar(50), inp_start_date date, inp_end_date date, inp_coffee_id int)
 LANGUAGE plpgsql
@@ -112,7 +112,7 @@ $$
 LANGUAGE SQL;
 
 ALTER TABLE OFFERS
-   ADD CONSTRAINT promotion_exists CHECK (check_if_promotion_exists(promo_number));
+   ADD CONSTRAINT promotion_exists CHECK (check_if_promotion_exists(promo_number)) DEFERRABLE;
 
 CREATE OR REPLACE FUNCTION check_if_store_exists(inp_store_number int)
 RETURNS BOOLEAN
@@ -124,7 +124,7 @@ $$
 LANGUAGE SQL;
 
 ALTER TABLE OFFERS
-   ADD CONSTRAINT store_exists CHECK (check_if_store_exists(store_number));
+   ADD CONSTRAINT store_exists CHECK (check_if_store_exists(store_number)) DEFERRABLE;
 
 CREATE OR REPLACE PROCEDURE add_promotion_offering_at_store(inp_promo_number int, inp_store_number int)
 LANGUAGE plpgsql
@@ -383,13 +383,13 @@ $$
 LANGUAGE SQL;
 
 ALTER TABLE SALE
-   ADD CONSTRAINT customer_exists CHECK (check_if_customer_exists(customer_id));
+   ADD CONSTRAINT customer_exists CHECK (check_if_customer_exists(customer_id)) DEFERRABLE;
 
 ALTER TABLE RECORDS
-    ADD CONSTRAINT store_exists CHECK (check_if_store_exists(store_number));
+    ADD CONSTRAINT store_exists CHECK (check_if_store_exists(store_number)) DEFERRABLE;
 
 ALTER TABLE RECORDS
-    ADD CONSTRAINT coffee_exists CHECK (check_if_coffee_exists(coffee_id));
+    ADD CONSTRAINT coffee_exists CHECK (check_if_coffee_exists(coffee_id)) DEFERRABLE;
 
 CREATE OR REPLACE FUNCTION check_if_store_features_coffee(inp_store_number int, inp_coffee_id int)
 RETURNS BOOLEAN
@@ -403,7 +403,7 @@ $$
 LANGUAGE SQL;
 
 ALTER TABLE RECORDS
-    ADD CONSTRAINT store_features_coffee CHECK (check_if_store_features_coffee(store_number, coffee_id));
+    ADD CONSTRAINT store_features_coffee CHECK (check_if_store_features_coffee(store_number, coffee_id)) DEFERRABLE;
 
 CREATE OR REPLACE FUNCTION check_if_records_exists(inp_purchase_id int, inp_store_number int, inp_coffee_id int)
 RETURNS BOOLEAN
