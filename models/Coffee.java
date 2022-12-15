@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Objects;
+
 public class Coffee {
     int coffeeId;
     String coffeeName;
@@ -88,6 +90,22 @@ public class Coffee {
             ",\n redeemPoints='" + getRedeemPoints() + "'" +
             ",\n rewardPoints='" + getRewardPoints() + "'" +
             "}\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Coffee)) {
+            return false;
+        }
+        Coffee coffee = (Coffee) o;
+        return coffeeId == coffee.coffeeId && Objects.equals(coffeeName, coffee.coffeeName) && Objects.equals(description, coffee.description) && Objects.equals(country, coffee.country) && intensity == coffee.intensity && price == coffee.price && redeemPoints == coffee.redeemPoints && rewardPoints == coffee.rewardPoints;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(coffeeId, coffeeName, description, country, intensity, price, redeemPoints, rewardPoints);
     }
 
 

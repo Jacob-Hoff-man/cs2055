@@ -129,21 +129,6 @@ public class TasksDriver {
         }
     }
 
-    public static int task2(Coffee coffee) {
-        CoffeeDao coffeeDao = new CoffeeDao();
-        try {
-            return coffeeDao.addCoffee(coffee);
-            
-        } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#2:");
-            System.out.println(e.getMessage());
-            System.out.println(e.getErrorCode());
-            System.out.println(e.getSQLState());
-            System.out.println(e.getStackTrace());
-            return -1;
-        }
-    }
-
     public static int task1() {
         Scanner myScanner = new Scanner(System.in);
         System.out.println("Enter Store Name:");
@@ -177,6 +162,21 @@ public class TasksDriver {
         myStore.setStoreType(storeType);
 
         return task1(myStore);
+    }
+
+    public static int task2(Coffee coffee) {
+        CoffeeDao coffeeDao = new CoffeeDao();
+        try {
+            return coffeeDao.addCoffee(coffee);
+            
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#2:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
     }
 
     public static int task2() {
@@ -615,6 +615,7 @@ public class TasksDriver {
             return -1;
         }
     }
+    
     public static int task12(Sale sale) {
         SaleDao saleDao = new SaleDao();
         try {

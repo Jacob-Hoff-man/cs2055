@@ -217,7 +217,7 @@ BEGIN
                     (SELECT latitude, longitude
                     FROM STORE
                     ORDER BY euclidean_distance(inp_latitude, inp_longitude, latitude, longitude) ASC
-                    LIMIT 1
+                    FETCH FIRST 1 ROWS WITH TIES
                     );
     RETURN ref;
 END;
