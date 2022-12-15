@@ -1,8 +1,24 @@
+import java.util.Scanner;
+
 import db.TasksDriver;
 import tests.TasksTests;
 
 public class EntryPoint {
     public static void main(String[] args) {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter 0 for Unit Tests, or 1 for Task Runner:");
+        String input = myScanner.nextLine();
+
+        if (Integer.parseInt(input) == 0) {
+            runAllUnitTests();
+        } else {
+            // run task runner
+            System.out.println("\n------------------\nOPERATION OUTPUT: " + TasksDriver.taskRunner());
+        }
+    }
+
+    public static void runAllUnitTests() {
+        // run all tests
         System.out.println("RUNNING TRIGGER UNIT TESTS");
         System.out.println("TRIGGER 1 TEST CASE 1: CUSTOMER'S CURRENT/TOTAL POINTS ARE UPDATED AFTER INSERTING SALE");
         System.out.println("PASSED = " + TasksTests.trigger1TestCase1());

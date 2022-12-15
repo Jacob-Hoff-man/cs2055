@@ -1,7 +1,6 @@
 package tests;
 
 import java.sql.Timestamp;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import models.Store;
 import services.ClockDao;
 import services.Coffee.CoffeeDao;
 import services.Customer.CustomerDao;
-import services.LoyaltyProgram.LoyaltyProgramDao;
 import services.Promotion.PromotionDao;
 import services.Sale.SaleDao;
 import services.Store.StoreDao;
@@ -34,7 +32,9 @@ public class TasksTests {
         store.setStoreName("CB1");
         // db will throw SQLException when store_type IC is violated, which causes task 1 to output -1
         // check if task1 outputs -1 when existing store name is entered
-        return TasksDriver.task1(store) == -1;
+        int output = TasksDriver.task1(store);
+        System.out.println(output);
+        return output == -1;
     }
 
     // Assign a unique store number for the new store.
@@ -48,6 +48,7 @@ public class TasksTests {
         // db will return the store number, which is acquired by querying for stores with added store's store_number
         // check if task1 outputs > 0 when a store is inserted
         int storeNumber = TasksDriver.task1(store);
+        System.out.println(storeNumber);
         return (storeNumber > 0);
 
     }
@@ -72,6 +73,7 @@ public class TasksTests {
             // get the inserted Store from db
             Store newStore = storeDao.getStore(storeNumber);
             // check if db copy of Store is equivalent to the original obj
+            System.out.println(newStore.getStoreNumber());
             return store.equals(newStore);
 
         } catch (SQLException e) {
@@ -95,6 +97,7 @@ public class TasksTests {
         // db will return the coffee id, which is acquired by querying for coffees with added coffee's coffee id
         // check if task1 outputs > 0 when a coffee is inserted
         int coffeeId = TasksDriver.task2(coffee);
+        System.out.println(coffeeId);
         return (coffeeId > 0);
 
     }
@@ -122,6 +125,7 @@ public class TasksTests {
             // get the inserted Coffee from db
             Coffee newCoffee = coffeeDao.getCoffee(coffeeId);
             // check if db copy of Coffee is equivalent to the original obj
+            System.out.println(newCoffee.getCoffeeId());
             return coffee.equals(newCoffee);
 
         } catch (SQLException e) {
@@ -140,7 +144,7 @@ public class TasksTests {
         promotion.setEndDate(Date.valueOf("2022-10-10"));
 
         int promoNumber = TasksDriver.task3(promotion, 1);
-
+        System.out.println(promoNumber);
         return (promoNumber > 0);
 
     }
@@ -163,6 +167,7 @@ public class TasksTests {
             // get the inserted Promotion from db
             Promotion newPromotion = promotionDao.getPromotion(promoNumber);
             // check if db copy of Coffee is equivalent to the original obj
+            System.out.println(newPromotion.getPromoNumber());
             return promotion.equals(newPromotion);
 
         } catch (SQLException e) {
@@ -186,6 +191,7 @@ public class TasksTests {
         if (promoNumber <= 0) return false;
         // verify the storeNumber != -1, and is > 0 (valid value in range of possible storeNumber generated)
         int storeNumber = TasksDriver.task4(promoNumber, 1);
+        System.out.println(storeNumber);
         return (storeNumber > 0);
 
     }
@@ -213,6 +219,7 @@ public class TasksTests {
             // check if db copy of Store is not null
             if (newStore == null) return false;
             // check if db copy of Store has the same storeNumber
+            System.out.println(newStore.getStoreNumber());
             return newStore.getStoreNumber() == storeNumber;
 
         } catch (SQLException e) {
@@ -289,6 +296,7 @@ public class TasksTests {
 
             // obtain ret list again, check if the returned list of stores equals the expected list
             stores = storeDao.getStoresWithPromotions();
+            System.out.println(stores);
             return stores.equals(eStores);
 
         } catch (SQLException e) {
@@ -304,6 +312,7 @@ public class TasksTests {
         try {
             // check if ret list of stores is empty (db is currently empty)
             List<Store> stores = storeDao.getStoresWithPromotions();
+            System.out.println(stores);
             return stores.isEmpty();
         } catch (SQLException e) {
             System.out.println(e);
@@ -379,6 +388,7 @@ public class TasksTests {
             
             // obtain ret list again, check if the returned list of stores equals the expected list
             stores = storeDao.getStoresWithPromotionsByCoffeeId(10);
+            System.out.println(stores);
             return stores.equals(eStores);
 
         } catch (SQLException e) {
@@ -393,6 +403,7 @@ public class TasksTests {
         try {
             // check if ret list of stores is empty (db is currently empty)
             List<Store> stores = storeDao.getStoresWithPromotionsByCoffeeId(1);
+            System.out.println(stores);
             return stores.isEmpty();
         } catch (SQLException e) {
             System.out.println(e);
@@ -435,6 +446,7 @@ public class TasksTests {
         try {
             // return list of promotions, check if ret list of promotions equals the expected values
             List<Promotion> promotions = promotionDao.getPromotionsOfferedByStore(1);
+            System.out.println(promotions);
             return promotions.equals(ePromotions);
 
         } catch (SQLException e) {
@@ -449,6 +461,7 @@ public class TasksTests {
         try {
             // check if ret list of promotions is empty (db is currently empty)
             List<Promotion> promotions = promotionDao.getPromotionsOfferedByStore(1);
+            System.out.println(promotions);
             return promotions.isEmpty();
 
         } catch (SQLException e) {
@@ -474,6 +487,7 @@ public class TasksTests {
         try {
             // re return list of promotions, check if ret list of promotions equals the expected values
             List<Promotion> promotions = promotionDao.getPromotionsOfferedByStoreByCoffeeId(1, 1);
+            System.out.println(promotions);
             return promotions.equals(ePromotions);
 
         } catch (SQLException e) {
@@ -488,6 +502,7 @@ public class TasksTests {
         try {
             // check if ret list of promotions is empty (db is currently empty)
             List<Promotion> promotions = promotionDao.getPromotionsOfferedByStoreByCoffeeId(1, 1);
+            System.out.println(promotions);
             return promotions.isEmpty();
 
         } catch (SQLException e) {
@@ -518,6 +533,7 @@ public class TasksTests {
         try {
             List<Store> stores = storeDao.getClosestStores(0, 0);
             // check if ret list of stores equals the expected value 
+            System.out.println(stores);
             return stores.equals(eStores);
         } catch (SQLException e) {
             System.out.println(e);
@@ -531,6 +547,7 @@ public class TasksTests {
         try {
             // check if ret list of stores is empty (db is currently empty)
             List<Store> stores = storeDao.getClosestStores(0, 0);
+            System.out.println(stores);
             return stores.isEmpty();
 
         } catch (SQLException e) {
@@ -557,6 +574,7 @@ public class TasksTests {
         try {
             // check if ret list of stores equals the new expected values
             List<Store> stores = storeDao.getClosestStoresByPromoNumber(0, 0, 1);
+            System.out.println(stores);
             return stores.equals(eStores);
 
         } catch (SQLException e) {
@@ -571,6 +589,7 @@ public class TasksTests {
         try {
             // check if ret list of stores is empty (db is currently empty)
             List<Store> stores = storeDao.getClosestStoresByPromoNumber(0, 0, 1);
+            System.out.println(stores);
             return stores.isEmpty();
 
         } catch (SQLException e) {
@@ -610,7 +629,7 @@ public class TasksTests {
             eStores.add(newStore2);
             // re return ret list, then check if ret list of stores equals the new expected values
             List<Store> stores = storeDao.getClosestStores(0, 0);
-
+            System.out.println(stores);
             return stores.equals(eStores);
 
         } catch (SQLException e) {
@@ -654,7 +673,7 @@ public class TasksTests {
 
             // re return ret list, then check if ret list of stores equals the new expected values
             List<Store> stores = storeDao.getClosestStoresByPromoNumber(0, 0, 1);
-
+            System.out.println(stores);
             return stores.equals(eStores);
 
         } catch (SQLException e) {
@@ -673,7 +692,9 @@ public class TasksTests {
         loyaltyProgram.setTotalPointsValueUnlockedAt((float)1.9);
         loyaltyProgram.setBoosterValue((float)1.9);
 
-        return TasksDriver.task8(loyaltyProgram) == 1;
+        int output = TasksDriver.task8(loyaltyProgram);
+        System.out.println(output);
+        return output == 1;
 
     } 
     // If the member level exists, the booster factor is updated.
@@ -685,8 +706,9 @@ public class TasksTests {
         loyaltyProgram.setTotalPointsValueUnlockedAt((float)1.9);
         loyaltyProgram.setBoosterValue((float)1.9);
 
-        return TasksDriver.task8(loyaltyProgram) == 1;
-
+        int output = TasksDriver.task8(loyaltyProgram);
+        System.out.println(output);
+        return output == 1;
     }
     // If the loyalty level is not an accepted string, should fail
     public static boolean task8TestCase3() {
@@ -697,8 +719,9 @@ public class TasksTests {
         loyaltyProgram.setTotalPointsValueUnlockedAt((float)1.9);
         loyaltyProgram.setBoosterValue((float)1.9);
         // check if task returns -1
-        return TasksDriver.task8(loyaltyProgram) == -1;
-
+        int output = TasksDriver.task8(loyaltyProgram);
+        System.out.println(output);
+        return output == -1;
     } 
     // If the total points value unlocked at is <= 0, should fail
     public static boolean task8TestCase4() {
@@ -709,8 +732,9 @@ public class TasksTests {
         loyaltyProgram.setTotalPointsValueUnlockedAt((float)-10.0);
         loyaltyProgram.setBoosterValue((float)1.9);
         // check if task returns -1
-        return TasksDriver.task8(loyaltyProgram) == -1;
-
+        int output = TasksDriver.task8(loyaltyProgram);
+        System.out.println(output);
+        return output == -1;
     } 
     // If the booster value is < 1 or > 4, should fail
     public static boolean task8TestCase5() {
@@ -721,8 +745,9 @@ public class TasksTests {
         loyaltyProgram.setTotalPointsValueUnlockedAt((float)50.0);
         loyaltyProgram.setBoosterValue((float)1.9);
         // check if task returns -1
-        return TasksDriver.task8(loyaltyProgram) == -1;
-
+        int output = TasksDriver.task8(loyaltyProgram);
+        System.out.println(output);
+        return output == -1;
     } 
     // If the booster value is < 1 or > 4, should fail
     public static boolean task8TestCase6() {
@@ -733,8 +758,9 @@ public class TasksTests {
         loyaltyProgram.setTotalPointsValueUnlockedAt((float)10.0);
         loyaltyProgram.setBoosterValue((float)5);
         // check if task returns -1
-        return TasksDriver.task8(loyaltyProgram) == -1;
-
+        int output = TasksDriver.task8(loyaltyProgram);
+        System.out.println(output);
+        return output == -1;
     } 
 
     // task 9
@@ -750,7 +776,9 @@ public class TasksTests {
         customer.setPhoneNumber("814-814-8112");
         customer.setPhoneType("mobile");
         // insert new customer into db, check that an id (value > 0) is returned
-        return TasksDriver.task9(customer) > 0;
+        int output = TasksDriver.task9(customer);
+        System.out.println(output);
+        return output > 0;
     }
 
     // loyalty level should be set to ‘basic’ since no reward points have been earned yet.
@@ -772,6 +800,8 @@ public class TasksTests {
             Customer newCustomer = customerDao.getCustomer(customerId);
             System.out.println(newCustomer);
             // check if loyalty level is 'basic'
+            System.out.println(newCustomer.getCustomerId());
+            System.out.println(newCustomer.getLoyaltyLevel());
             return newCustomer.getLoyaltyLevel().equals("basic");
         } catch (SQLException e) {
             System.out.println(e);
@@ -789,6 +819,7 @@ public class TasksTests {
             float eCustomerCurrentPoints = 10000;
             float customerCurrentPoints = (float)customerDao.getCustomerCurrentPoints(1);
             // check the ret current points equals the expected value
+            System.out.println("expected current points = " + eCustomerCurrentPoints + ", actual current points = " + customerCurrentPoints);
             return customerCurrentPoints == eCustomerCurrentPoints;
         } catch (SQLException e) {
             System.out.println(e);
@@ -805,6 +836,7 @@ public class TasksTests {
             float eCustomerTotalPoints = 499999;
             float customerTotalPoints = (float)customerDao.getCustomerTotalPoints(1);
             // check the ret current points equals the expected value
+            System.out.println("expected current points = " + eCustomerTotalPoints + ", actual current points = " + customerTotalPoints);
             return customerTotalPoints == eCustomerTotalPoints;
         } catch (SQLException e) {
             System.out.println(e);
@@ -828,6 +860,7 @@ public class TasksTests {
             for (int i = 0; i < rankedCustomers.size(); i++) {
                 if (eCustomerIds[i] != rankedCustomers.get(i).getCustomerId()) return false;
             }
+            System.out.println(rankedCustomers);
             return true;
         } catch (SQLException e) {
             System.out.println(e);
@@ -870,6 +903,7 @@ public class TasksTests {
         // db will return the purchase id
         // check if task12 outputs > 0 when a store is inserted
         int purchaseId = TasksDriver.task12(sale);
+        System.out.println(purchaseId);
         return (purchaseId > 0);
 
     }
@@ -908,6 +942,7 @@ public class TasksTests {
         // db will return the purchase id
         int purchaseId = TasksDriver.task12(sale);
         // check if task12 outputs -1 when customer has insufficient funds
+        System.out.println(purchaseId);
         return (purchaseId == -1);
     }
 
@@ -941,6 +976,7 @@ public class TasksTests {
         try {
             // check if ret list of coffees is empty (db is currently empty)
             List<Coffee> coffees = coffeeDao.getCoffees();
+            System.out.println(coffees);
             return coffees.isEmpty();
 
         } catch (SQLException e) {
@@ -969,6 +1005,7 @@ public class TasksTests {
                 if (coffeeIds[i] != coffees.get(i).getCoffeeId()) return false;
                 if (!coffeeNames[i].equals(coffees.get(i).getCoffeeName())) return false;
             }
+            System.out.println(coffees);
             return true;
 
         } catch (SQLException e) {
@@ -983,6 +1020,7 @@ public class TasksTests {
         try {
             // check if ret list of coffees is empty (db is currently empty)
             List<Coffee> coffees = coffeeDao.getCoffees();
+            System.out.println(coffees);
             return coffees.isEmpty();
 
         } catch (SQLException e) {
@@ -1009,6 +1047,7 @@ public class TasksTests {
             for (int i = 0; i < storeNumbers.size(); i++) {
                 if (eStoreNumber[i] != storeNumbers.get(i)) return false;
             }
+            System.out.println(storeNumbers);
             return true;
         } catch (SQLException e) {
             System.out.println(e);
@@ -1028,6 +1067,7 @@ public class TasksTests {
             for (int i = 0; i < storeNumbers.size(); i++) {
                 if (eStoreNumber[i] != storeNumbers.get(i)) return false;
             }
+            System.out.println(storeNumbers);
             return true;
         } catch (SQLException e) {
             System.out.println(e);
@@ -1047,6 +1087,7 @@ public class TasksTests {
             for (int i = 0; i < storeNumbers.size(); i++) {
                 if (eStoreNumber[i] != storeNumbers.get(i)) return false;
             }
+            System.out.println(storeNumbers);
             return true;
         } catch (SQLException e) {
             System.out.println(e);
@@ -1069,6 +1110,7 @@ public class TasksTests {
             for (int i = 0; i < storeNumbers.size(); i++) {
                 if (eStoreNumber[i] != storeNumbers.get(i)) return false;
             }
+            System.out.println(storeNumbers);
             return true;
         } catch (SQLException e) {
             System.out.println(e);
@@ -1083,6 +1125,7 @@ public class TasksTests {
         try {
             // check if ret list of coffees is empty (db is currently empty)
             List<Integer> storeNumbers = storeDao.getTopKStoresByHighestRevenueInXMonths(1, 100);
+            System.out.println(storeNumbers);
             return storeNumbers.isEmpty();
 
         } catch (SQLException e) {
@@ -1108,6 +1151,7 @@ public class TasksTests {
             for (int i = 0; i < customerIds.size(); i++) {
                 if (eCustomerIds[i] != customerIds.get(i)) return false;
             }
+            System.out.println(customerIds);
             return true;
         } catch (SQLException e) {
             System.out.println(e);
@@ -1130,6 +1174,7 @@ public class TasksTests {
             for (int i = 0; i < customerIds.size(); i++) {
                 if (eCustomerIds[i] != customerIds.get(i)) return false;
             }
+            System.out.println(customerIds);
             return true;
         } catch (SQLException e) {
             System.out.println(e);
@@ -1150,6 +1195,7 @@ public class TasksTests {
             for (int i = 0; i < customerIds.size(); i++) {
                 if (eCustomerIds[i] != customerIds.get(i)) return false;
             }
+            System.out.println(customerIds);
             return true;
         } catch (SQLException e) {
             System.out.println(e);
@@ -1169,6 +1215,7 @@ public class TasksTests {
             for (int i = 0; i < customerIds.size(); i++) {
                 if (eCustomerIds[i] != customerIds.get(i)) return false;
             }
+            System.out.println(customerIds);
             return true;
         } catch (SQLException e) {
             System.out.println(e);
@@ -1183,6 +1230,7 @@ public class TasksTests {
         try {
             // check if ret list of coffees is empty (db is currently empty)
             List<Integer> customerIds = customerDao.getTopKCustomersByHighestPurchasedSumInXMonths(1, 100);
+            System.out.println(customerIds);
             return customerIds.isEmpty();
 
         } catch (SQLException e) {
