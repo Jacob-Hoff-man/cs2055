@@ -800,13 +800,12 @@ DECLARE
     current_reward_points float;
     current_total_points float;
 BEGIN
-    SELECT SUM(reward_points) INTO total_earned_points
-    FROM COFFEE
-    WHERE coffee_id IN (
-        SELECT coffee_id
+    SELECT SUM(reward_points * SALE_COFFEES.quantity) INTO total_earned_points
+    FROM COFFEE NATURAL JOIN (
+        SELECT coffee_id, quantity
         FROM SALE NATURAL JOIN RECORDS
         WHERE purchase_id = old.purchase_id
-    );
+    ) AS SALE_COFFEES;
 
     current_reward_points := get_customer_current_points(old.customer_id);
     current_total_points := get_customer_total_points(old.customer_id);

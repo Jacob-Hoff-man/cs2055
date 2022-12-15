@@ -46,6 +46,8 @@ public class DBConnection {
             ScriptRunner runner = new ScriptRunner(conn, false, true);
             runner.runScript(new BufferedReader(new FileReader(cwd + "generate_tables.sql")));
             runner.runScript(new BufferedReader(new FileReader(cwd + "sample_data.sql")));
+            // TODO: find fix for this not successfully reading by ScriptRunner class
+            //runner.runScript(new BufferedReader(new FileReader(cwd + "triggers.sql")));
 
         } catch (FileNotFoundException e) {
             System.out.println("The specified SQL file was not found: \n" + e.getMessage());

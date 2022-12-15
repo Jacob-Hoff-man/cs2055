@@ -16,10 +16,12 @@ import models.Promotion;
 import models.Record;
 import models.Sale;
 import models.Store;
+import services.ClockDao;
 import services.Coffee.CoffeeDao;
 import services.Customer.CustomerDao;
 import services.LoyaltyProgram.LoyaltyProgramDao;
 import services.Promotion.PromotionDao;
+import services.Sale.SaleDao;
 import services.Store.StoreDao;
 
 // all tasks tests assume empty tables or insertions from the sample_date.sql file as an initial db state 
@@ -1189,4 +1191,245 @@ public class TasksTests {
         } 
     }
 
+    // Trigger 1
+    // TODO: the trigger tests need the db files to be manually re-generated, to ensure the triggers are connected to the tables
+    // After a customer makes a sale, the final reward points value calculated for a sale will be
+    // added to the Customer's Current_Points and Total_Points.
+    public static boolean trigger1TestCase1() {
+        // expected values
+        // spent 0 points
+        // earned 90 points raw
+        // gold rank = 1.75 multiplier
+        // total earned points = 90 * 1.75 = 157.5
+        // customer id = 4 original current, total points = (0, 5000)
+        // e = 157.5, 5157.5
+        float eCurrentPoints = (float)157.5;
+        float eTotalPoints = (float)5157.5;
+
+        // Adding a new sale to the db
+        List<Record> records = new ArrayList<>();
+        // Record 1
+        Record record1 = new Record();
+        record1.setStoreNumber(1);
+        record1.setCoffeeId(1);
+        record1.setPurchasedPortion((float)3.0);
+        record1.setRedeemedPortion((float)0);
+        records.add(record1);
+        // Record 2
+        Record record2 = new Record();
+        record2.setStoreNumber(1);
+        record2.setCoffeeId(1);
+        record2.setPurchasedPortion((float)3.0);
+        record2.setRedeemedPortion((float)0);
+        records.add(record2);
+        // Record 3
+        Record record3 = new Record();
+        record3.setStoreNumber(1);
+        record3.setCoffeeId(1);
+        record3.setPurchasedPortion((float)3.0);
+        record3.setRedeemedPortion((float)0);
+        records.add(record3);
+
+        Sale sale = new Sale();
+        sale.setCustomerId(4);
+        sale.setPurchasedTime(Timestamp.valueOf("2022-12-15 11:12:19.422280"));
+        sale.setRecords(records);
+        // db will return the purchase id, add sale
+        SaleDao saleDao = new SaleDao();
+        CustomerDao customerDao = new CustomerDao();
+        try {
+            int purchaseId = saleDao.addSale(sale);
+            float newCurrentPoints = (float)customerDao.getCustomerCurrentPoints(4);
+            float newTotalPoints = (float)customerDao.getCustomerTotalPoints(4);
+            return (eCurrentPoints == newCurrentPoints && eTotalPoints == newTotalPoints);
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    // For different Loyalty_Level of Loyalty_Program, there’s a
+    // different Booster_value that is multiplied by the Reward_Points
+    // for the final reward points earned for purchasing a Coffee.
+    public static boolean trigger1TestCase2() {
+        // expected values
+        // spent 0 points
+        // earned 90 points raw
+        // silver rank = 1.75 multiplier
+        // total earned points = 90 * 1.5 = 135
+        // customer id = 9 original current, total points = (0, 2500)
+        // e = 135, 2635
+        float eCurrentPoints = (float)135;
+        float eTotalPoints = (float)2635;
+
+        // Adding a new sale to the db
+        List<Record> records = new ArrayList<>();
+        // Record 1
+        Record record1 = new Record();
+        record1.setStoreNumber(1);
+        record1.setCoffeeId(1);
+        record1.setPurchasedPortion((float)3.0);
+        record1.setRedeemedPortion((float)0);
+        records.add(record1);
+        // Record 2
+        Record record2 = new Record();
+        record2.setStoreNumber(1);
+        record2.setCoffeeId(1);
+        record2.setPurchasedPortion((float)3.0);
+        record2.setRedeemedPortion((float)0);
+        records.add(record2);
+        // Record 3
+        Record record3 = new Record();
+        record3.setStoreNumber(1);
+        record3.setCoffeeId(1);
+        record3.setPurchasedPortion((float)3.0);
+        record3.setRedeemedPortion((float)0);
+        records.add(record3);
+
+        Sale sale = new Sale();
+        sale.setCustomerId(9);
+        sale.setPurchasedTime(Timestamp.valueOf("2022-12-15 11:12:19.422280"));
+        sale.setRecords(records);
+        // db will return the purchase id, add sale
+        SaleDao saleDao = new SaleDao();
+        CustomerDao customerDao = new CustomerDao();
+        try {
+            int purchaseId = saleDao.addSale(sale);
+            float newCurrentPoints = (float)customerDao.getCustomerCurrentPoints(9);
+            float newTotalPoints = (float)customerDao.getCustomerTotalPoints(9);
+            return (eCurrentPoints == newCurrentPoints && eTotalPoints == newTotalPoints);
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    // When a customer makes a Sale, if the Birth_Month and Birth_Day of the specified Customer_Id
+    // matches the Sale's date, the final reward points earned for purchasing a coffee will be multiplied by 1.10 (10%).
+    public static boolean trigger1TestCase3() {
+        // expected values
+        // spent 0 points
+        // earned 90 points raw
+        // customer birthday multiplier = 1.10
+        // basic rank = 1.00 multiplier
+        // total earned points = 90 * 1 * 1.10 = 99
+        // customer id = 2 original current, total points = (0, 0)
+        // e = 99, 99
+        float eCurrentPoints = (float)99;
+        float eTotalPoints = (float)99;
+
+        // Adding a new sale to the db
+        List<Record> records = new ArrayList<>();
+        // Record 1
+        Record record1 = new Record();
+        record1.setStoreNumber(1);
+        record1.setCoffeeId(1);
+        record1.setPurchasedPortion((float)3.0);
+        record1.setRedeemedPortion((float)0);
+        records.add(record1);
+        // Record 2
+        Record record2 = new Record();
+        record2.setStoreNumber(1);
+        record2.setCoffeeId(1);
+        record2.setPurchasedPortion((float)3.0);
+        record2.setRedeemedPortion((float)0);
+        records.add(record2);
+        // Record 3
+        Record record3 = new Record();
+        record3.setStoreNumber(1);
+        record3.setCoffeeId(1);
+        record3.setPurchasedPortion((float)3.0);
+        record3.setRedeemedPortion((float)0);
+        records.add(record3);
+
+        Sale sale = new Sale();
+        sale.setCustomerId(2);
+        // setting purchased time to customer's birth day
+        sale.setPurchasedTime(Timestamp.valueOf("2022-01-01 11:12:19.422280"));
+        sale.setRecords(records);
+        // db will return the purchase id, add sale
+        SaleDao saleDao = new SaleDao();
+        CustomerDao customerDao = new CustomerDao();
+        try {
+            int purchaseId = saleDao.addSale(sale);
+            float newCurrentPoints = (float)customerDao.getCustomerCurrentPoints(2);
+            float newTotalPoints = (float)customerDao.getCustomerTotalPoints(2);
+            return (eCurrentPoints == newCurrentPoints && eTotalPoints == newTotalPoints);
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    // Trigger 2
+    // Customer’s Loyalty_Level will get updated if their Total_Points
+    // increases to a certain level (Total_Points_Value_Unlocked_At).
+    public static boolean trigger2TestCase1() {
+        // expected values
+        String eLoyaltyLevel = "platinum";
+
+        // Adding a new sale to the db
+        List<Record> records = new ArrayList<>();
+        // Record 1
+        Record record1 = new Record();
+        record1.setStoreNumber(1);
+        record1.setCoffeeId(1);
+        record1.setPurchasedPortion((float)3.0);
+        record1.setRedeemedPortion((float)0);
+        records.add(record1);
+        // Record 2
+        Record record2 = new Record();
+        record2.setStoreNumber(1);
+        record2.setCoffeeId(1);
+        record2.setPurchasedPortion((float)3.0);
+        record2.setRedeemedPortion((float)0);
+        records.add(record2);
+        // Record 3
+        Record record3 = new Record();
+        record3.setStoreNumber(1);
+        record3.setCoffeeId(1);
+        record3.setPurchasedPortion((float)3.0);
+        record3.setRedeemedPortion((float)0);
+        records.add(record3);
+
+        Sale sale = new Sale();
+        sale.setCustomerId(8);
+        sale.setPurchasedTime(Timestamp.valueOf("2022-01-01 11:12:19.422280"));
+        sale.setRecords(records);
+        // db will return the purchase id, add sale
+        SaleDao saleDao = new SaleDao();
+        CustomerDao customerDao = new CustomerDao();
+        try {
+            int purchaseId = saleDao.addSale(sale);
+            Customer updatedCustomer = customerDao.getCustomer(8);
+            return (updatedCustomer.getLoyaltyLevel().equals(eLoyaltyLevel));
+
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    // Trigger 3
+    // A Promotion (by Promotion_Id) will be removed whenever it's end_date
+    // is <= to the current date (p_date in CLOCK).
+    // After update on CLOCK, remove any promos where p_date = end_date
+    public static boolean trigger3TestCase1() {
+        PromotionDao promotionDao = new PromotionDao();
+        ClockDao clockDao = new ClockDao();
+        try {
+            // check that promotion exists in db
+            if (promotionDao.getPromotion(3) == null) return false;
+            // update p_clock to 07-02-2023 (one day after promo-3 end date);
+            clockDao.updateClock(Date.valueOf("2023-07-01"));
+            // check that promotion no longer exists in db
+            return (promotionDao.getPromotion(3) == null);
+        } catch (SQLException e) {
+            System.out.println(e);
+            return false;
+        }
+    }
 }
