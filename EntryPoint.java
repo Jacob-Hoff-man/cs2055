@@ -1,22 +1,70 @@
 import java.util.Scanner;
 
 import db.TasksDriver;
+import tests.StressTests;
 import tests.TasksTests;
 
 public class EntryPoint {
     public static void main(String[] args) {
         Scanner myScanner = new Scanner(System.in);
-        System.out.println("Enter 0 for Unit Tests, or 1 for Task Runner:");
+        System.out.println("Enter 0 for Testing, or 1 for Task Runner:");
         String input = myScanner.nextLine();
 
         if (Integer.parseInt(input) == 0) {
             runAllUnitTests();
+
+            runAllStressTests(100);
+            runAllStressTests(1000);
+            runAllStressTests(10000);
         } else {
             // run task runner
             System.out.println("\n------------------\nOPERATION OUTPUT: " + TasksDriver.taskRunner());
         }
     }
 
+    public static void runAllStressTests(int currentIncrement) {
+        StressTests.increment = currentIncrement;
+        // run all tests
+        System.out.println("RUNNING STRESS TESTS FOR " + currentIncrement + "INCREMENTS");
+        System.out.println("TASK 1 STRESS TEST");
+        StressTests.task1();
+        System.out.println("TASK 2 STRESS TEST");
+        StressTests.task2();
+        System.out.println("TASK 3 STRESS TEST");
+        StressTests.task3();
+        // System.out.println("TASK 4 STRESS TEST");
+        // StressTests.task4();
+        System.out.println("TASK 5 (NO COFFEE ID) STRESS TEST");
+        StressTests.task5NoCoffeeId();
+        System.out.println("TASK 5 STRESS TEST");
+        StressTests.task5();
+        System.out.println("TASK 6 STRESS TEST");
+        StressTests.task6();
+        System.out.println("TASK 6 (NO COFFEE ID) STRESS TEST");
+        StressTests.task6NoCoffeeId();
+        System.out.println("TASK 7 STRESS TEST");
+        StressTests.task7();
+        System.out.println("TASK 7 (NO PROMOTION ID) STRESS TEST");
+        StressTests.task7();
+        System.out.println("TASK 8 STRESS TEST");
+        StressTests.task8();
+        // System.out.println("TASK 9 STRESS TEST");
+        // StressTests.task9();
+        System.out.println("TASK 10 STRESS TEST");
+        StressTests.task10();
+        System.out.println("TASK 11 STRESS TEST");
+        StressTests.task11();
+        System.out.println("TASK 12 STRESS TEST");
+        StressTests.task12();
+        System.out.println("TASK 13 STRESS TEST");
+        StressTests.task13();
+        System.out.println("TASK 14 STRESS TEST");
+        StressTests.task14();
+        System.out.println("TASK 15 STRESS TEST");
+        StressTests.task15();
+        System.out.println("TASK 16 STRESS TEST");
+        StressTests.task16();
+    }
     public static void runAllUnitTests() {
         // run all tests
         System.out.println("RUNNING TRIGGER UNIT TESTS");
