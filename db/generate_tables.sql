@@ -10,7 +10,9 @@
 ---- p_date can not be null
 DROP TABLE IF EXISTS CLOCK cascade;
 CREATE TABLE CLOCK(
-    p_date date NOT NULL
+    p_date date NOT NULL,
+
+    CONSTRAINT clock_pk PRIMARY KEY (p_date)
 );
 
 
@@ -31,7 +33,7 @@ CREATE TABLE COFFEE(
     Redeem_Points float NOT NULL CHECK (Redeem_Points >= 0),
     Reward_Points float NOT NULL CHECK (Reward_Points >= 0),
     CONSTRAINT C_PK PRIMARY KEY (Coffee_Id),
-    CONSTRAINT UQ_Cname UNIQUE (Coffee_Name)
+    CONSTRAINT UQ_Cname UNIQUE (Coffee_Name) DEFERRABLE INITIALLY IMMEDIATE
 );
 
 DROP DOMAIN IF EXISTS store_type CASCADE;
@@ -50,7 +52,7 @@ CREATE TABLE STORE(
     Latitude float NOT NULL,
     Store_Type store_type NOT NULL,
     CONSTRAINT S_PK PRIMARY KEY (Store_Number),
-    CONSTRAINT UQ_Sname UNIQUE (Store_Name)
+    CONSTRAINT UQ_Sname UNIQUE (Store_Name) DEFERRABLE INITIALLY IMMEDIATE
 
 );
 
@@ -60,13 +62,15 @@ CONSTRAINT loyalty_level_enum_value CHECK (VALUE in ('basic', 'bronze', 'silver'
 -- Assumptions:
 ---- Total_Points_Value_Unlocked_At must be positive value and cannot be NULL
 ---- Booster_Value must be a float in the range 1.0 - 4.0, and cannot be NULL
+---- Total_Points_Value_Unlocked_At must be unique
 DROP TABLE IF EXISTS LOYALTY_PROGRAM CASCADE;
 CREATE TABLE LOYALTY_PROGRAM (
     Loyalty_Level Loyalty_Level_Enum NOT NULL,
     Total_Points_Value_Unlocked_At float CHECK (Total_Points_Value_Unlocked_At >= 0) NOT NULL,
     Booster_Value float CHECK (Booster_Value >= 1 AND Booster_Value <= 4) NOT NULL,
 
-    CONSTRAINT LOYALTY_PROGRAM_PK PRIMARY KEY (Loyalty_Level)
+    CONSTRAINT LOYALTY_PROGRAM_PK PRIMARY KEY (Loyalty_Level),
+    CONSTRAINT UQ_Total_Points_Value_Unlocked_At UNIQUE(Total_Points_Value_Unlocked_At)
 );
 
 DROP DOMAIN IF EXISTS Phone_Enum CASCADE;
@@ -98,7 +102,7 @@ CREATE TABLE CUSTOMER (
     Total_Points float CHECK (Total_Points >= 0) DEFAULT 0,
 
     CONSTRAINT PK_CUSTOMER PRIMARY KEY (Customer_Id),
-    CONSTRAINT UQ_PHONE UNIQUE (Phone_Number),
+    CONSTRAINT UQ_PHONE UNIQUE (Phone_Number) DEFERRABLE INITIALLY IMMEDIATE,
     CONSTRAINT FK_LOYALTY_PROGRAM FOREIGN KEY (Loyalty_Level) REFERENCES LOYALTY_PROGRAM(Loyalty_Level)
 );
 
@@ -129,7 +133,7 @@ CREATE TABLE PROMOTION(
     Start_Date date NOT NULL,
     End_Date date NOT NULL,
     CONSTRAINT P_PK PRIMARY KEY (Promo_Number),
-    CONSTRAINT UQ_Pname UNIQUE (Promo_Name),
+    CONSTRAINT UQ_Pname UNIQUE (Promo_Name) DEFERRABLE INITIALLY IMMEDIATE,
     CONSTRAINT Check_Valid_Dates CHECK (Start_Date < End_Date)
 );
 
@@ -137,29 +141,29 @@ DROP TABLE IF EXISTS INCLUDES cascade;
 CREATE TABLE INCLUDES(
     Promo_Number int NOT NULL,
     Coffee_Id int NOT NULL,
-    CONSTRAINT PK_INCLUDES PRIMARY KEY (Promo_Number, Coffee_Id),
+    CONSTRAINT PK_INCLUDES PRIMARY KEY (Promo_Number, Coffee_Id) DEFERRABLE INITIALLY IMMEDIATE,
     CONSTRAINT FK1_INCLUDES FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
-                     ON UPDATE CASCADE ON DELETE CASCADE
+        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS OFFERS cascade;
 CREATE TABLE OFFERS(
     Promo_Number int NOT NULL,
     Store_Number int NOT NULL,
-    CONSTRAINT PK_OFFERS PRIMARY KEY (Promo_Number, Store_Number),
+    CONSTRAINT PK_OFFERS PRIMARY KEY (Promo_Number, Store_Number) DEFERRABLE INITIALLY IMMEDIATE,
     CONSTRAINT FK1_OFFERS FOREIGN KEY (Store_Number) REFERENCES STORE (Store_Number)
-                  ON UPDATE CASCADE ON DELETE CASCADE
+        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS FEATURES cascade;
 CREATE TABLE FEATURES(
     Coffee_Id int NOT NULL,
     Store_Number int NOT NULL,
-    CONSTRAINT PK_FEATURES PRIMARY KEY (Coffee_Id, Store_Number),
+    CONSTRAINT PK_FEATURES PRIMARY KEY (Coffee_Id, Store_Number) DEFERRABLE INITIALLY IMMEDIATE,
     CONSTRAINT FK1_FEATURES FOREIGN KEY (Store_Number) REFERENCES STORE (Store_Number)
-                  ON UPDATE CASCADE ON DELETE CASCADE,
+        ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT FK2_FEATURES FOREIGN KEY (Coffee_Id) REFERENCES COFFEE (Coffee_Id)
-                  ON UPDATE CASCADE ON DELETE CASCADE
+        ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- Assumptions:
@@ -174,11 +178,11 @@ CREATE TABLE RECORDS(
     Purchased_Portion float NOT NULL DEFAULT 0 CHECK (Purchased_Portion >= 0),
     Redeemed_Portion float NOT NULL DEFAULT 0 CHECK (Redeemed_Portion >= 0),
 
-    CONSTRAINT RECORDS_PK PRIMARY KEY (Purchase_Id, Store_Number, Coffee_Id),
+    CONSTRAINT RECORDS_PK PRIMARY KEY (Purchase_Id, Store_Number, Coffee_Id) DEFERRABLE INITIALLY IMMEDIATE,
     CONSTRAINT SALE_FK FOREIGN KEY (Purchase_Id) REFERENCES SALE(Purchase_Id)
-                  ON UPDATE CASCADE ON DELETE CASCADE,
+        ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT STORE_FK FOREIGN KEY (Store_Number) REFERENCES STORE(Store_Number)
-                  ON UPDATE CASCADE ON DELETE CASCADE,
+        ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT COFFEE_FK FOREIGN KEY (Coffee_Id) REFERENCES COFFEE(Coffee_Id)
-                  ON UPDATE CASCADE ON DELETE CASCADE
+        ON UPDATE CASCADE ON DELETE CASCADE
 );

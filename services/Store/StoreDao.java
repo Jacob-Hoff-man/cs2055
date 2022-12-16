@@ -279,6 +279,31 @@ public class StoreDao implements IStoreDao {
         return stores;
     }
 
+    public List<Integer> getTopKStoresByHighestRevenueInXMonths(int k, int months) throws SQLException {
+        CallableStatement properCase = conn.prepareCall("{ ? = call get_top_k_stores_by_highest_revenue_in_x_months( ?, ? ) }");
+        properCase.registerOutParameter(1, Types.REF_CURSOR);
+        properCase.setInt(2, k);
+        properCase.setInt(3, months);
+        List<Integer> storeNumbers = new ArrayList<>();
+        try {
+            conn.setAutoCommit(false);
+                properCase.execute();
+                ResultSet rs = (ResultSet)properCase.getObject(1);
+                while (rs.next()) {
+                    int storeNumber = rs.getInt("store_number");
+                    storeNumbers.add(storeNumber);
+                }
+            conn.setAutoCommit(true);
+        } catch (SQLException e1) {
+            try {
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println(e2.toString());
+            }
+        }
+        return storeNumbers;
+    }
+
     @Override
     public void updateStore(Store store) throws SQLException {
         String query = "UPDATE STORE SET store_name=?, longitude=?, latitude=?, store_type=? WHERE store_number=?";

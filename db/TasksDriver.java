@@ -10,9 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import exceptions.CoffeeByIdDoesNotExistException;
-import exceptions.PromotionByIdDoesNotExistException;
-import exceptions.StoreByIdDoesNotExistException;
 import models.Coffee;
 import models.Customer;
 import models.LoyaltyProgram;
@@ -74,9 +71,9 @@ public class TasksDriver {
             case 14:
                 return TasksDriver.task14();
             case 15:
-                return -1; //TasksDriver.task15();
+                return TasksDriver.task15();
             case 16:
-                return -1; //TasksDriver.task16();
+                return TasksDriver.task16();
             default:
                 return -1;
         }
@@ -117,6 +114,21 @@ public class TasksDriver {
     }
 
     //tasks
+    public static int task1(Store store) {
+        StoreDao storeDao = new StoreDao();
+        try {
+            return storeDao.addStore(store);
+
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#1:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
+
     public static int task1() {
         Scanner myScanner = new Scanner(System.in);
         System.out.println("Enter Store Name:");
@@ -149,13 +161,16 @@ public class TasksDriver {
         myStore.setLatitude(Float.parseFloat(latitude));
         myStore.setStoreType(storeType);
 
+        return task1(myStore);
+    }
 
-        StoreDao storeDao = new StoreDao();
+    public static int task2(Coffee coffee) {
+        CoffeeDao coffeeDao = new CoffeeDao();
         try {
-            return storeDao.addStore(myStore);
-
+            return coffeeDao.addCoffee(coffee);
+            
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#1:");
+            System.out.println("An error occured while performing Task#2:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
@@ -212,12 +227,26 @@ public class TasksDriver {
         coffee.setRedeemPoints(Float.parseFloat(redeemPoints));
         coffee.setRewardPoints(Float.parseFloat(rewardPoints));
 
-        CoffeeDao coffeeDao = new CoffeeDao();
+        return task2(coffee);
+    }
+
+    public static int task3(Promotion promotion, int coffeeId) {
+        // CoffeeDao coffeeDao = new CoffeeDao();
+        PromotionDao promotionDao = new PromotionDao();
         try {
-            return coffeeDao.addCoffee(coffee);
-            
+            return promotionDao.addPromotionWithIncludedCoffee(promotion, coffeeId);
+            // // jdbc implementation
+            // // run only if the coffee exists in db (get by id)
+            // Coffee coffee = coffeeDao.getCoffee(Integer.parseInt(coffeeId));
+            // if (coffee != null) {
+            //     promotionDao.addPromotionWithIncludedCoffee(promotion, coffee.getCoffeeId());
+            //     return (promotionDao.getPromotion(promoName)).getPromoNumber();
+            // } else {
+            //     // no coffee with given id exists
+            //     throw new CoffeeByIdDoesNotExistException();
+            // }
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#2:");
+            System.out.println("An error occured while performing Task#3:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
@@ -257,22 +286,26 @@ public class TasksDriver {
         promotion.setStartDate(Date.valueOf(startDate));
         promotion.setEndDate(Date.valueOf(endDate));
 
-        // CoffeeDao coffeeDao = new CoffeeDao();
+        return task3(promotion, Integer.parseInt(coffeeId));
+    }
+
+    public static int task4(int promoNumber, int storeNumber) {
+        // StoreDao storeDao = new StoreDao();
         PromotionDao promotionDao = new PromotionDao();
         try {
-            return promotionDao.addPromotionWithIncludedCoffee(promotion, Integer.parseInt(coffeeId));
+            return promotionDao.addPromotionWithOfferedStore(promoNumber, storeNumber);
             // // jdbc implementation
-            // // run only if the coffee exists in db (get by id)
-            // Coffee coffee = coffeeDao.getCoffee(Integer.parseInt(coffeeId));
-            // if (coffee != null) {
-            //     promotionDao.addPromotionWithIncludedCoffee(promotion, coffee.getCoffeeId());
-            //     return (promotionDao.getPromotion(promoName)).getPromoNumber();
-            // } else {
-            //     // no coffee with given id exists
-            //     throw new CoffeeByIdDoesNotExistException();
-            // }
+            // // verify the promotion exists
+            // Promotion promotion = promotionDao.getPromotion(Integer.parseInt(promoNumber));
+            // if (promotion == null) throw new PromotionByIdDoesNotExistException();
+            // // verify the store exists
+            // Store store = storeDao.getStore(Integer.parseInt(storeNumber));
+            // if (store == null) throw new StoreByIdDoesNotExistException();
+            
+            // return promotionDao.updatePromotionWithOfferedStore(promotion, store.getStoreNumber());
+
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#3:");
+            System.out.println("An error occured while performing Task#4:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
@@ -295,43 +328,10 @@ public class TasksDriver {
             System.out.println("Enter Store Number (Int Value Only):");
             storeNumber = myScanner.nextLine();
         }
-
-        StoreDao storeDao = new StoreDao();
-        PromotionDao promotionDao = new PromotionDao();
-        try {
-            return promotionDao.addPromotionWithOfferedStore(Integer.parseInt(promoNumber), Integer.parseInt(storeNumber));
-            // // jdbc implementation
-            // // verify the promotion exists
-            // Promotion promotion = promotionDao.getPromotion(Integer.parseInt(promoNumber));
-            // if (promotion == null) throw new PromotionByIdDoesNotExistException();
-            // // verify the store exists
-            // Store store = storeDao.getStore(Integer.parseInt(storeNumber));
-            // if (store == null) throw new StoreByIdDoesNotExistException();
-            
-            // return promotionDao.updatePromotionWithOfferedStore(promotion, store.getStoreNumber());
-
-        } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#4:");
-            System.out.println(e.getMessage());
-            System.out.println(e.getErrorCode());
-            System.out.println(e.getSQLState());
-            System.out.println(e.getStackTrace());
-            return -1;
-        }
+        return task4(Integer.parseInt(promoNumber), Integer.parseInt(storeNumber));
     }
 
-    public static int task5() {
-        Scanner myScanner = new Scanner(System.in);
-        System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Promotions:");
-        String coffeeId = myScanner.nextLine();
-        while(!stringIsValidIntValue(coffeeId)) {
-            // allow blank space
-            if (coffeeId.isBlank()) break;
-
-            System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Promotions (Int Value Only):");
-            coffeeId = myScanner.nextLine();
-        }
-
+    public static int task5(String coffeeId) {
         StoreDao storeDao = new StoreDao();
         try {
             String output;
@@ -360,6 +360,49 @@ public class TasksDriver {
         }
     }
 
+    public static int task5() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Promotions:");
+        String coffeeId = myScanner.nextLine();
+        while(!stringIsValidIntValue(coffeeId)) {
+            // allow blank space
+            if (coffeeId.isBlank()) break;
+
+            System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Promotions (Int Value Only):");
+            coffeeId = myScanner.nextLine();
+        }
+
+        return task5(coffeeId);
+    }
+
+    public static int task6(int storeNumber, String coffeeId) {
+        PromotionDao promotionDao = new PromotionDao();
+        try {
+            String output;
+            if (coffeeId.isBlank()) {
+                List<Promotion> promotions = promotionDao.getPromotionsOfferedByStore(storeNumber);
+                output = promotions.isEmpty() ?
+                    "No promotions are currently offered at this store." :
+                    promotions.toString();
+            } else {
+                List<Promotion> promotions = promotionDao.getPromotionsOfferedByStoreByCoffeeId(storeNumber, Integer.parseInt(coffeeId));
+                output = promotions.isEmpty() ?
+                    "No promotions for this coffee are currently offered at this store." :
+                    promotions.toString();
+            }
+
+            System.out.println(output);
+            return 1;
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#6:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
+
     public static int task6() {
         Scanner myScanner = new Scanner(System.in);
         System.out.println("Enter Store Number:");
@@ -378,27 +421,25 @@ public class TasksDriver {
             System.out.println("Enter Coffee Id, or leave blank for all Coffees Offered in Store's Promotions (Int Value Only):");
             coffeeId = myScanner.nextLine();
         }
+        return task6(Integer.parseInt(storeNumber), coffeeId);
+    }
 
-        PromotionDao promotionDao = new PromotionDao();
+    public static int task7(float latitude, float longitude, String promoNumber) {
+        StoreDao storeDao = new StoreDao();
         try {
             String output;
-            if (coffeeId.isBlank()) {
-                List<Promotion> promotions = promotionDao.getPromotionsOfferedByStore(Integer.parseInt(storeNumber));
-                output = promotions.isEmpty() ?
-                    "No promotions are currently offered at this store." :
-                    promotions.toString();
+            if (promoNumber.isBlank()) {
+                List<Store> stores = storeDao.getClosestStores(latitude, longitude);
+                output = stores.toString();
             } else {
-                List<Promotion> promotions = promotionDao.getPromotionsOfferedByStoreByCoffeeId(Integer.parseInt(storeNumber), Integer.parseInt(coffeeId));
-                output = promotions.isEmpty() ?
-                    "No promotions for this coffee are currently offered at this store." :
-                    promotions.toString();
+                List<Store> stores = storeDao.getClosestStoresByPromoNumber(latitude, longitude, Integer.parseInt(promoNumber));
+                output = stores.toString();
             }
 
             System.out.println(output);
             return 1;
-
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#6:");
+            System.out.println("An error occured while performing Task#7:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
@@ -406,7 +447,7 @@ public class TasksDriver {
             return -1;
         }
     }
-
+    
     public static int task7() {
         Scanner myScanner = new Scanner(System.in);
         System.out.println("Enter Current Latitude:");
@@ -432,22 +473,16 @@ public class TasksDriver {
             System.out.println("Enter Promotion Number, or leave blank for all Promotions Offered in Stores(Int Value Only):");
             promoNumber = myScanner.nextLine();
         }
+        return task7(Float.parseFloat(latitude), Float.parseFloat(longitude), promoNumber);
+    }
 
-        StoreDao storeDao = new StoreDao();
+    public static int task8(LoyaltyProgram loyaltyProgram) {
+        LoyaltyProgramDao loyaltyProgramDao = new LoyaltyProgramDao();
         try {
-            String output;
-            if (promoNumber.isBlank()) {
-                List<Store> stores = storeDao.getClosestStores(Float.parseFloat(latitude), Float.parseFloat(longitude));
-                output = stores.toString();
-            } else {
-                List<Store> stores = storeDao.getClosestStoresByPromoNumber(Float.parseFloat(latitude), Float.parseFloat(longitude), Integer.parseInt(promoNumber));
-                output = stores.toString();
-            }
-
-            System.out.println(output);
+            System.out.println(loyaltyProgramDao.addOrUpdateLoyaltyProgram(loyaltyProgram));
             return 1;
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#7:");
+            System.out.println("An error occured while performing Task#8:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
@@ -481,19 +516,22 @@ public class TasksDriver {
         loyaltyProgram.setTotalPointsValueUnlockedAt(Float.parseFloat(totalPointsValueUnlockedAt));
         loyaltyProgram.setBoosterValue(Float.parseFloat(boosterValue));
 
-        LoyaltyProgramDao loyaltyProgramDao = new LoyaltyProgramDao();
+        return task8(loyaltyProgram);
+    }
+
+    public static int task9(Customer customer) {
+        CustomerDao customerDao = new CustomerDao();
         try {
-            System.out.println(loyaltyProgramDao.addOrUpdateLoyaltyProgram(loyaltyProgram));
-            return 1;
+            return customerDao.addCustomer(customer);
+
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#8:");
+            System.out.println("An error occured while performing Task#9:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
             System.out.println(e.getStackTrace());
             return -1;
         }
-        
     }
 
     public static int task9() {
@@ -528,12 +566,18 @@ public class TasksDriver {
         customer.setPhoneNumber(phoneNumber);
         customer.setPhoneType(phoneType);
 
+        return task9(customer);
+    }
+
+    public static int task10(int customerId) {
         CustomerDao customerDao = new CustomerDao();
         try {
-            return customerDao.addCustomer(customer);
+            System.out.println("Current Points: " + customerDao.getCustomerCurrentPoints(customerId));
+            System.out.println("Total Points: " + customerDao.getCustomerTotalPoints(customerId));
+            return customerId;
 
         } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#9:");
+            System.out.println("An error occured while performing Task#10:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
@@ -551,20 +595,7 @@ public class TasksDriver {
             customerId = myScanner.nextLine();
         }
 
-        CustomerDao customerDao = new CustomerDao();
-        try {
-            System.out.println("Current Points: " + customerDao.getCustomerCurrentPoints(Integer.parseInt(customerId)));
-            System.out.println("Total Points: " + customerDao.getCustomerTotalPoints(Integer.parseInt(customerId)));
-            return Integer.parseInt(customerId);
-
-        } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#10:");
-            System.out.println(e.getMessage());
-            System.out.println(e.getErrorCode());
-            System.out.println(e.getSQLState());
-            System.out.println(e.getStackTrace());
-            return -1;
-        }
+        return task10(Integer.parseInt(customerId));
     }
 
     public static int task11() {
@@ -577,6 +608,21 @@ public class TasksDriver {
 
         } catch (SQLException e) {
             System.out.println("An error occured while performing Task#11:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
+    
+    public static int task12(Sale sale) {
+        SaleDao saleDao = new SaleDao();
+        try {
+            return saleDao.addSale(sale);
+
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#12:");
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
             System.out.println(e.getSQLState());
@@ -609,7 +655,7 @@ public class TasksDriver {
             purchasedTime = myScanner.nextLine();
         }
         
-        List<Record> records = new ArrayList<Record>();
+        List<Record> records = new ArrayList<>();
         String flag = "y";
         int coffeeCount = 0;
         while(flag.equals("y")) {
@@ -653,22 +699,9 @@ public class TasksDriver {
         Sale sale = new Sale();
         sale.setCustomerId(Integer.parseInt(customerId));
         sale.setPurchasedTime(Timestamp.valueOf(purchasedTime));
-        System.out.println("TIMESTAMP PRINT:" + sale.getPurchasedTime());
         sale.setRecords(records);
 
-        SaleDao saleDao = new SaleDao();
-        try {
-            return saleDao.addSale(sale);
-
-        } catch (SQLException e) {
-            System.out.println("An error occured while performing Task#12:");
-            System.out.println(e.getMessage());
-            System.out.println(e.getErrorCode());
-            System.out.println(e.getSQLState());
-            System.out.println(e.getStackTrace());
-            return -1;
-        }
-
+        return task12(sale);
     }
 
     public static int task13() {
@@ -695,25 +728,11 @@ public class TasksDriver {
         }
     }
 
-    public static int task14() {
-        Scanner myScanner = new Scanner(System.in);
-        System.out.println("Enter Intensity:");
-        String intensity = myScanner.nextLine();
-        while(!stringIsValidIntValue(intensity)) {
-            System.out.println("Enter Intensity (Int Value Between 1-12 Only):");
-            intensity = myScanner.nextLine();
-        }
-
-        System.out.println("Enter Keyword 1 Contained In Coffee Name:");
-        String kw1 = myScanner.nextLine();
-
-        System.out.println("Enter Keyword 1 Contained In Coffee Name:");
-        String kw2 = myScanner.nextLine();
-
+    public static int task14(int intensity, String kw1, String kw2) {
         CoffeeDao coffeeDao = new CoffeeDao();
         try {
             String output;
-            List<Coffee> coffees = coffeeDao.getCoffeesByIntensityAndTwoKeywords(Integer.parseInt(intensity), kw1, kw2);
+            List<Coffee> coffees = coffeeDao.getCoffeesByIntensityAndTwoKeywords(intensity, kw1, kw2);
             if (coffees.isEmpty()) {
                 output = "No Coffees satisfied these conditions.";
             } else {
@@ -731,6 +750,94 @@ public class TasksDriver {
             System.out.println(e.getStackTrace());
             return -1;
         }
+    }
 
+    public static int task14() {
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("Enter Intensity:");
+        String intensity = myScanner.nextLine();
+        while(!stringIsValidIntValue(intensity)) {
+            System.out.println("Enter Intensity (Int Value Between 1-12 Only):");
+            intensity = myScanner.nextLine();
+        }
+
+        System.out.println("Enter Keyword 1 Contained In Coffee Name:");
+        String kw1 = myScanner.nextLine();
+
+        System.out.println("Enter Keyword 1 Contained In Coffee Name:");
+        String kw2 = myScanner.nextLine();
+
+        return task14(Integer.parseInt(intensity), kw1, kw2);
+    }
+    public static int task15(int k, int months) {
+        StoreDao storeDao = new StoreDao();
+        try {
+            List<Integer> storeNumbers = storeDao.getTopKStoresByHighestRevenueInXMonths(k, months);
+            System.out.println(storeNumbers.toString());
+            return 1;
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#15:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
+
+    public static int task15() {
+        Scanner myScanner = new Scanner(System.in);
+
+        System.out.println("Enter number of stores (top K):");
+        String k = myScanner.nextLine();
+        while(!stringIsValidIntValue(k)) {
+            System.out.println("Enter number of stores (top K) (Int Value Only):");
+            k = myScanner.nextLine();
+        }
+
+        System.out.println("Enter number of months:");
+        String months = myScanner.nextLine();
+        while(!stringIsValidIntValue(months)) {
+            System.out.println("Enter number of months (Int Value Only):");
+            months = myScanner.nextLine();
+        }
+
+        return task15(Integer.parseInt(k), Integer.parseInt(months));
+    }
+
+    public static int task16(int k, int months) {
+        CustomerDao customerDao = new CustomerDao();
+        try {
+            List<Integer> customerIds = customerDao.getTopKCustomersByHighestPurchasedSumInXMonths(k, months);
+            System.out.println(customerIds.toString());
+            return 1;
+        } catch (SQLException e) {
+            System.out.println("An error occured while performing Task#16:");
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getStackTrace());
+            return -1;
+        }
+    }
+
+    public static int task16() {
+        Scanner myScanner = new Scanner(System.in);
+
+        System.out.println("Enter number of customers (top K):");
+        String k = myScanner.nextLine();
+        while(!stringIsValidIntValue(k)) {
+            System.out.println("Enter number of customers (top K) (Int Value Only):");
+            k = myScanner.nextLine();
+        }
+
+        System.out.println("Enter number of months:");
+        String months = myScanner.nextLine();
+        while(!stringIsValidIntValue(months)) {
+            System.out.println("Enter number of months (Int Value Only):");
+            months = myScanner.nextLine();
+        }
+
+        return task16(Integer.parseInt(k), Integer.parseInt(months));
     }
 }

@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Objects;
+
 public class Store {
     int storeNumber;
     String storeName;
@@ -58,6 +60,22 @@ public class Store {
             ", storeType=" + storeType +
             " }\n";
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Store)) {
+            return false;
+        }
+        Store store = (Store) o;
+        return storeNumber == store.storeNumber && Objects.equals(storeName, store.storeName) && longitude == store.longitude && latitude == store.latitude && Objects.equals(storeType, store.storeType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(storeNumber, storeName, longitude, latitude, storeType);
     }
 
 }

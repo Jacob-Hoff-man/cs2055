@@ -1,6 +1,7 @@
 package models;
 
 import java.sql.Date;
+import java.util.Objects;
 
 public class Promotion {
     int promoNumber;
@@ -50,6 +51,22 @@ public class Promotion {
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +
             "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Promotion)) {
+            return false;
+        }
+        Promotion promotion = (Promotion) o;
+        return promoNumber == promotion.promoNumber && Objects.equals(promoName, promotion.promoName) && Objects.equals(startDate, promotion.startDate) && Objects.equals(endDate, promotion.endDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(promoNumber, promoName, startDate, endDate);
     }
 
 }

@@ -1,14 +1,16 @@
 package db;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-
-    private DBConnection() {
-        throw new IllegalStateException("Utility Class");
-    }
+    /* current working directory path name for the file location */
+    private static String cwd = System.getProperty("user.dir") + "/db/";
 
     /* static db connection values */
     private static String dbDriverClassName = "org.postgresql.Driver";
@@ -21,6 +23,10 @@ public class DBConnection {
     /* singleton Connection class obj */
     private static Connection conn = null;
     
+    private DBConnection() {
+        throw new IllegalStateException("Utility Class");
+    }
+
     static {
         try {
             Class.forName(dbDriverClassName);
@@ -32,6 +38,47 @@ public class DBConnection {
         } catch (SQLException e) {
             System.out.println("A connection to the specified SQL DB could not be established." + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public static void restartDatabaseState() {
+        try {
+            ScriptRunner runner = new ScriptRunner(conn, false, true);
+            runner.runScript(new BufferedReader(new FileReader(cwd + "generate_tables.sql")));
+            runner.runScript(new BufferedReader(new FileReader(cwd + "sample_data.sql")));
+            // TODO: find fix for this not successfully reading by ScriptRunner class
+            //runner.runScript(new BufferedReader(new FileReader(cwd + "triggers.sql")));
+
+        } catch (FileNotFoundException e) {
+            System.out.println("The specified SQL file was not found: \n" + e.getMessage());
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            System.out.println("The specified SQL file could not be read: \n" + e.getMessage());
+            e.printStackTrace();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    public static void emptyDatabaseState() {
+        try {
+            ScriptRunner runner = new ScriptRunner(conn, false, true);
+            runner.runScript(new BufferedReader(new FileReader(cwd + "generate_tables.sql")));
+
+        } catch (FileNotFoundException e) {
+            System.out.println("The specified SQL file was not found: \n" + e.getMessage());
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            System.out.println("The specified SQL file could not be read: \n" + e.getMessage());
+            e.printStackTrace();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
         }
     }
 

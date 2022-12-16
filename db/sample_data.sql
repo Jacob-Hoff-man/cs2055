@@ -16,14 +16,14 @@ INSERT INTO LOYALTY_PROGRAM VALUES ('platinum', 50000, 2.0);
 INSERT INTO LOYALTY_PROGRAM VALUES ('diamond', 500000, 4.0);
 
 -- Customers
-INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Jacob', 'Hof', 'A', 'jul', '08', '111-222-3333', 'mobile', 'diamond', 10000, 500000);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Jacob', 'Hof', 'A', 'jul', '08', '111-222-3333', 'mobile', 'platinum', 10000, 499999);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Kairuo', 'Yan', 'K', 'jan', '01', '222-222-3333', 'home', 'basic', 0, 0);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Bob', 'Ross', 'K', 'feb', '02', '333-222-3333', 'work', 'silver', 2500, 2500);
-INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Luke', 'Skywalker', 'A', 'mar', '03', '444-222-3333', 'other', 'gold', 5000, 5000);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Luke', 'Skywalker', 'A', 'mar', '03', '444-222-3333', 'other', 'gold', 0, 5000);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Mike', 'Trout', 'B', 'apr', '04', '555-222-3333', 'mobile', 'platinum', 50000, 50000);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Rock', 'Paper', 'S', 'may', '05', '666-222-3333', 'home', 'bronze', 500, 500);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Jason', 'Freddy', 'M', 'jun', '06', '777-222-3333', 'work', 'basic', 250, 250);
-INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Count', 'Drake', 'V', 'jul', '07', '888-222-3333', 'other', 'bronze', 1000, 1000);
+INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Count', 'Drake', 'V', 'jul', '07', '888-222-3333', 'other', 'gold', 49999, 49999);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type, loyalty_level, current_points, total_points) VALUES ('Bruce', 'Wayne', 'B', 'aug', '08', '999-222-3333', 'mobile', 'silver', 0, 2500);
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Alex', 'Hero', 'E', 'sep', '09', '123-222-3333', 'home');
 INSERT INTO CUSTOMER (first_name, last_name, mid_initial, birth_month, birth_day, phone_number, phone_type) VALUES ('Ziggy', 'Swifty', 'T', 'oct', '10', '456-222-3333', 'work');
@@ -52,13 +52,13 @@ INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_
 INSERT INTO COFFEE (coffee_name, description, country, intensity, price, redeem_points, reward_points) VALUES ('Iced Coffee', 'Iced coffees become very popular in the summertime in the United States. The recipes do have some variance, with some locations choosing to interchange milk with water in the recipe. Different flavoring syrups will be added per customer preference.', 'Canada', 3, 4.75, 142.5, 47.50);
 
 -- Promos
-INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 1', '2022-10-01', '2022-11-01');
+INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 1', '2022-10-01', '2023-11-01');
 INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 2', '2021-10-01', '2023-12-30');
 INSERT INTO PROMOTION (promo_name, start_date, end_date) VALUES ('Promo 3', '2023-01-01', '2023-07-01');
 
 -- Purchase (Sale)
 INSERT INTO SALE (customer_id) VALUES(1);
-INSERT INTO SALE (customer_id) VALUES(20);
+INSERT INTO SALE (customer_id, purchased_time) VALUES(20, '2021-12-14 20:47:39.252666');
 INSERT INTO SALE (customer_id) VALUES(5);
 INSERT INTO SALE (customer_id) VALUES(3);
 INSERT INTO SALE (customer_id) VALUES(1);
@@ -169,9 +169,9 @@ INSERT INTO FEATURES VALUES(11,3);
 INSERT INTO FEATURES VALUES(12,3);
 
 -- Records
-INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(1,1,1);
-INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(2,2,2);
-INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(3,3,1);
+INSERT INTO RECORDS (purchase_id, store_number, coffee_id, purchased_portion) VALUES(1,1,1, 100);
+INSERT INTO RECORDS (purchase_id, store_number, coffee_id, purchased_portion) VALUES(2,2,2, 1000);
+INSERT INTO RECORDS (purchase_id, store_number, coffee_id, purchased_portion) VALUES(3,3,1, 100);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(3,2,2);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(4,1,2);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(5,2,2);
@@ -221,4 +221,4 @@ INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(48,2,6);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(49,3,12);
 INSERT INTO RECORDS (purchase_id, store_number, coffee_id) VALUES(50,2,3);
 
-INSERT INTO CLOCK VALUES('2022-11-26');
+INSERT INTO CLOCK VALUES('2022-12-30');
