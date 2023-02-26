@@ -1,7 +1,7 @@
 
 ## How To Run The Project:
 
-Ensure that postgresql has been installed to your local machine and a database has been prepared (locally or remotely).
+Ensure that postgres has been installed to your local machine and a database has been prepared (locally or remotely).
 
 Currently, you will need to update the `db/DBConnection.java` fields and re-compile/re-export the Java project's JAR file (I did this using VSCode and targeting the EntryPoint.java as the Main class).
 
