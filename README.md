@@ -1,4 +1,4 @@
-# Coffee Boutique - Relation Database System With PostgreSQL, PL/pgSQL, JDBC, Java
+# Coffee Boutique - Relational Database System With PostgreSQL, PL/pgSQL, JDBC, Java
 ## How To Run The Project:
 
 Ensure that postgres has been installed to your local machine and a database has been prepared (locally or remotely).
