@@ -23,6 +23,7 @@ Custom DAL Entity models that map to database schemas using Java: `./models/*`
 
 Custom DAL Entity services that define DAOs for entity models using Java and java.sql API: `./services/*`
 
+
 ## How To Run The Project:
 
 Ensure that postgres has been installed to your local machine and a database has been prepared (locally or remotely).
