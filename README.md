@@ -9,7 +9,7 @@ Database tables using sql: `./db/generate-tables.sql`
 
 Database seed using sql: `./db/sample_data.sql`
 
-Triggers and internal functions, procedures using plpgsql: `./db/triggers.sql`
+Triggers, internal functions, and internal procedures using plpgsql: `./db/triggers.sql`
 
 Establishing a singleton database connection by interfacing JDBC with database driver using Java: `./db/DBConnection.java`
 
