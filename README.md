@@ -1,4 +1,28 @@
 # Coffee Boutique - Relational Database System With PostgreSQL, PL/pgSQL, JDBC, Java
+## Code:
+
+Main Java class: `./EntryPoint.java`
+
+Psql JDBC driver: `./lib/postgresql-42.2.18.jar`
+
+Database tables using sql: `./db/generate-tables.sql`
+
+Database seed using sql: `./db/sample_data.sql`
+
+Triggers and internal functions, procedures using plpgsql: `./db/triggers.sql`
+
+Establishing a singleton database connection by interfacing JDBC with database driver using Java: `./db/DBConnection.java`
+
+Scripts for performing each project-specific task using Java: `./db/TasksDriver.java`
+
+Simple task unit tests using Java: `./tests/TasksTests.java`
+
+Simple stress tests using Java: `./tests/StressTests.java`
+
+Custom DAL Entity models that map to database schemas using Java: `./models/*`
+
+Custom DAL Entity services that define DAOs for entity models using Java and java.sql API: `./services/*`
+
 ## How To Run The Project:
 
 Ensure that postgres has been installed to your local machine and a database has been prepared (locally or remotely).
