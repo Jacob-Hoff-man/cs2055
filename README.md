@@ -21,7 +21,7 @@ Simple stress tests using Java: `./tests/StressTests.java`
 
 Custom DAL Entity models that map to database schemas using Java: `./models/*`
 
-Custom DAL Entity services that define DAOs for entity models using Java and java.sql API: `./services/*`
+Custom DAL Entity services that define DAOs for accessing certain database entities using Java and java.sql API: `./services/*`
 
 
 ## How To Run The Project:
